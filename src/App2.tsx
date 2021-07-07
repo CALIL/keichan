@@ -119,6 +119,7 @@ class App extends Component<Props, State> {
     }
 
     pushTempBook(documentCode: string) {
+        if (documentCode.startsWith('192')) return
         if(this.documentCode !== documentCode) {
             this.state.books.unshift([{value: documentCode}, {value: ''}, {value: ''}, {value: ''}])
             this.setState({})
@@ -141,7 +142,6 @@ class App extends Component<Props, State> {
                 <Spreadsheet data={this.state.books} columnLabels={['id', 'title', 'isbn']} />
             )
         }
-        return 'Hello Keichan'
     }
 }
 
