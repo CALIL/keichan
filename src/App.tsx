@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver'
 import Suggest from './Suggest'
 import Speech from './Speech'
 
-import { api } from './api';
+import { api } from './api.js';
 
 
 const REGION = 'recipe'

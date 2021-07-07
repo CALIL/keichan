@@ -17,6 +17,8 @@
     "xlsx": "^0.16.9"
   },
   "devDependencies": {
+    "@bunchtogether/vite-plugin-flow": "^1.0.0",
+    "@types/file-saver": "^2.0.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@vitejs/plugin-legacy": "^1.4.3",
