@@ -12,6 +12,7 @@ interface App {
     timer: any
     str: string
     prevISBN: string | null
+    documentCode: string | null
 }
 
 
@@ -23,6 +24,11 @@ interface State {
     books: any[]
 }
 
+// 最初に読まれたのがISBNか？
+// ISBNであれば、ISBNをidにして、セット
+// ISBNでなければ、資料コードとして判断
+// idを資料コードとしてセット
+// 次にISBNがくれば、idを資料コードとして、従来の行と置き換える
 
 class App extends Component<Props, State> {
     constructor(props:Props) {
@@ -35,6 +41,7 @@ class App extends Component<Props, State> {
         this.timer = null
         this.str = ''
         this.prevISBN = null
+        this.documentCode = null
     }
     // Window全体でのキー入力を拾う
     onKeyDown(e: any): void {
@@ -47,11 +54,10 @@ class App extends Component<Props, State> {
             if (this.str.length >= 10) {
                 if (normalize_isbn(this.str)) {
                     this.setState({invalidISBN: false})
-                    // this.setTextInput(this.str)
                     this.addBook(this.str)
-                    // console.log('scanned:', this.str)
                 } else {
                     this.setState({invalidISBN: true})
+                    this.pushTempBook(this.str)
                 }
             }
             if (this.timer) clearTimeout(this.timer)
@@ -70,10 +76,10 @@ class App extends Component<Props, State> {
                 if (this.str.length >= 10) {
                     if(normalize_isbn(this.str)) {
                         this.setState({invalidISBN: false})
-                        // this.setTextInput(this.str)
                         this.addBook(this.str)
                     } else {
                         this.setState({invalidISBN: true})
+                        this.pushTempBook(this.str)
                     }
                 }
                 this.str = ''
@@ -99,13 +105,24 @@ class App extends Component<Props, State> {
 
     pushBook(title: string, isbn: string) {
         if(this.prevISBN !== isbn) {
-            this.state.books.unshift([{value: isbn}, {value: title}, {value: isbn}, {value: ''}])
+            console.log(this.documentCode)
+            if (this.documentCode) {
+                this.state.books.shift()
+                this.state.books.unshift([{value: this.documentCode}, {value: title}, {value: isbn}, {value: ''}])
+                this.documentCode = null
+            } else {
+                this.state.books.unshift([{value: isbn}, {value: title}, {value: isbn}, {value: ''}])
+            }
             this.setState({})
-            // this.setState({notFound: false})
-            // this.save()
-            // this.speak(title)
-            if (isbn) this.prevISBN = isbn
-            // this.textInput?.focus()
+            this.prevISBN = isbn
+        }
+    }
+
+    pushTempBook(documentCode: string) {
+        if(this.documentCode !== documentCode) {
+            this.state.books.unshift([{value: documentCode}, {value: ''}, {value: ''}, {value: ''}])
+            this.setState({})
+            this.documentCode = documentCode
         }
     }
 
