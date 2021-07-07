@@ -1,7 +1,7 @@
 import React, { EventHandler, ReactElement, RefObject } from 'react'
 import {Component} from 'react'
 
-import Spreadsheet from 'react-spreadsheet'
+import Spreadsheet, {Matrix, CellBase} from 'react-spreadsheet'
   
 import normalize_isbn from './normalize_isbn.js'
 
@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver'
 import Suggest from './Suggest'
 import Speech from './Speech'
 
-import { api } from './api.js';
+import api from './api';
 
 
 const REGION = 'recipe'
@@ -31,7 +31,7 @@ interface Props {
 }
 
 interface State {
-    books: [Cell, Cell, Cell, Cell][]
+    books: Matrix<CellBase<any>>
     invalidISBN: boolean
     scanner: boolean
     notFound: boolean
@@ -98,9 +98,9 @@ class App extends Component<Props, State> {
         }
     }
 
-    pushBook(title: string, isbn: stging) {
+    pushBook(title: string, isbn: string) {
         if(this.prevISBN !== isbn) {
-            this.state.books.unshift([{value: title}, {value: isbn}, {}, {}])
+            this.state.books.unshift([{value: title}, {value: isbn}, {value: ''}, {value: ''}])
             this.setState({notFound: false})
             this.save()
             this.speak(title)
@@ -126,7 +126,7 @@ class App extends Component<Props, State> {
         this.pushBook(book.title, book.isbn)
     }
 
-    submit(e: FormEvent<HTMLFormElement>): void {
+    submit(e: any): void {
         e.preventDefault()
         const str = this.textInput?.value
         if (str && str.length >= 10) {
@@ -233,7 +233,7 @@ class App extends Component<Props, State> {
         };
         wb.SheetNames.push("Test Sheet"); // これ以外の名前にするとデータがないEXCELファイルになる？
         // const ws_data = [['hello' , 'world']];
-        const ws_data: [string, string][] = [];
+        const ws_data: [string, string, string, string][] = [];
         this.state.books.map((book) => {
             ws_data.push([book[0].value, book[1].value, book[2].value, book[3].value])
         })

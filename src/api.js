@@ -110,7 +110,7 @@ var api = /** @class */ (function () {
     };
     return api;
 }());
-exports.api = api;
+export default api;
 /**
  * クエリを共通形式にして返す
  * @param query

@@ -1,5 +1,7 @@
 import React, { Component, EventHandler } from 'react'
 
+declare const webkitSpeechRecognition: typeof SpeechRecognition
+
 interface Speech {
     recognition: any
 }
@@ -42,7 +44,7 @@ class Speech extends Component<Props, State> {
         recognition.onspeechstart = () => { console.log('on speech start') }
         recognition.onspeechend = () => { console.log('on speech end') }
 
-        recognition.onosundstart = () => { console.log('on sound start') }
+        // recognition.onosundstart = () => { console.log('on sound start') }
         recognition.onsoundend = () => { console.log('on sound end') }
 
         recognition.onaudiostart = () => { console.log('on audio start') }
