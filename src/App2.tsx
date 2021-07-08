@@ -8,6 +8,7 @@ const REGION = 'recipe'
 
 
 interface App {
+    api: any
     scanner: boolean
     timer: any
     str: string
@@ -49,6 +50,8 @@ class App extends Component<Props, State> {
         if (e.target.parentNode.className === 'Spreadsheet__data-editor') return
         const ev = e || window.event
         const key = ev.keyCode || ev.which || ev.charCode
+        console.log(this.str)
+        console.log(e.key)
         // バーコードリーダーの入力終わり、Enterが押された時の処理
         if (e.key === 'Enter' || key === 13) {
             if (this.str.length >= 10) {
@@ -98,7 +101,7 @@ class App extends Component<Props, State> {
     }
 
     addBook(isbn: string): void {
-        new api({ isbn: isbn, region: REGION }, (data) => {
+        this.api = new api({ isbn: isbn, region: REGION }, (data) => {
             if (data.count >= 1) {
                 const book = data.books[0]
                 this.pushBook(book)
@@ -106,6 +109,7 @@ class App extends Component<Props, State> {
                 console.log('not found')
                 // this.setState({notFound: true})
             }
+            this.api = null
         })
     }
 
