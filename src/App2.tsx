@@ -45,8 +45,8 @@ class App extends Component<Props, State> {
     }
     // Window全体でのキー入力を拾う
     onKeyDown(e: any): void {
-        // // スプレッドシート内の入力の場合は無視する
-        // if (e.target.parentNode.className === 'Spreadsheet__data-editor') return
+        // スプレッドシート内の入力の場合は無視する
+        if (e.target.parentNode.className === 'Spreadsheet__data-editor') return
         const ev = e || window.event
         const key = ev.keyCode || ev.which || ev.charCode
         // バーコードリーダーの入力終わり、Enterが押された時の処理
