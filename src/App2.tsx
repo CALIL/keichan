@@ -51,7 +51,7 @@ class App extends Component<Props, State> {
         const key = ev.keyCode || ev.which || ev.charCode
         // バーコードリーダーの入力終わり、Enterが押された時の処理
         if (e.key === 'Enter' || key === 13) {
-            if (this.str.length >= 10 || this.str.match(/^[A-D][0-9]+[A-D]$/)) {
+            if (this.str.length >= 10) {
                 if (normalize_isbn(this.str)) {
                     this.setState({invalidISBN: false})
                     this.addBook(this.str)
@@ -59,6 +59,10 @@ class App extends Component<Props, State> {
                     this.setState({invalidISBN: true})
                     this.pushTempBook(this.str)
                 }
+            }
+            if (this.str.match(/^[A-D][0-9]+[A-D]$/)) {
+                this.setState({invalidISBN: true})
+                this.pushTempBook(this.str.replace(/[A-D]/g, ''))
             }
             if (this.timer) clearTimeout(this.timer)
             this.str = ''
@@ -118,7 +122,6 @@ class App extends Component<Props, State> {
             }
             this.setState({})
             this.prevISBN = isbn
-            setTimeout(() => this.prevISBN = null, 2000)
         }
     }
 
