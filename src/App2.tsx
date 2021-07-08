@@ -66,6 +66,7 @@ class App extends Component<Props, State> {
         } else {
             if (e.key.length === 1) {
                 this.str += e.key
+            // codabarの制御コードが入った時
             } else if (e.key === 'Shift') {
             } else {
                 this.str = ''
@@ -96,7 +97,7 @@ class App extends Component<Props, State> {
         new api({ isbn: isbn, region: REGION }, (data) => {
             if (data.count >= 1) {
                 const book = data.books[0]
-                this.pushBook(book.title, book.isbn)
+                this.pushBook(book)
             } else {
                 console.log('not found')
                 // this.setState({notFound: true})
@@ -104,25 +105,27 @@ class App extends Component<Props, State> {
         })
     }
 
-    pushBook(title: string, isbn: string) {
-        // if(this.prevISBN !== isbn) {
-            console.log(this.documentCode)
+    pushBook(book) {
+        const {isbn, title, author, publisher, pubdate} = book
+        if(this.prevISBN !== isbn) {
+            // console.log(this.documentCode)
             if (this.documentCode) {
                 this.state.books.shift()
-                this.state.books.unshift([{value: this.documentCode}, {value: title}, {value: isbn}, {value: ''}])
+                this.state.books.unshift([{value: this.documentCode}, {value: isbn}, {value: title}, {value: author}, {value: publisher}, {value: pubdate}])
                 this.documentCode = null
             } else {
-                this.state.books.unshift([{value: isbn}, {value: title}, {value: isbn}, {value: ''}])
+                this.state.books.unshift([{value: isbn}, {value: isbn}, {value: title}, {value: author}, {value: publisher}, {value: pubdate}])
             }
             this.setState({})
             this.prevISBN = isbn
-        // }
+            setTimeout(() => this.prevISBN = null, 2000)
+        }
     }
 
     pushTempBook(documentCode: string) {
         if (documentCode.startsWith('192')) return
         if(this.documentCode !== documentCode) {
-            this.state.books.unshift([{value: documentCode}, {value: ''}, {value: ''}, {value: ''}])
+            this.state.books.unshift([{value: documentCode}, {value: ''}, {value: ''}, {value: ''}, {value: ''}, {value: ''}])
             this.setState({})
             this.documentCode = documentCode
         }
@@ -140,7 +143,7 @@ class App extends Component<Props, State> {
             )
         } else {
             return (
-                <Spreadsheet data={this.state.books} columnLabels={['id', 'title', 'isbn']} />
+                <Spreadsheet data={this.state.books} columnLabels={['id', 'isbn', 'タイトル', '著者', '出版社', '出版年']} />
             )
         }
     }
