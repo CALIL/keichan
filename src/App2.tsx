@@ -3,9 +3,7 @@ import normalize_isbn from './normalize_isbn.js'
 
 import Spreadsheet, {Matrix, CellBase} from 'react-spreadsheet'
 
-import api from './api';
 const REGION = 'recipe'
-
 
 interface App {
     api: any
@@ -96,7 +94,7 @@ class App extends Component<Props, State> {
         window.document.addEventListener('keydown', this.onKeyDown.bind(this))
     }
 
-    async addBook(isbn: string): void {
+    async addBook(isbn: string): Promise<void> {
         const data = await fetch(`https://unitrad.calil.jp/v1/search?isbn=${isbn}&region=${REGION}`).then(r => r.json())
         if (data.count >= 1) {
             const book = data.books[0]
@@ -105,16 +103,6 @@ class App extends Component<Props, State> {
             console.log('not found')
             // this.setState({notFound: true})
         }
-        // this.api = new api({ isbn: isbn, region: REGION }, (data) => {
-        //     if (data.count >= 1) {
-        //         const book = data.books[0]
-        //         this.pushBook(book)
-        //     } else {
-        //         console.log('not found')
-        //         // this.setState({notFound: true})
-        //     }
-        //     this.api = null
-        // })
     }
 
     pushBook(book) {
