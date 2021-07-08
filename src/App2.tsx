@@ -54,19 +54,7 @@ class App extends Component<Props, State> {
         console.log(e.key)
         // バーコードリーダーの入力終わり、Enterが押された時の処理
         if (e.key === 'Enter' || key === 13) {
-            if (this.str.length >= 10) {
-                if (normalize_isbn(this.str)) {
-                    this.setState({invalidISBN: false})
-                    this.addBook(this.str)
-                } else {
-                    this.setState({invalidISBN: true})
-                    this.pushTempBook(this.str)
-                }
-            }
-            if (this.str.match(/^[A-D][0-9]+[A-D]$/)) {
-                this.setState({invalidISBN: true})
-                this.pushTempBook(this.str.replace(/[A-D]/g, ''))
-            }
+            this.checkStr()
             if (this.timer) clearTimeout(this.timer)
             this.str = ''
         // 入力された文字を拾う
@@ -81,18 +69,26 @@ class App extends Component<Props, State> {
             if (this.timer) clearTimeout(this.timer)
             this.timer = setTimeout(() => {
                 console.log('clear')
-                // 10文字以上になったらISBNとして正しいかチェックする
-                if (this.str.length >= 10) {
-                    if(normalize_isbn(this.str)) {
-                        this.setState({invalidISBN: false})
-                        this.addBook(this.str)
-                    } else {
-                        this.setState({invalidISBN: true})
-                        this.pushTempBook(this.str)
-                    }
-                }
+                this.checkStr()
                 this.str = ''
             }, 300)
+        }
+    }
+
+    checkStr() {
+        if (normalize_isbn(this.str)) {
+            this.setState({invalidISBN: false})
+            this.addBook(this.str)
+        } else {
+            this.setState({invalidISBN: true})
+            // codabarのストップワードがあるケース
+            if (this.str.match(/^[A-D][0-9]+[A-D]$/)) {
+                this.pushTempBook(this.str.replace(/[A-D]/g, ''))
+            // codabarのストップワードが入ってこないケース
+            ///バーコードにない、リーダーがストリップする
+            } else {
+                this.pushTempBook(this.str)
+            }
         }
     }
 
