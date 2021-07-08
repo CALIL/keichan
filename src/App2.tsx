@@ -51,7 +51,7 @@ class App extends Component<Props, State> {
         const key = ev.keyCode || ev.which || ev.charCode
         // バーコードリーダーの入力終わり、Enterが押された時の処理
         if (e.key === 'Enter' || key === 13) {
-            if (this.str.length >= 10) {
+            if (this.str.length >= 10 || this.str.match(/^[A-D][0-9]+[A-D]$/)) {
                 if (normalize_isbn(this.str)) {
                     this.setState({invalidISBN: false})
                     this.addBook(this.str)
@@ -66,6 +66,7 @@ class App extends Component<Props, State> {
         } else {
             if (e.key.length === 1) {
                 this.str += e.key
+            } else if (e.key === 'Shift') {
             } else {
                 this.str = ''
             }
@@ -104,7 +105,7 @@ class App extends Component<Props, State> {
     }
 
     pushBook(title: string, isbn: string) {
-        if(this.prevISBN !== isbn) {
+        // if(this.prevISBN !== isbn) {
             console.log(this.documentCode)
             if (this.documentCode) {
                 this.state.books.shift()
@@ -115,7 +116,7 @@ class App extends Component<Props, State> {
             }
             this.setState({})
             this.prevISBN = isbn
-        }
+        // }
     }
 
     pushTempBook(documentCode: string) {
