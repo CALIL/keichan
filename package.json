@@ -15,7 +15,7 @@
     "react-spreadsheet": "^0.5.2",
     "superagent": "^6.1.0",
     "unorm": "^1.6.0",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@bunchtogether/vite-plugin-flow": "^1.0.0",
