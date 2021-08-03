@@ -1,8 +1,10 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 
 const Chat = (props) => {
     return (
-        <h1>Chat</h1>
+        <div id="chat">
+            <h1>Chat</h1>
+        </div>
     )
 }
 
