@@ -1,6 +1,7 @@
 import {defineConfig} from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import {flowPlugin, esbuildFlowPlugin} from '@bunchtogether/vite-plugin-flow'
+import legacy from '@vitejs/plugin-legacy'
 const { resolve } = require('path')
 
 // https://vitejs.dev/config/
@@ -10,11 +11,12 @@ export default defineConfig({
             plugins: [esbuildFlowPlugin()]
         }
     },
-    plugins: [reactRefresh(), flowPlugin()],
+    plugins: [reactRefresh(), flowPlugin(), legacy({
+        targets: ['ie >= 11'],
+        additionalLegacyPolyfills: ['regenerator-runtime/runtime']
+    })],
     base: '/keichan/',
-    mode: "development",
     build: {
-        minify: false,
         rollupOptions: {
           input: {
             // need a better way to template
