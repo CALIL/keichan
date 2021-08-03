@@ -11,10 +11,7 @@ export default defineConfig({
             plugins: [esbuildFlowPlugin()]
         }
     },
-    plugins: [reactRefresh(), flowPlugin(), legacy({
-        targets: ['ie >= 11'],
-        additionalLegacyPolyfills: ['regenerator-runtime/runtime']
-    })],
+    plugins: [reactRefresh(), flowPlugin()],
     base: '/keichan/',
     build: {
         rollupOptions: {
