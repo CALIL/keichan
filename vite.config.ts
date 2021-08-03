@@ -17,7 +17,6 @@ export default defineConfig({
     })],
     base: '/keichan/',
     build: {
-        outDir: 'build',
         rollupOptions: {
           input: {
             // need a better way to template
