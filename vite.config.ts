@@ -13,7 +13,9 @@ export default defineConfig({
     },
     plugins: [reactRefresh(), flowPlugin()],
     base: '/keichan/',
+    mode: "development",
     build: {
+        minify: false,
         rollupOptions: {
           input: {
             // need a better way to template
