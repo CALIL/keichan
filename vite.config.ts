@@ -1,7 +1,6 @@
 import {defineConfig} from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import {flowPlugin, esbuildFlowPlugin} from '@bunchtogether/vite-plugin-flow'
-import legacy from '@vitejs/plugin-legacy'
 const { resolve } = require('path')
 
 // https://vitejs.dev/config/
