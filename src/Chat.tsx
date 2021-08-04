@@ -6,9 +6,13 @@ const Chat = (props) => {
     return (
         <div id="chat">
             <div className="left">
-                <div className="barcode">
-                    <Tag className="tag">100012</Tag>
+                <div className="barcode active">
+                    <Tag large className="tag">100012</Tag>
                     <p>1Q84 Book1</p>
+                </div>
+                <div className="barcode">
+                    <Tag large className="tag">100013</Tag>
+                    <p>1Q84 Book2</p>
                 </div>
             </div>
             <div className="main">
