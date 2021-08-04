@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 const Chat = (props) => {
     return (
         <div id="chat">
-            <h1>Chat</h1>
             <div className="screen">
                 <div className="conversation">
                     <div className="messages messages--received">
@@ -17,14 +16,6 @@ const Chat = (props) => {
                     </div>
                     <div className="messages messages--received">
                         <div className="message">Enjoy!</div>
-                    </div>
-                </div>
-                <div className="text-bar">
-                    <form className="text-bar__field" id="form-message">
-                        <input type="text" placeholder="Type or thumb up ;)" />
-                    </form>
-                    <div className="text-bar__thumb">
-                        <div className="thumb"></div>
                     </div>
                 </div>
             </div>
