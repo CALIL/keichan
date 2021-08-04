@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Button, Intent, Spinner, Card, Elevation, Tag, Icon } from "@blueprintjs/core";
+import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup } from "@blueprintjs/core";
 
 const Chat = (props) => {
     return (
@@ -43,6 +43,10 @@ const Chat = (props) => {
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card>
+                    <div className="addMore">
+                        <InputGroup small placeholder="タイトル著者名を自分で入力" />
+                        <InputGroup small placeholder="メモを追加" />
+                    </div>
                 </div>
                 <div className="right">
                 </div>
