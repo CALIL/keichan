@@ -4,35 +4,29 @@
     background-color: #ddd
     padding: 40px
 
-    .screen
-        background-color: #fff
-        height: 400px
-        width: 300px
-        margin: 0 auto
-        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
-
+.screen
+    background-color: #fff
+    height: 400px
+    width: 300px
+    margin: 0 auto
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
     .conversation
         height: calc(100% - 50px)
         overflow: auto
         padding: 20px
         padding-bottom: 0
-
         .messages
             margin-bottom: 10px
-
             &--received
                 .message
                     float: left
                     background-color: #ddd
                     border-bottom-left-radius: 5px
                     border-top-left-radius: 5px
-
-                &:first-child
-                    border-top-left-radius: 15px
-
-                &:last-child
-                    border-bottom-left-radius: 15px
-
+                    &:first-child
+                        border-top-left-radius: 15px
+                    &:last-child
+                        border-bottom-left-radius: 15px
             &--sent
                 .message
                     float: right
@@ -40,18 +34,15 @@
                     color: #fff
                     border-bottom-right-radius: 5px
                     border-top-right-radius: 5px
-
-                &:first-child
-                    border-top-right-radius: 15px
-
-                &:last-child
-                    border-bottom-right-radius: 15px
-
-            .message
-                display: inline-block
-                margin-bottom: 2px
-                clear: both
-                padding: 7px 13px
-                font-size: 12px
-                border-radius: 15px
-                line-height: 1.4
+                    &:first-child
+                        border-top-right-radius: 15px
+                    &:last-child
+                        border-bottom-right-radius: 15px
+        .message
+            display: inline-block
+            margin-bottom: 2px
+            clear: both
+            padding: 7px 13px
+            font-size: 12px
+            border-radius: 15px
+            line-height: 1.4
