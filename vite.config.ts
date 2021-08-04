@@ -6,6 +6,9 @@ const { resolve } = require('path')
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    define: {
+        'process.env': {}
+    },
     optimizeDeps: {
         esbuildOptions: {
             plugins: [esbuildFlowPlugin()]
