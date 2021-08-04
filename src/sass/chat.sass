@@ -1,14 +1,23 @@
+html, body, #app
+    height: 100%
+
 #chat
-    width: 600px
+    display: flex
+    height: 100%
     margin: 0 auto
     background-color: #ddd
     padding: 40px
 
+.excel
+    flex: 4
+
 .screen
+    flex: 1
     background-color: #fff
-    height: 400px
+    height: 100%
     width: 300px
     margin: 0 auto
+    border-radius: 5px
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
     .conversation
         height: calc(100% - 50px)
@@ -46,3 +55,18 @@
             font-size: 12px
             border-radius: 15px
             line-height: 1.4
+            &.book
+                display: flex
+                .thumbnail
+                    float: left
+                    width: 80px
+                    margin-right: 1rem
+                .title
+                    display: block
+                .autor
+                    display: block
+                .publisher
+                    display: block
+                .pubdate
+                    display: block
+
