@@ -5,68 +5,91 @@ html, body, #app
     display: flex
     height: 100%
     margin: 0 auto
-    background-color: #ddd
-    padding: 40px
 
-.excel
-    flex: 4
-
-.screen
+.left
     flex: 1
+    background-color: #CCCCCC
+    padding: 1rem
+    .barcode
+        .tag
+            margin-bottom: 0.5rem
+        p
+            font-size: 1.25rem
+            color: #ffffff
+
+
+.right
+    flex: 1
+    background-color: #CCCCCC
+
+.main
+    flex: 3
     background-color: #fff
     height: 100%
     width: 300px
-    margin: 0 auto
-    border-radius: 5px
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2)
-    .conversation
-        height: calc(100% - 50px)
-        overflow: auto
-        padding: 20px
-        padding-bottom: 0
-        .messages
-            margin-bottom: 10px
-            &--received
-                .message
-                    float: left
-                    background-color: #ddd
-                    border-bottom-left-radius: 5px
-                    border-top-left-radius: 5px
-                    &:first-child
-                        border-top-left-radius: 15px
-                    &:last-child
-                        border-bottom-left-radius: 15px
-            &--sent
-                .message
-                    float: right
-                    background-color: #1998e6
-                    color: #fff
-                    border-bottom-right-radius: 5px
-                    border-top-right-radius: 5px
-                    &:first-child
-                        border-top-right-radius: 15px
-                    &:last-child
-                        border-bottom-right-radius: 15px
-        .message
-            display: inline-block
-            margin-bottom: 2px
-            clear: both
-            padding: 7px 13px
-            font-size: 12px
-            border-radius: 15px
-            line-height: 1.4
-            &.book
-                display: flex
-                .thumbnail
-                    float: left
-                    width: 80px
-                    margin-right: 1rem
-                .title
-                    display: block
-                .autor
-                    display: block
-                .publisher
-                    display: block
-                .pubdate
-                    display: block
+    padding: 1rem
+    .card
+        display: flex
+        justify-content: space-between
+        background-color: #999999
+        margin-bottom: 1rem
+        &.active
+            background-color: #0E9960
+        &.indent
+            margin-left: 1rem
+        h3
+            color: #ffffff
+            margin: 0.5rem 0 0
+        .tag
+            margin-right: 1rem
+    // .conversation
+    //     height: calc(100% - 50px)
+    //     overflow: auto
+    //     padding: 20px
+    //     padding-bottom: 0
+    //     .messages
+    //         margin-bottom: 10px
+    //         &--received
+    //             .message
+    //                 float: left
+    //                 background-color: #ddd
+    //                 border-bottom-left-radius: 5px
+    //                 border-top-left-radius: 5px
+    //                 &:first-child
+    //                     border-top-left-radius: 15px
+    //                 &:last-child
+    //                     border-bottom-left-radius: 15px
+    //         &--sent
+    //             .message
+    //                 float: right
+    //                 background-color: #1998e6
+    //                 color: #fff
+    //                 border-bottom-right-radius: 5px
+    //                 border-top-right-radius: 5px
+    //                 &:first-child
+    //                     border-top-right-radius: 15px
+    //                 &:last-child
+    //                     border-bottom-right-radius: 15px
+    //     .message
+    //         display: inline-block
+    //         margin-bottom: 2px
+    //         clear: both
+    //         padding: 7px 13px
+    //         font-size: 12px
+    //         border-radius: 15px
+    //         line-height: 1.4
+    //         &.book
+    //             display: flex
+    //             .thumbnail
+    //                 float: left
+    //                 width: 80px
+    //                 margin-right: 1rem
+    //             .title
+    //                 display: block
+    //             .autor
+    //                 display: block
+    //             .publisher
+    //                 display: block
+    //             .pubdate
+    //                 display: block
 

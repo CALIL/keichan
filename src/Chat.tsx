@@ -1,15 +1,43 @@
 import React, { useState, useEffect } from 'react'
 
-import { Button, Intent, Spinner } from "@blueprintjs/core";
- 
+import { Button, Intent, Spinner, Card, Elevation, Tag, Icon } from "@blueprintjs/core";
+
 const Chat = (props) => {
     return (
         <div id="chat">
-            <div className="excel">
-                <Spinner intent={Intent.PRIMARY} />
-                <Button intent={Intent.SUCCESS}>Click me!</Button>
+            <div className="left">
+                <div className="barcode">
+                    <Tag className="tag">100012</Tag>
+                    <p>1Q84 Book1</p>
+                </div>
             </div>
-            <div className="screen">
+            <div className="main">
+                <Card className="card active" interactive={true} elevation={Elevation.TWO}>
+                    <div>
+                        <Tag className="tag" large>100012</Tag>
+                        <Tag className="tag">管理バーコード</Tag>
+                    </div>
+                    <Icon icon="delete" size={25} color={'#ffffff'} />
+                </Card>
+                <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
+                    <div>
+                        <Tag className="tag">9784103534228</Tag>
+                        <Tag className="tag">ISBN</Tag>
+                        <h3>1Q84 Book 1 村上春樹</h3>
+                    </div>
+                    <Icon icon="delete" size={25} color={'#ffffff'} />
+                </Card>
+                <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
+                    <div>
+                        <Tag className="tag">1005</Tag>
+                        <Tag className="tag">棚番号</Tag>
+                    </div>
+                    <Icon icon="delete" size={25} color={'#ffffff'} />
+                </Card>
+            </div>
+            <div className="right">
+            </div>
+            {/* <div className="screen">
                 <div className="conversation">
                     <div className="messages messages--received">
                         <div className="message">おはようございます</div>
@@ -33,7 +61,7 @@ const Chat = (props) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
