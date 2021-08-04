@@ -32,6 +32,7 @@ const Chat = (props) => {
                             <Tag className="tag">9784103534228</Tag>
                             <Tag className="tag">ISBN</Tag>
                             <h3>1Q84 Book 1 村上春樹</h3>
+                            <img className="thumbnail" src="https://cover.openbd.jp/9784103534228.jpg" alt="" />
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card>
