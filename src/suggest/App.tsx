@@ -56,7 +56,7 @@ const App = (props) => {
                         <h2>もしかして次の本は<span>(SPY×FAMILY 1より推定)</span></h2>
                         {books.map((book) => {
                             return (
-                                <Card className="card">
+                                <Card className="card" interactive={true} elevation={Elevation.TWO}>
                                     <div className="card-header">
                                         <h3>{book.title}</h3>
                                         <p className="author">{book.author}</p>
