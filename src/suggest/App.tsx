@@ -6,7 +6,7 @@ import data from './search.json'
 
 console.log(data.result)
 
-const books = data.result.reverse()
+const books = data.result.reverse().filter((book) => !book.isbn.includes('9784088820118'))
 
 const App = (props) => {
     return (
@@ -53,7 +53,7 @@ const App = (props) => {
                         <InputGroup small placeholder="メモを追加" />
                     </div>
                     <div className="nextBook">
-                        <h2>前回追加の本のシリーズ</h2>
+                        <h2>もしかして次の本は<span>(SPY×FAMILY 1より推定)</span></h2>
                         {books.map((book) => {
                             return (
                                 <Card className="card">
