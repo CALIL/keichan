@@ -61,6 +61,7 @@ const App = (props) => {
                                         <h3>{book.title}</h3>
                                         <p className="author">{book.author}</p>
                                     </div>
+                                    <Icon icon="add" size={25} color={'#ffffff'} />
                                 </Card>
                             )
                         })}
