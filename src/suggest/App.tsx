@@ -17,11 +17,14 @@ const App = (props) => {
             <main>
                 <div className="left">
                     <div className="barcode active">
-                        <Tag large className="tag">100012</Tag>
-                        <p>SPY×FAMILY 1</p>
+                        <Tag large className="tag">100014</Tag>
                     </div>
                     <div className="barcode">
                         <Tag large className="tag">100013</Tag>
+                        <p>SPY×FAMILY 1</p>
+                    </div>
+                    <div className="barcode">
+                        <Tag large className="tag">100012</Tag>
                         <p>1Q84 Book2</p>
                     </div>
                 </div>
@@ -31,12 +34,12 @@ const App = (props) => {
                     </form> */}
                     <Card className="card active" interactive={true} elevation={Elevation.TWO}>
                         <div>
-                            <Tag className="tag" large>100012</Tag>
+                            <Tag className="tag" large>100014</Tag>
                             <Tag className="tag">管理バーコード</Tag>
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card>
-                    <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
+                    {/* <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
                         <div>
                             <Tag className="tag">9784088820118</Tag>
                             <Tag className="tag">ISBN</Tag>
@@ -44,13 +47,13 @@ const App = (props) => {
                             <img className="thumbnail" src="https://cover.openbd.jp/9784088820118.jpg" alt="" />
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
-                    </Card>
-                    {/* <div className="addMore">
+                    </Card> */}
+                    <div className="addMore">
                         <InputGroup small placeholder="タイトル著者名を自分で入力" />
                         <InputGroup small placeholder="メモを追加" />
-                    </div> */}
+                    </div>
                     <div className="nextBook">
-                        <h2>シリーズの本</h2>
+                        <h2>前回追加の本のシリーズ</h2>
                         {books.map((book) => {
                             return (
                                 <Card className="card">
