@@ -36,6 +36,7 @@ const App = (props) => {
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card>
+                    <h3>本を追加</h3>
                     {/* <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
                         <div>
                             <Tag className="tag">9784088820118</Tag>
