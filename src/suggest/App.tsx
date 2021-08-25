@@ -53,7 +53,7 @@ const App = (props) => {
                         <InputGroup small placeholder="メモを追加" />
                     </div>
                     <div className="nextBook">
-                        <h2>もしかして次の本は<span>(SPY×FAMILY 1より推定)</span></h2>
+                        <h2>もしかして<span>(SPY×FAMILY 1より推定)</span></h2>
                         {books.map((book) => {
                             return (
                                 <Card className="card" interactive={true} elevation={Elevation.TWO}>
