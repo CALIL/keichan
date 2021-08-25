@@ -1,0 +1,78 @@
+html, body, #app
+    height: 100%
+
+#suggests
+    height: 100%
+    header
+        background-color: #20B4EA
+        margin: 0
+        h1
+            color: #ffffff
+            text-align: center
+            margin: 1rem auto
+    main
+        display: flex
+        height: 100%
+        .left
+            flex: 1
+            background-color: #CCCCCC
+            .barcode
+                margin-bottom: 1rem
+                background-color: #CCCCCC
+                padding: 1rem
+                &.active
+                    background-color: #106BA3
+                .tag
+                    margin-bottom: 0.5rem
+                p
+                    font-size: 1.25rem
+                    color: #ffffff
+
+
+        .right
+            flex: 1
+            background-color: #CCCCCC
+
+        .main
+            flex: 3
+            background-color: #fff
+            height: 100%
+            width: 300px
+            padding: 1rem
+            form
+                margin-bottom: 1rem
+            .card
+                position: relative
+                display: flex
+                justify-content: space-between
+                background-color: #999999
+                margin-bottom: 1rem
+                &.active
+                    background-color: #0E9960
+                &.indent
+                    margin-left: 2rem
+                h3
+                    color: #ffffff
+                    margin: 0.5rem 0 0
+                .tag
+                    margin-right: 1rem
+                .thumbnail
+                    position: absolute
+                    top: 0
+                    right: 100px
+                    height: 80px
+            .addMore
+                display: flex
+                margin-left: 2rem
+                input
+                    width: 300px
+                    margin-right: 1rem
+            .nextBook
+                margin-top: 3rem
+                h2
+                    margin-bottom: 1rem
+                .card
+                    h3
+                        margin-bottom: 0.5rem
+                    .author
+                        color: #ffffff

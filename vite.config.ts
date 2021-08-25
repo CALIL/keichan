@@ -25,6 +25,7 @@ export default defineConfig({
             // need a better way to template
             main: resolve(__dirname, 'index.html'),
             page: resolve(__dirname, 'chat.html'),
+            page: resolve(__dirname, 'suggest.html'),
           },
         //   // ファイル名にハッシュを付けない
         //   output: {
