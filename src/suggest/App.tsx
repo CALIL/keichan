@@ -66,6 +66,7 @@ const App = (props) => {
                             <InputGroup small placeholder="出版社" />
                             <InputGroup small placeholder="出版日" />
                             <InputGroup small placeholder="メモを追加" />
+                            <Button icon="plus">追加</Button>
                         </FormGroup>
                     </div>
                     <div className="nextBook">
