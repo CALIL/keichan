@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup } from "@blueprintjs/core";
 
+import isbn_utils from 'isbn-utils'
+
 import api from '../api'
 import normalize_isbn from '../normalize_isbn.js'
 
@@ -109,11 +111,12 @@ const App = (props) => {
                             pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
                         }
                     }
+                    let i = isbn_utils.parse(book.isbn);
                     books.push({
                         'title': book.title + ' ' + book.volume,
                         'author': book.author.split(',')[0],
                         'publisher': book.publisher,
-                        // 'isbn': book.isbn,
+                        'isbn': i.asIsbn13(),
                         'pubdate': pubdate
                     })
                 }))
@@ -198,7 +201,9 @@ const App = (props) => {
                                     <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
                                         <div className="card-header">
                                             <h3>{[book.title, book.volume].join(' ')}</h3>
-                                            <p className="author">{book.author}</p>
+                                            {/* <p className="author">{book.author}</p>
+                                            <p>{book.pubdate}</p>
+                                            <p>{book.isbn}</p> */}
                                         </div>
                                         <Icon icon="add" size={25} color={'#ffffff'} />
                                     </Card>
