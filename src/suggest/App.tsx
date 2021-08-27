@@ -91,7 +91,7 @@ const App = (props) => {
         const data = await fetch(url).then(r => r.json())
         // console.log(data)
         if (data.count >= 1) {
-            let books = []
+            const books = []
             data.books.forEach((book => {
                 if (book.isbn === null) return
                 if (book.isbn === targetBook.isbn) return
@@ -112,6 +112,11 @@ const App = (props) => {
                     'pubdate': pubdate
                 })
             }))
+            books.sort(function(a,b){
+                if(a.pubdate<b.pubdate) return -1
+                if(a.pubdate > b.pubdate) return 1
+                return 0
+            })
             setSuggestBooks(books)
         }
     }
