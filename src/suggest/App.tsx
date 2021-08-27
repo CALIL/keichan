@@ -60,24 +60,27 @@ const App = (props) => {
     const checkStr = async () => {
         const isbn = normalize_isbn(str)
         if (isbn) {
-            await getBook(isbn)
-            getBooks()
+            const book = await getBook(isbn)
+            if (book) {
+                setTargetBook(book)
+                await getBooks(book)
+            }
         }
     }
 
     const getBook = async (isbn) => {
         setTargetBook(null)
+        setSuggestBooks([])
         const data = await fetch(`https://unitrad.calil.jp/v1/search?isbn=${isbn}&region=${REGION}`).then(r => r.json())
         if (data.count >= 1) {
-            setTargetBook(data.books[0])
+            return data.books[0]
         } else {
-            console.log('not found')
+            return null
         }
     }
 
-    const getBooks = async () => {
-        console.log(targetBook)
-        if (!targetBook) return
+    const getBooks = async (targetBook) => {
+        // console.log(book)
         const seriesTitle = targetBook.title.split(/\s/)[0]
 
         const author = encodeURIComponent(targetBook.author.split(',')[0])
@@ -86,6 +89,7 @@ const App = (props) => {
     
         const url = `https://unitrad.calil.jp/v1/search?author=${author}&publisher=${publisher}&year_start=${pubdate}&region=recipe`
         const data = await fetch(url).then(r => r.json())
+        // console.log(data)
         if (data.count >= 1) {
             const books = data.books.filter(book => book.isbn!==targetBook.isbn)
             setSuggestBooks(books)
@@ -159,7 +163,7 @@ const App = (props) => {
                                 return (
                                     <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
                                         <div className="card-header">
-                                            <h3>{book.title}</h3>
+                                            <h3>{[book.title, book.volume].join(' ')}</h3>
                                             <p className="author">{book.author}</p>
                                         </div>
                                         <Icon icon="add" size={25} color={'#ffffff'} />
