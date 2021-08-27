@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup } from "@blueprintjs/core";
 
+import api from '../api'
 import normalize_isbn from '../normalize_isbn.js'
 
 // import data from './search.json'
@@ -71,54 +72,62 @@ const App = (props) => {
     const getBook = async (isbn) => {
         setTargetBook(null)
         setSuggestBooks([])
-        const data = await fetch(`https://unitrad.calil.jp/v1/search?isbn=${isbn}&region=${REGION}`).then(r => r.json())
-        if (data.count >= 1) {
-            return data.books[0]
-        } else {
-            return null
-        }
+        return new Promise(async (resolve, reject) => {
+            const apiInstance = new api({ isbn: isbn, region: REGION }, (data) => {
+                console.log(data)
+                if (data.count >= 1) {
+                    apiInstance.kill()
+                    resolve(data.books[0])
+                } else if(data.running === false && data.count === 0) {
+                    reject()
+                }
+            })
+        })
     }
 
     const getBooks = async (targetBook) => {
         // console.log(book)
         const seriesTitle = targetBook.title.split(/\s/)[0]
 
-        const author = encodeURIComponent(targetBook.author.split(',')[0])
-        const publisher = encodeURIComponent(targetBook.publisher)
-        const pubdate = encodeURIComponent(targetBook.pubdate)
+        const author = targetBook.author.split(',')[0]
+        const publisher = targetBook.publisher
+        const pubdate = targetBook.pubdate
     
-        const url = `https://unitrad.calil.jp/v1/search?author=${author}&publisher=${publisher}&year_start=${pubdate}&region=recipe`
-        const data = await fetch(url).then(r => r.json())
-        // console.log(data)
-        if (data.count >= 1) {
-            const books = []
-            data.books.forEach((book => {
-                if (book.isbn === null) return
-                if (book.isbn === targetBook.isbn) return
-                if (!book.title.match(seriesTitle)) return
-                let pubdate = 0
-                if (book.pubdate) {
-                    if (typeof(book['pubdate']) !== 'string') {
-                        pubdate = book.pubdate
-                    } else {
-                        pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
+        let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, (data) => {
+            console.log(data)
+            if (data.count >= 1) {
+                const books = []
+                data.books.forEach((book => {
+                    if (book.isbn === null) return
+                    if (book.isbn === targetBook.isbn) return
+                    if (!book.title.match(seriesTitle)) return
+                    let pubdate = 0
+                    if (book.pubdate) {
+                        if (typeof(book['pubdate']) !== 'string') {
+                            pubdate = book.pubdate
+                        } else {
+                            pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
+                        }
                     }
-                }
-                books.push({
-                    'title': book.title + ' ' + book.volume,
-                    'author': book.author.split(',')[0],
-                    'publisher': book.publisher,
-                    // 'isbn': book.isbn,
-                    'pubdate': pubdate
+                    books.push({
+                        'title': book.title + ' ' + book.volume,
+                        'author': book.author.split(',')[0],
+                        'publisher': book.publisher,
+                        // 'isbn': book.isbn,
+                        'pubdate': pubdate
+                    })
+                }))
+                books.sort(function(a,b){
+                    if(a.pubdate<b.pubdate) return -1
+                    if(a.pubdate > b.pubdate) return 1
+                    return 0
                 })
-            }))
-            books.sort(function(a,b){
-                if(a.pubdate<b.pubdate) return -1
-                if(a.pubdate > b.pubdate) return 1
-                return 0
-            })
-            setSuggestBooks(books)
-        }
+                setSuggestBooks(books)
+            }
+            if (data.count > 5) {
+                apiInstance.kill()
+            }
+        })
     }
 
     return (
