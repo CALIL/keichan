@@ -2,13 +2,96 @@ import React, { useState, useEffect } from 'react'
 
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup } from "@blueprintjs/core";
 
-import data from './search.json'
+import normalize_isbn from '../normalize_isbn.js'
 
-console.log(data.result)
+// import data from './search.json'
 
-const books = data.result.reverse().filter((book) => !book.isbn.includes('9784088820118'))
+// console.log(data.result)
+
+// const books = data.result.reverse().filter((book) => !book.isbn.includes('9784088820118'))
+
+const REGION = 'recipe'
 
 const App = (props) => {
+
+    let str = ''
+    let timer = null
+    
+    const [targetBook, setTargetBook] = useState(null as any)
+    const [suggestBooks, setSuggestBooks] = useState([])
+
+    useEffect(() => {
+        window.document.addEventListener('keydown', onKeyDown)
+    }, [])
+
+    useEffect(() => {
+        window.document.addEventListener('keydown', onKeyDown)
+    }, [])
+
+    // Window全体でのキー入力を拾う
+    const onKeyDown = (e: any): void => {
+        const ev = e || window.event
+        const key = ev.keyCode || ev.which || ev.charCode
+        // console.log(str)
+        // console.log(e.key)
+        // バーコードリーダーの入力終わり、Enterが押された時の処理
+        if (e.key === 'Enter' || key === 13) {
+            checkStr()
+            if (timer) clearTimeout(timer)
+            str = ''
+        // 入力された文字を拾う
+        } else {
+            if (e.key.length === 1) {
+                str += e.key
+            // codabarの制御コードが入った時
+            } else if (e.key === 'Shift') {
+            } else {
+                str = ''
+            }
+            if (timer) clearTimeout(timer)
+            timer = setTimeout(() => {
+                console.log('clear')
+                checkStr()
+                str = ''
+            }, 300)
+        }
+    }
+
+    const checkStr = async () => {
+        const isbn = normalize_isbn(str)
+        if (isbn) {
+            await getBook(isbn)
+            getBooks()
+        }
+    }
+
+    const getBook = async (isbn) => {
+        setTargetBook(null)
+        const data = await fetch(`https://unitrad.calil.jp/v1/search?isbn=${isbn}&region=${REGION}`).then(r => r.json())
+        if (data.count >= 1) {
+            setTargetBook(data.books[0])
+        } else {
+            console.log('not found')
+        }
+    }
+
+    const getBooks = async () => {
+        console.log(targetBook)
+        if (!targetBook) return
+        const seriesTitle = targetBook.title.split(/\s/)[0]
+
+        const author = encodeURIComponent(targetBook.author.split(',')[0])
+        const publisher = encodeURIComponent(targetBook.publisher)
+        const pubdate = encodeURIComponent(targetBook.pubdate)
+    
+        const url = `https://unitrad.calil.jp/v1/search?author=${author}&publisher=${publisher}&year_start=${pubdate}&region=recipe`
+        const data = await fetch(url).then(r => r.json())
+        if (data.count >= 1) {
+            const books = data.books.filter(book => book.isbn!==targetBook.isbn)
+            setSuggestBooks(books)
+        }
+    }
+
     return (
         <div id="suggests">
             <header>
@@ -36,7 +119,7 @@ const App = (props) => {
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card>
-                    <h3>本を追加</h3>
+                    {/* <h3>本を追加</h3> */}
                     {/* <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
                         <div>
                             <Tag className="tag">9784088820118</Tag>
@@ -46,7 +129,7 @@ const App = (props) => {
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card> */}
-                    <form action="">
+                    {/* <form action="">
                         <div className="bp3-input-group modifier">
                             <span className="bp3-icon bp3-icon-search"></span>
                             <input className="bp3-input" type="search" placeholder="キーワード or ISBN..." dir="auto" />
@@ -68,21 +151,23 @@ const App = (props) => {
                             <InputGroup small placeholder="メモを追加" />
                             <Button icon="plus">追加</Button>
                         </FormGroup>
-                    </div>
-                    <div className="nextBook">
-                        <h2>もしかして<span>(SPY×FAMILY 1より推定)</span></h2>
-                        {books.map((book) => {
-                            return (
-                                <Card className="card" interactive={true} elevation={Elevation.TWO}>
-                                    <div className="card-header">
-                                        <h3>{book.title}</h3>
-                                        <p className="author">{book.author}</p>
-                                    </div>
-                                    <Icon icon="add" size={25} color={'#ffffff'} />
-                                </Card>
-                            )
-                        })}
-                    </div>
+                    </div> */}
+                    {targetBook ? (
+                        <div className="nextBook">
+                            <h2>もしかして<span>({targetBook.title + '' + targetBook.volume}より推定)</span></h2>
+                            {suggestBooks.map((book) => {
+                                return (
+                                    <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
+                                        <div className="card-header">
+                                            <h3>{book.title}</h3>
+                                            <p className="author">{book.author}</p>
+                                        </div>
+                                        <Icon icon="add" size={25} color={'#ffffff'} />
+                                    </Card>
+                                )
+                            })}
+                        </div>
+                    ) : null}
                 </div>
             </main>
         </div>
