@@ -91,7 +91,27 @@ const App = (props) => {
         const data = await fetch(url).then(r => r.json())
         // console.log(data)
         if (data.count >= 1) {
-            const books = data.books.filter(book => book.isbn!==targetBook.isbn)
+            let books = []
+            data.books.forEach((book => {
+                if (book.isbn === null) return
+                if (book.isbn === targetBook.isbn) return
+                if (!book.title.match(seriesTitle)) return
+                let pubdate = 0
+                if (book.pubdate) {
+                    if (typeof(book['pubdate']) !== 'string') {
+                        pubdate = book.pubdate
+                    } else {
+                        pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
+                    }
+                }
+                books.push({
+                    'title': book.title + ' ' + book.volume,
+                    'author': book.author.split(',')[0],
+                    'publisher': book.publisher,
+                    // 'isbn': book.isbn,
+                    'pubdate': pubdate
+                })
+            }))
             setSuggestBooks(books)
         }
     }
