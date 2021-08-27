@@ -1,1 +1,0 @@
-import{u as s,l as e}from"./vendor.8dec45df.js";function n(n){n=s.nfkc(n).toUpperCase().replace(/[^0-9X]/g,"");let r=e.parse(n);if(r){if(r.isIsbn10())return r.asIsbn10();if(r.isIsbn13()){return r.asIsbn13().startsWith("978")?r.asIsbn10():r.asIsbn13()}}else{let s=e.parse("978"+n);if(s&&s.isIsbn13())return s.asIsbn10()}return!1}export{n};
