@@ -96,7 +96,8 @@ const App = (props) => {
         const pubdate = targetBook.pubdate
     
         let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, (data) => {
-            console.log(data)
+            // console.log(data)
+            // console.log(seriesTitle)
             if (data.count >= 1) {
                 const books = []
                 data.books.forEach((book => {
@@ -120,12 +121,44 @@ const App = (props) => {
                         'pubdate': pubdate
                     })
                 }))
+
+
                 books.sort(function(a,b){
                     if(a.pubdate<b.pubdate) return -1
                     if(a.pubdate > b.pubdate) return 1
                     return 0
+                })               
+
+                const sortedBooks = []
+                const tempSortedBooks = []
+                let tempBooks = []
+                let prevPubdate = 0
+                books.forEach((book, i) => {
+                    if (i===0 && book.pubdate === prevPubdate) {
+                        tempBooks.push(book)
+                    } else {
+                        tempSortedBooks.push(tempBooks)
+                        tempBooks = []
+                        tempBooks.push(book)
+                    }
+                    prevPubdate = book.pubdate
                 })
-                setSuggestBooks(books)
+                tempSortedBooks.push(tempBooks)
+                // console.log(tempSortedBooks)
+
+                tempSortedBooks.forEach((books, i) => {
+                    books.sort(function(a,b){
+                        if(a.title<b.title) return -1
+                        if(a.title > b.title) return 1
+                        return 0
+                    })
+                    books.forEach((book, j) => {
+                        sortedBooks.push(book)
+                    })
+                })
+                // console.log(sortedBooks)
+
+                setSuggestBooks(sortedBooks)
             }
             if (data.count > 5) {
                 apiInstance.kill()
@@ -201,9 +234,9 @@ const App = (props) => {
                                     <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
                                         <div className="card-header">
                                             <h3>{[book.title, book.volume].join(' ')}</h3>
-                                            {/* <p className="author">{book.author}</p>
+                                            <p className="author">{book.author}</p>
                                             <p>{book.pubdate}</p>
-                                            <p>{book.isbn}</p> */}
+                                            <p>{book.isbn}</p>
                                         </div>
                                         <Icon icon="add" size={25} color={'#ffffff'} />
                                     </Card>
