@@ -124,10 +124,11 @@ const App = (props) => {
 
 
                 books.sort(function(a,b){
-                    if(a.pubdate<b.pubdate) return -1
-                    if(a.pubdate > b.pubdate) return 1
+                    if(a.isbn<b.isbn) return -1
+                    if(a.isbn > b.isbn) return 1
                     return 0
-                })               
+                })
+                return setSuggestBooks(books)
 
                 const sortedBooks = []
                 const tempSortedBooks = []
