@@ -79,7 +79,10 @@ const App = (props) => {
                 console.log(data)
                 if (data.count >= 1) {
                     apiInstance.kill()
-                    resolve(data.books[0])
+                    const book = data.books[0]
+                    let i = isbn_utils.parse(book.isbn);
+                    book.isbn = i.asIsbn13()
+                    resolve(book)
                 } else if(data.running === false && data.count === 0) {
                     reject()
                 }
@@ -96,14 +99,13 @@ const App = (props) => {
         const pubdate = targetBook.pubdate
     
         let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, (data) => {
-            // console.log(data)
+            console.log(data)
             // console.log(seriesTitle)
             if (data.count >= 1) {
                 const books = []
                 data.books.forEach((book => {
                     if (book.isbn === null) return
-                    if (book.isbn === targetBook.isbn) return
-                    if (!book.title.match(seriesTitle)) return
+                    // if (!book.title.match(seriesTitle)) return
                     let pubdate = 0
                     if (book.pubdate) {
                         if (typeof(book['pubdate']) !== 'string') {
@@ -128,38 +130,15 @@ const App = (props) => {
                     if(a.isbn > b.isbn) return 1
                     return 0
                 })
-                return setSuggestBooks(books)
-
-                const sortedBooks = []
-                const tempSortedBooks = []
-                let tempBooks = []
-                let prevPubdate = 0
-                books.forEach((book, i) => {
-                    if (i===0 && book.pubdate === prevPubdate) {
-                        tempBooks.push(book)
-                    } else {
-                        tempSortedBooks.push(tempBooks)
-                        tempBooks = []
-                        tempBooks.push(book)
-                    }
-                    prevPubdate = book.pubdate
+                const newBooks = []
+                let excludeTargetBook = false
+                books.forEach((book) => {
+                    if (excludeTargetBook) newBooks.push(book)
+                    if (book.isbn === targetBook.isbn) excludeTargetBook = true
                 })
-                tempSortedBooks.push(tempBooks)
-                // console.log(tempSortedBooks)
-
-                tempSortedBooks.forEach((books, i) => {
-                    books.sort(function(a,b){
-                        if(a.title<b.title) return -1
-                        if(a.title > b.title) return 1
-                        return 0
-                    })
-                    books.forEach((book, j) => {
-                        sortedBooks.push(book)
-                    })
-                })
-                // console.log(sortedBooks)
-
-                setSuggestBooks(sortedBooks)
+                console.log(targetBook.isbn)
+                console.log(newBooks)
+                return setSuggestBooks(newBooks)
             }
             if (data.count > 5) {
                 apiInstance.kill()
