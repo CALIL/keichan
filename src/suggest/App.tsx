@@ -19,7 +19,7 @@ const App = (props) => {
 
     let str = ''
     let timer = null
-    
+
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
 
@@ -42,11 +42,11 @@ const App = (props) => {
             checkStr()
             if (timer) clearTimeout(timer)
             str = ''
-        // 入力された文字を拾う
+            // 入力された文字を拾う
         } else {
             if (e.key.length === 1) {
                 str += e.key
-            // codabarの制御コードが入った時
+                // codabarの制御コードが入った時
             } else if (e.key === 'Shift') {
             } else {
                 str = ''
@@ -83,7 +83,7 @@ const App = (props) => {
                     let i = isbn_utils.parse(book.isbn);
                     book.isbn = i.asIsbn13()
                     resolve(book)
-                } else if(data.running === false && data.count === 0) {
+                } else if (data.running === false && data.count === 0) {
                     reject()
                 }
             })
@@ -97,8 +97,10 @@ const App = (props) => {
         const author = targetBook.author.split(',')[0]
         const publisher = targetBook.publisher
         const pubdate = targetBook.pubdate
-    
-        let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, (data) => {
+
+        let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, async (data) => {
+            if (apiInstance.killed) return
+            if (data.count > 5) apiInstance.kill()
             console.log(data)
             // console.log(seriesTitle)
             if (data.count >= 1) {
@@ -108,7 +110,7 @@ const App = (props) => {
                     // if (!book.title.match(seriesTitle)) return
                     let pubdate = 0
                     if (book.pubdate) {
-                        if (typeof(book['pubdate']) !== 'string') {
+                        if (typeof (book['pubdate']) !== 'string') {
                             pubdate = book.pubdate
                         } else {
                             pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
@@ -125,9 +127,9 @@ const App = (props) => {
                 }))
 
 
-                books.sort(function(a,b){
-                    if(a.isbn<b.isbn) return -1
-                    if(a.isbn > b.isbn) return 1
+                books.sort(function (a, b) {
+                    if (a.isbn < b.isbn) return -1
+                    if (a.isbn > b.isbn) return 1
                     return 0
                 })
                 const newBooks = []
@@ -136,12 +138,29 @@ const App = (props) => {
                     if (excludeTargetBook) newBooks.push(book)
                     if (book.isbn === targetBook.isbn) excludeTargetBook = true
                 })
-                console.log(targetBook.isbn)
-                console.log(newBooks)
-                return setSuggestBooks(newBooks)
-            }
-            if (data.count > 5) {
-                apiInstance.kill()
+
+                const isbns = []
+                newBooks.forEach((book) => {
+                    isbns.push(book.isbn)
+                })
+                const openbdData = await fetch('https://api.openbd.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())
+                console.log(openbdData)
+
+                const openbdBooks = []
+                openbdData.forEach((book) => {
+                    if (book) {
+                        const openbdBook = {
+                            'title': book.summary.title,
+                            'author': book.summary.author,
+                            'publisher': book.summary.publisher,
+                            'isbn': book.summary.isbn,
+                            'pubdate': book.summary.pubdate,
+                            'cover': book.summary.cover
+                        }
+                        openbdBooks.push(openbdBook)
+                    }
+                })
+                return setSuggestBooks(openbdBooks)
             }
         })
     }
@@ -213,10 +232,13 @@ const App = (props) => {
                                 return (
                                     <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
                                         <div className="card-header">
-                                            <h3>{[book.title, book.volume].join(' ')}</h3>
-                                            <p className="author">{book.author}</p>
-                                            <p>{book.pubdate}</p>
-                                            <p>{book.isbn}</p>
+                                            <img src={book.cover} alt={book.title} />
+                                            <div>
+                                                <h3>{[book.title, book.volume].join(' ')}</h3>
+                                                <p className="author">{book.author}</p>
+                                                <p>{book.pubdate}</p>
+                                                <p>{book.isbn}</p>
+                                            </div>
                                         </div>
                                         <Icon icon="add" size={25} color={'#ffffff'} />
                                     </Card>
