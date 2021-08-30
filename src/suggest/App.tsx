@@ -80,7 +80,7 @@ const App = (props) => {
                 if (data.count >= 1) {
                     apiInstance.kill()
                     const book = data.books[0]
-                    let i = isbn_utils.parse(book.isbn);
+                    let i = isbn_utils.parse(book.isbn.replace(/-/g, ''))
                     book.isbn = i.asIsbn13()
                     resolve(book)
                 } else if (data.running === false && data.count === 0) {
@@ -116,14 +116,22 @@ const App = (props) => {
                             pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
                         }
                     }
-                    let i = isbn_utils.parse(book.isbn);
-                    books.push({
-                        'title': book.title + ' ' + book.volume,
-                        'author': book.author.split(',')[0],
-                        'publisher': book.publisher,
-                        'isbn': i.asIsbn13(),
-                        'pubdate': pubdate
-                    })
+                    console.log(book.isbn.replace(/-/g, ''))
+                    let i = isbn_utils.parse(book.isbn.replace(/-/g, ''))
+                    let isbn = null
+                    try {
+                        isbn = i.asIsbn13()
+                    } catch {
+                    }
+                    if (isbn) {
+                        books.push({
+                            'title': book.title + ' ' + book.volume,
+                            'author': book.author.split(',')[0],
+                            'publisher': book.publisher,
+                            'isbn': isbn,
+                            'pubdate': pubdate
+                        })
+                    }
                 }))
 
 
@@ -225,14 +233,16 @@ const App = (props) => {
                             <Button icon="plus">追加</Button>
                         </FormGroup>
                     </div> */}
-                    {targetBook ? (
+                    {targetBook && suggestBooks.length > 0 ? (
                         <div className="nextBook">
                             <h2>もしかして<span>({targetBook.title + '' + targetBook.volume}より推定)</span></h2>
                             {suggestBooks.map((book) => {
                                 return (
                                     <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
                                         <div className="card-header">
-                                            <img src={book.cover} alt={book.title} />
+                                            {book.cover ? (
+                                                <img src={book.cover} alt={book.title} />
+                                            ) : null}
                                             <div>
                                                 <h3>{[book.title, book.volume].join(' ')}</h3>
                                                 <p className="author">{book.author}</p>
