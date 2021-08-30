@@ -236,6 +236,7 @@ const App = (props) => {
                     {targetBook && suggestBooks.length > 0 ? (
                         <div className="nextBook">
                             <h2>もしかして<span>({targetBook.title + '' + targetBook.volume}より推定)</span></h2>
+                            <div className="cards">
                             {suggestBooks.map((book) => {
                                 return (
                                     <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
@@ -246,7 +247,7 @@ const App = (props) => {
                                             <div>
                                                 <h3>{[book.title, book.volume].join(' ')}</h3>
                                                 <p className="author">{book.author}</p>
-                                                <p>{book.pubdate}</p>
+                                                {/* <p>{book.pubdate}</p> */}
                                                 <p>{book.isbn}</p>
                                             </div>
                                         </div>
@@ -254,6 +255,7 @@ const App = (props) => {
                                     </Card>
                                 )
                             })}
+                            </div>
                         </div>
                     ) : null}
                 </div>

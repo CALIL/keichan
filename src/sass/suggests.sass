@@ -82,18 +82,23 @@ html, body, #app
                         font-size: 1rem
                         font-weight: normal
                         margin-left: 0.5rem
-                .card
-                    cursor: pointer
-                    display: inline-block
-                    width: 300px
-                    margin: 0.5rem
-                    .card-header
-                        display: flex
-                        align-items: flex-start
-                        h3
-                            margin-bottom: 0.5rem
-                        .author
-                            color: #ffffff
-                        img
-                            width: 50px
-                            margin-right: 1rem
+                .cards
+                    display: grid
+                    grid-template: 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr
+                    .card
+                        cursor: pointer
+                        display: inline-flex
+                        align-items: center
+                        margin: 0.5rem
+                        .card-header
+                            display: flex
+                            align-items: flex-start
+                            h3
+                                font-size: 0.8rem
+                                margin-bottom: 0.5rem
+                            .author
+                                font-size: 0.7rem
+                                color: #ffffff
+                            img
+                                width: 50px
+                                margin-right: 1rem
