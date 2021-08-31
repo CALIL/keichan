@@ -7,12 +7,6 @@ import isbn_utils from 'isbn-utils'
 import api from '../api'
 import normalize_isbn from '../normalize_isbn.js'
 
-// import data from './search.json'
-
-// console.log(data.result)
-
-// const books = data.result.reverse().filter((book) => !book.isbn.includes('9784088820118'))
-
 const REGION = 'recipe'
 
 const App = (props) => {
@@ -153,13 +147,26 @@ const App = (props) => {
                 const openbdBooks = []
                 openbdData.forEach((book) => {
                     if (book) {
+                        let tags = []
+                        try {
+                            book.onix.DescriptiveDetail.Collection.TitleDetail.TitleElement.forEach((title, i) => {
+                                console.log(title)
+                                console.log(title.TitleText.content)
+                                if (!tags.includes(title.TitleText.content)) {
+                                    tags.push(title.TitleText.content)
+                                }
+                            })
+                        } catch {
+                        }
+    
                         const openbdBook = {
                             'title': book.summary.title,
                             'author': book.summary.author,
                             'publisher': book.summary.publisher,
                             'isbn': book.summary.isbn,
                             'pubdate': book.summary.pubdate,
-                            'cover': book.summary.cover
+                            'cover': book.summary.cover,
+                            'tags': tags
                         }
                         openbdBooks.push(openbdBook)
                     }
@@ -243,8 +250,11 @@ const App = (props) => {
                                             <div>
                                                 <h3>{[book.title, book.volume].join(' ')}</h3>
                                                 <p className="author">{book.author}</p>
-                                                <p>{book.pubdate}</p>
-                                                <p>{book.publisher}</p>
+                                                {/* <p>{book.pubdate}</p>
+                                                <p>{book.publisher}</p> */}
+                                                {book.tags.map((tag) => (
+                                                    <Tag>{tag}</Tag>
+                                                ))}
                                                 {/* <p>{book.isbn}</p> */}
                                             </div>
                                         </div>
