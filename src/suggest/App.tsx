@@ -80,7 +80,7 @@ const App = (props) => {
                 if (data.count >= 1) {
                     apiInstance.kill()
                     const book = data.books[0]
-                    let i = isbn_utils.parse(book.isbn.replace(/-/g, ''))
+                    let i = isbn_utils.parse(normalize_isbn(book.isbn))
                     book.isbn = i.asIsbn13()
                     resolve(book)
                 } else if (data.running === false && data.count === 0) {
@@ -113,8 +113,7 @@ const App = (props) => {
                             pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
                         }
                     }
-                    console.log(book.isbn.replace(/-/g, ''))
-                    let i = isbn_utils.parse(book.isbn.replace(/-/g, ''))
+                    let i = isbn_utils.parse(normalize_isbn(book.isbn))
                     let isbn = null
                     try {
                         isbn = i.asIsbn13()
