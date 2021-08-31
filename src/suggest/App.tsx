@@ -130,12 +130,20 @@ const App = (props) => {
                     if (a.isbn > b.isbn) return 1
                     return 0
                 })
-                const newBooks = []
+                let newBooks = []
+                const excludeBooks = []
                 let excludeTargetBook = false
                 books.forEach((book) => {
-                    if (excludeTargetBook) newBooks.push(book)
+                    if (book.isbn !== targetBook.isbn) {
+                        if (excludeTargetBook) {
+                            newBooks.push(book)
+                        } else {
+                            excludeBooks.push(book)
+                        }
+                    }
                     if (book.isbn === targetBook.isbn) excludeTargetBook = true
                 })
+                newBooks = newBooks.concat(excludeBooks)
 
                 const isbns = []
                 newBooks.forEach((book) => {
