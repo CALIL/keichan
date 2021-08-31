@@ -92,7 +92,6 @@ const App = (props) => {
 
     const getBooks = async (targetBook) => {
         // console.log(book)
-        const seriesTitle = targetBook.title.split(/\s/)[0]
 
         const author = targetBook.author.split(',')[0]
         const publisher = targetBook.publisher
@@ -102,12 +101,10 @@ const App = (props) => {
             if (apiInstance.killed) return
             if (data.count > 5) apiInstance.kill()
             console.log(data)
-            // console.log(seriesTitle)
             if (data.count >= 1) {
                 const books = []
                 data.books.forEach((book => {
                     if (book.isbn === null) return
-                    // if (!book.title.match(seriesTitle)) return
                     let pubdate = 0
                     if (book.pubdate) {
                         if (typeof (book['pubdate']) !== 'string') {
@@ -248,6 +245,7 @@ const App = (props) => {
                                                 <h3>{[book.title, book.volume].join(' ')}</h3>
                                                 <p className="author">{book.author}</p>
                                                 <p>{book.pubdate}</p>
+                                                <p>{book.publisher}</p>
                                                 {/* <p>{book.isbn}</p> */}
                                             </div>
                                         </div>
