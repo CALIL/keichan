@@ -115,9 +115,6 @@ const App = () => {
                         alert('次は資料番号のバーコードを読んでください')
                     }
                 }
-                // setTargetBook(book)
-                // const books = await getBooks(book)
-                // setSuggestBooks(books as any)
             }
         } else {
             if (str.match(/^192/) !== null) return
@@ -127,6 +124,18 @@ const App = () => {
                 id: str,
                 items: []
             }])
+
+            const prevRow = rowList[rowList.length - 1]
+            console.log(prevRow)
+            if (prevRow && prevRow.items.length > 0) {
+                const rowBooks = prevRow.items.filter((item) => item.type === 'book')
+                console.log(rowBooks)
+                if (rowBooks.length > 0) {
+                    setTargetBook(rowBooks[0])
+                    const books = await getBooks(rowBooks[0])
+                    setSuggestBooks(books as any)
+                }
+            }
         }
     }
 
@@ -136,8 +145,8 @@ const App = () => {
     }
 
     const getBook = async (isbn) => {
-        // setTargetBook(null)
-        // setSuggestBooks([])
+        setTargetBook(null)
+        setSuggestBooks([])
         return new Promise(async (resolve, reject) => {
             const apiInstance = new api({ isbn: isbn, region: REGION }, async (data) => {
                 // console.log(data)
@@ -298,7 +307,7 @@ const App = () => {
             </header>
             <main>
                 <div className="left">
-                    {rowList.map((row, i) => {
+                    {rowList.slice().reverse().map((row, i) => {
                         return (
                             <div className="barcode">
                                 <Tag large className="tag">{row.id}</Tag>
@@ -370,7 +379,7 @@ const App = () => {
                     </div> */}
                     {targetBook && suggestBooks.length > 0 ? (
                         <div className="nextBook">
-                            <h2>もしかして<span>({targetBook.title + '' + targetBook.volume}より推定)</span></h2>
+                            <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
                             <div className="cards">
                                 {suggestBooks.map((book) => {
                                     return (
