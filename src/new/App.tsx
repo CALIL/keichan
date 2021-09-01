@@ -82,12 +82,15 @@ const App = (props) => {
             const book = await getBook(isbn)
             if (book) {
                 setTargetBook(book)
-                await getBooks(book)
+                const books = await getBooks(book)
+                setSuggestBooks(books as any)
             }
         } else {
             if (str.match(/^192/) !== null) return
             setMode('management')
-
+            setBookDataList([...bookDataList, {
+                id: str,
+            }])
         }
     }
 
@@ -117,102 +120,105 @@ const App = (props) => {
         const publisher = targetBook.publisher
         const pubdate = targetBook.pubdate
 
-        let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, async (data) => {
-            if (apiInstance.killed) return
-            if (data.count > 5) apiInstance.kill()
-            console.log(data)
-            if (data.count >= 1) {
-                const books = []
-                data.books.forEach((book => {
-                    if (book.isbn === null) return
-                    let pubdate = 0
-                    if (book.pubdate) {
-                        if (typeof (book['pubdate']) !== 'string') {
-                            pubdate = book.pubdate
-                        } else {
-                            pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
-                        }
-                    }
-                    let i = isbn_utils.parse(normalize_isbn(book.isbn))
-                    let isbn = null
-                    try {
-                        isbn = i.asIsbn13()
-                    } catch {
-                    }
-                    if (isbn) {
-                        books.push({
-                            'title': book.title + ' ' + book.volume,
-                            'author': book.author.split(',')[0],
-                            'publisher': book.publisher,
-                            'isbn': isbn,
-                            'pubdate': pubdate
-                        })
-                    }
-                }))
+        return new Promise(async (resolve, reject) => {
 
-
-                books.sort(function (a, b) {
-                    if (a.isbn < b.isbn) return -1
-                    if (a.isbn > b.isbn) return 1
-                    return 0
-                })
-                let newBooks = []
-                const excludeBooks = []
-                let excludeTargetBook = false
-                books.forEach((book) => {
-                    if (book.isbn !== targetBook.isbn) {
-                        if (excludeTargetBook) {
-                            newBooks.push(book)
-                        } else {
-                            excludeBooks.push(book)
-                        }
-                    }
-                    if (book.isbn === targetBook.isbn) excludeTargetBook = true
-                })
-                newBooks = newBooks.concat(excludeBooks)
-
-                const isbns = []
-                newBooks.forEach((book) => {
-                    isbns.push(book.isbn)
-                })
-                const openbdData = await fetch('https://api.openbd.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())
-                console.log(openbdData)
-
-                const openbdBooks = []
-                openbdData.forEach((book) => {
-                    if (book) {
-                        const tags = []
-                        try {
-                            book.onix.DescriptiveDetail.Collection.TitleDetail.TitleElement.forEach((title, i) => {
-                                // console.log(title)
-                                // console.log(title.TitleText.content)
-                                if (!tags.includes(title.TitleText.content)) {
-                                    tags.push(title.TitleText.content)
-                                }
-                            })
-                        } catch {}
-                        let volume = book.summary.volume
-                        try {
-                            // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
-                            if (volume === '') {
-                                volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
+            let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, async (data) => {
+                if (apiInstance.killed) return
+                if (data.count > 5) apiInstance.kill()
+                console.log(data)
+                if (data.count >= 1) {
+                    const books = []
+                    data.books.forEach((book => {
+                        if (book.isbn === null) return
+                        let pubdate = 0
+                        if (book.pubdate) {
+                            if (typeof (book['pubdate']) !== 'string') {
+                                pubdate = book.pubdate
+                            } else {
+                                pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
                             }
-                        } catch {}
-    
-                        const openbdBook = {
-                            'title': [book.summary.title, volume].join(' '),
-                            'author': book.summary.author,
-                            'publisher': book.summary.publisher,
-                            'isbn': book.summary.isbn,
-                            'pubdate': book.summary.pubdate,
-                            'cover': book.summary.cover,
-                            'tags': tags
                         }
-                        openbdBooks.push(openbdBook)
-                    }
-                })
-                return setSuggestBooks(openbdBooks)
-            }
+                        let i = isbn_utils.parse(normalize_isbn(book.isbn))
+                        let isbn = null
+                        try {
+                            isbn = i.asIsbn13()
+                        } catch {
+                        }
+                        if (isbn) {
+                            books.push({
+                                'title': book.title + ' ' + book.volume,
+                                'author': book.author.split(',')[0],
+                                'publisher': book.publisher,
+                                'isbn': isbn,
+                                'pubdate': pubdate
+                            })
+                        }
+                    }))
+
+
+                    books.sort(function (a, b) {
+                        if (a.isbn < b.isbn) return -1
+                        if (a.isbn > b.isbn) return 1
+                        return 0
+                    })
+                    let newBooks = []
+                    const excludeBooks = []
+                    let excludeTargetBook = false
+                    books.forEach((book) => {
+                        if (book.isbn !== targetBook.isbn) {
+                            if (excludeTargetBook) {
+                                newBooks.push(book)
+                            } else {
+                                excludeBooks.push(book)
+                            }
+                        }
+                        if (book.isbn === targetBook.isbn) excludeTargetBook = true
+                    })
+                    newBooks = newBooks.concat(excludeBooks)
+
+                    const isbns = []
+                    newBooks.forEach((book) => {
+                        isbns.push(book.isbn)
+                    })
+                    const openbdData = await fetch('https://api.openbd.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())
+                    console.log(openbdData)
+
+                    const openbdBooks = []
+                    openbdData.forEach((book) => {
+                        if (book) {
+                            const tags = []
+                            try {
+                                book.onix.DescriptiveDetail.Collection.TitleDetail.TitleElement.forEach((title, i) => {
+                                    // console.log(title)
+                                    // console.log(title.TitleText.content)
+                                    if (!tags.includes(title.TitleText.content)) {
+                                        tags.push(title.TitleText.content)
+                                    }
+                                })
+                            } catch {}
+                            let volume = book.summary.volume
+                            try {
+                                // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
+                                if (volume === '') {
+                                    volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
+                                }
+                            } catch {}
+        
+                            const openbdBook = {
+                                'title': [book.summary.title, volume].join(' '),
+                                'author': book.summary.author,
+                                'publisher': book.summary.publisher,
+                                'isbn': book.summary.isbn,
+                                'pubdate': book.summary.pubdate,
+                                'cover': book.summary.cover,
+                                'tags': tags
+                            }
+                            openbdBooks.push(openbdBook)
+                        }
+                    })
+                    resolve(openbdBooks)
+                }
+            })
         })
     }
 
