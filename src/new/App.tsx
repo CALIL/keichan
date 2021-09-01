@@ -298,17 +298,20 @@ const App = () => {
             </header>
             <main>
                 <div className="left">
-                    <div className="barcode active">
-                        <Tag large className="tag">100014</Tag>
-                    </div>
-                    <div className="barcode">
-                        <Tag large className="tag">100013</Tag>
-                        <p>SPY×FAMILY 1</p>
-                    </div>
-                    <div className="barcode">
-                        <Tag large className="tag">100012</Tag>
-                        <p>1Q84 Book2</p>
-                    </div>
+                    {rowList.map((row, i) => {
+                        return (
+                            <div className="barcode">
+                                <Tag large className="tag">{row.id}</Tag>
+                                {row.items.map((item, i) => {
+                                    if (item.type==='book') {
+                                        return (
+                                            <p>{item.title}</p>
+                                        )
+                                    }
+                                })}
+                            </div>
+                        )
+                    })}
                 </div>
                 <div className="main">
                     {currentRow ? (
