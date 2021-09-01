@@ -15,6 +15,7 @@ let keyTimer = null
 
 // Window全体でのキー入力を拾う
 const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
+    console.log('onKeyDown')
     const ev = e || window.event
     const key = ev.keyCode || ev.which || ev.charCode
     // console.log(keyBuffer)
@@ -28,7 +29,7 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
     } else {
         if (e.key.length === 1) {
             keyBuffer += e.key
-        // codabarの制御コードが入った時
+            // codabarの制御コードが入った時
         } else if (e.key === 'Shift') {
         } else {
             keyBuffer = ''
@@ -43,7 +44,7 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
 }
 
 
-// const bookDataList = [
+// const rowList = [
 //     {
 //         id: '10001' or '9784774142230',
 //         items: [
@@ -61,29 +62,60 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
 
 
 
-const App = (props) => {
+const App = () => {
 
-
-    const [bookDataList, setBookDataList] = useState([])
+    const [rowList, setRowList] = useState([])
+    const [currentRow, setCurrentRow] = useState(null)
 
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
- 
+
     const [licenseKey, setLicenseKey] = useState('gk-xxxxxxxxxxxxxxx')
     const [mode, setMode] = useState('isbn')
 
+    // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
+    // https://github.com/facebook/react/issues/14092
+    const callback = (e) => onKeyDown(e, checkStr)
     useEffect(() => {
-        window.document.addEventListener('keydown', (e) => onKeyDown(e, checkStr))
-    }, [])
+        window.addEventListener('keydown', callback)
+        // cleanup
+        return () => {
+            window.removeEventListener('keydown', callback)
+        }
+    }, [mode])
+
+    useEffect(() => {
+        const currentRow = rowList[rowList.length - 1]
+        setCurrentRow(currentRow)
+    }, [rowList])
 
     const checkStr = async (str) => {
+        console.log(str)
+        console.log(mode)
         const isbn = normalize_isbn(str)
         if (isbn) {
             const book: any = await getBook(isbn)
             if (book) {
+                console.log(book)
+                book.type = 'book'
                 if (mode === 'isbn') {
-                    book.id = book.isbn
-                    setBookDataList([...bookDataList, book])
+                    const row = {
+                        id: book.isbn,
+                        items: [book]
+                    }
+                    setRowList([...rowList, row])
+                } else if (mode === 'management') {
+                    const tempList = [...rowList]
+                    console.log(tempList)
+                    const lastRow = tempList[tempList.length - 1]
+                    console.log(lastRow)
+                    if (lastRow.items.length === 0) {
+                        lastRow.items.push(book)
+                        console.log(tempList)
+                        setRowList(tempList)
+                    } else {
+                        alert('次は資料番号のバーコードを読んでください')
+                    }
                 }
                 // setTargetBook(book)
                 // const books = await getBooks(book)
@@ -91,9 +123,11 @@ const App = (props) => {
             }
         } else {
             if (str.match(/^192/) !== null) return
+            if (str.match(/^[a-zA-Z]\d+[a-zA-Z]$/) === null) return
             setMode('management')
-            setBookDataList([...bookDataList, {
+            setRowList([...rowList, {
                 id: str,
+                items: []
             }])
         }
     }
@@ -118,7 +152,8 @@ const App = (props) => {
                     }
                     let i = isbn_utils.parse(normalize_isbn(book.isbn))
                     book.isbn = i.asIsbn13()
-                    const openBDBooks = await getOpenBD(book.isbn)
+                    const openBDBooks = await getOpenBD([book.isbn])
+                    // console.log(openBDBooks)
                     if (openBDBooks[0] !== null) {
                         resolve(openBDBooks[0])
                     } else {
@@ -209,7 +244,7 @@ const App = (props) => {
         return new Promise(async (resolve, reject) => {
 
             const openBDData = await fetch('https://api.openBD.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())
-            console.log(openBDData)
+            // console.log(openBDData)
 
             const openBDBooks = []
             openBDData.forEach((book) => {
@@ -223,14 +258,14 @@ const App = (props) => {
                                 tags.push(title.TitleText.content)
                             }
                         })
-                    } catch {}
+                    } catch { }
                     let volume = book.summary.volume
                     try {
                         // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
                         if (volume === '') {
                             volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
                         }
-                    } catch {}
+                    } catch { }
 
                     const openBDBook = {
                         'title': [book.summary.title, volume].join(' '),
@@ -253,7 +288,7 @@ const App = (props) => {
             <header>
                 <h1>
                     カーリルtoolbox: keichan
-                    {mode==='management' ? (<span className="mode">資料コード</span>) : null}
+                    {mode === 'management' ? (<span className="mode">資料コード</span>) : null}
                 </h1>
             </header>
             <main>
@@ -271,23 +306,37 @@ const App = (props) => {
                     </div>
                 </div>
                 <div className="main">
-                    <Card className="card active" interactive={true} elevation={Elevation.TWO}>
-                        <div>
-                            <Tag className="tag" large>100014</Tag>
-                            <Tag className="tag">管理バーコード</Tag>
-                        </div>
-                        <Icon icon="delete" size={25} color={'#ffffff'} />
-                    </Card>
+                    {currentRow ? (
+                        <>
+                            {mode === 'management' ? (
+                                <Card className="card active" interactive={true} elevation={Elevation.TWO}>
+                                    <div>
+                                        <Tag className="tag" large>{currentRow.id}</Tag>
+                                        <Tag className="tag">管理バーコード</Tag>
+                                    </div>
+                                    <Icon icon="delete" size={25} color={'#ffffff'} />
+                                </Card>
+                            ) : null}
+                            {currentRow.items.map((item, i) => {
+                                if (item.type === 'book') {
+                                    return (
+                                        <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
+                                            <div>
+                                                <Tag className="tag">{item.type}</Tag>
+                                                <Tag className="tag">{item.isbn}</Tag>
+                                                <h3>{item.title}</h3>
+                                                {item.cover ? (
+                                                    <img className="thumbnail" src={item.cover} alt="" />
+                                                ) : null}
+                                            </div>
+                                            <Icon icon="delete" size={25} color={'#ffffff'} />
+                                        </Card>
+                                    )
+                                }
+                            })}
+                        </>
+                    ) : null}
                     {/* <h3>本を追加</h3> */}
-                    {/* <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
-                        <div>
-                            <Tag className="tag">9784088820118</Tag>
-                            <Tag className="tag">ISBN</Tag>
-                            <h3>SPY×FAMILY 1</h3>
-                            <img className="thumbnail" src="https://cover.openBD.jp/9784088820118.jpg" alt="" />
-                        </div>
-                        <Icon icon="delete" size={25} color={'#ffffff'} />
-                    </Card> */}
                     {/* <form action="">
                         <div className="bp3-input-group modifier">
                             <span className="bp3-icon bp3-icon-search"></span>
@@ -315,28 +364,28 @@ const App = (props) => {
                         <div className="nextBook">
                             <h2>もしかして<span>({targetBook.title + '' + targetBook.volume}より推定)</span></h2>
                             <div className="cards">
-                            {suggestBooks.map((book) => {
-                                return (
-                                    <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
-                                        <div className="card-header">
-                                            {book.cover ? (
-                                                <img src={book.cover} alt={book.title} />
-                                            ) : null}
-                                            <div>
-                                                <h3>{[book.title, book.volume].join(' ')}</h3>
-                                                <p className="author">{book.author}</p>
-                                                {/* <p>{book.pubdate}</p>
+                                {suggestBooks.map((book) => {
+                                    return (
+                                        <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
+                                            <div className="card-header">
+                                                {book.cover ? (
+                                                    <img src={book.cover} alt={book.title} />
+                                                ) : null}
+                                                <div>
+                                                    <h3>{[book.title, book.volume].join(' ')}</h3>
+                                                    <p className="author">{book.author}</p>
+                                                    {/* <p>{book.pubdate}</p>
                                                 <p>{book.publisher}</p> */}
-                                                {book.tags.map((tag) => (
-                                                    <Tag>{tag}</Tag>
-                                                ))}
-                                                <p>{book.isbn}</p>
+                                                    {book.tags.map((tag) => (
+                                                        <Tag>{tag}</Tag>
+                                                    ))}
+                                                    <p>{book.isbn}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <Icon icon="add" size={25} color={'#ffffff'} />
-                                    </Card>
-                                )
-                            })}
+                                            <Icon icon="add" size={25} color={'#ffffff'} />
+                                        </Card>
+                                    )
+                                })}
                             </div>
                         </div>
                     ) : null}
