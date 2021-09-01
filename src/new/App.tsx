@@ -82,7 +82,7 @@ const App = () => {
         return () => {
             window.removeEventListener('keydown', callback)
         }
-    }, [mode])
+    }, [mode, rowList])
 
     useEffect(() => {
         const currentRow = rowList[rowList.length - 1]
@@ -105,6 +105,7 @@ const App = () => {
                     }
                     setRowList([...rowList, row])
                 } else if (mode === 'management') {
+                    console.log(rowList)
                     const tempList = [...rowList]
                     console.log(tempList)
                     const lastRow = tempList[tempList.length - 1]
