@@ -130,24 +130,30 @@ const App = () => {
         }
     }
 
+    // todo
+    const getBibHash = (book: any) => {
+        return book.isbn 
+    }
+
     const getBook = async (isbn) => {
-        setTargetBook(null)
-        setSuggestBooks([])
+        // setTargetBook(null)
+        // setSuggestBooks([])
         return new Promise(async (resolve, reject) => {
             const apiInstance = new api({ isbn: isbn, region: REGION }, async (data) => {
                 // console.log(data)
                 if (data.count >= 1) {
                     apiInstance.kill()
                     const b = data.books[0]
-                    const book = {
+                    const book: any = {
                         id: b.id,
                         title: b.title,
                         author: b.author,
                         publisher: b.publisher,
                         pubdate: b.pubdate,
                         isbn: b.isbn,
-                        tags: []
+                        tags: [],
                     }
+                    book.bibHash = getBibHash(book)
                     let i = isbn_utils.parse(normalize_isbn(book.isbn))
                     book.isbn = i.asIsbn13()
                     const openBDBooks = await getOpenBD([book.isbn])
@@ -265,7 +271,7 @@ const App = () => {
                         }
                     } catch { }
 
-                    const openBDBook = {
+                    const openBDBook: any = {
                         'title': [book.summary.title, volume].join(' '),
                         'author': book.summary.author,
                         'publisher': book.summary.publisher,
@@ -274,6 +280,7 @@ const App = () => {
                         'cover': book.summary.cover,
                         'tags': tags
                     }
+                    openBDBook.bibHash = getBibHash(openBDBook)
                     openBDBooks.push(openBDBook)
                 }
             })
@@ -317,10 +324,8 @@ const App = () => {
                             ) : null}
                             {currentRow.items.map((item, i) => {
                                 if (item.type === 'book') {
-                                    // todo
-                                    const bibHash = item.isbn
                                     return (
-                                        <Card key={bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
+                                        <Card key={item.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
                                             <div>
                                                 <Tag className="tag">{item.type}</Tag>
                                                 <Tag className="tag">{item.isbn}</Tag>
