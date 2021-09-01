@@ -118,9 +118,9 @@ const App = (props) => {
                     }
                     let i = isbn_utils.parse(normalize_isbn(book.isbn))
                     book.isbn = i.asIsbn13()
-                    const openBDBook = await getOpenBD(book.isbn)
-                    if (openBDBook) {
-                        resolve(openBDBook)
+                    const openBDBooks = await getOpenBD(book.isbn)
+                    if (openBDBooks[0] !== null) {
+                        resolve(openBDBooks[0])
                     } else {
                         resolve(book)
                     }
