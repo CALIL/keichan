@@ -155,20 +155,26 @@ const App = (props) => {
                 const openbdBooks = []
                 openbdData.forEach((book) => {
                     if (book) {
-                        let tags = []
+                        const tags = []
                         try {
                             book.onix.DescriptiveDetail.Collection.TitleDetail.TitleElement.forEach((title, i) => {
-                                console.log(title)
-                                console.log(title.TitleText.content)
+                                // console.log(title)
+                                // console.log(title.TitleText.content)
                                 if (!tags.includes(title.TitleText.content)) {
                                     tags.push(title.TitleText.content)
                                 }
                             })
-                        } catch {
-                        }
+                        } catch {}
+                        let volume = book.summary.volume
+                        try {
+                            // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
+                            if (volume === '') {
+                                volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
+                            }
+                        } catch {}
     
                         const openbdBook = {
-                            'title': book.summary.title,
+                            'title': [book.summary.title, volume].join(' '),
                             'author': book.summary.author,
                             'publisher': book.summary.publisher,
                             'isbn': book.summary.isbn,
@@ -263,7 +269,7 @@ const App = (props) => {
                                                 {book.tags.map((tag) => (
                                                     <Tag>{tag}</Tag>
                                                 ))}
-                                                {/* <p>{book.isbn}</p> */}
+                                                <p>{book.isbn}</p>
                                             </div>
                                         </div>
                                         <Icon icon="add" size={25} color={'#ffffff'} />
