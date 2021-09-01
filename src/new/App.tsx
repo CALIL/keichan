@@ -79,11 +79,15 @@ const App = (props) => {
     const checkStr = async (str) => {
         const isbn = normalize_isbn(str)
         if (isbn) {
-            const book = await getBook(isbn)
+            const book: any = await getBook(isbn)
             if (book) {
-                setTargetBook(book)
-                const books = await getBooks(book)
-                setSuggestBooks(books as any)
+                if (mode === 'isbn') {
+                    book.id = book.isbn
+                    setBookDataList([...bookDataList, book])
+                }
+                // setTargetBook(book)
+                // const books = await getBooks(book)
+                // setSuggestBooks(books as any)
             }
         } else {
             if (str.match(/^192/) !== null) return
@@ -98,14 +102,28 @@ const App = (props) => {
         setTargetBook(null)
         setSuggestBooks([])
         return new Promise(async (resolve, reject) => {
-            const apiInstance = new api({ isbn: isbn, region: REGION }, (data) => {
+            const apiInstance = new api({ isbn: isbn, region: REGION }, async (data) => {
                 // console.log(data)
                 if (data.count >= 1) {
                     apiInstance.kill()
-                    const book = data.books[0]
+                    const b = data.books[0]
+                    const book = {
+                        id: b.id,
+                        title: b.title,
+                        author: b.author,
+                        publisher: b.publisher,
+                        pubdate: b.pubdate,
+                        isbn: b.isbn,
+                        tags: []
+                    }
                     let i = isbn_utils.parse(normalize_isbn(book.isbn))
                     book.isbn = i.asIsbn13()
-                    resolve(book)
+                    const openBDBook = await getOpenBD(book.isbn)
+                    if (openBDBook) {
+                        resolve(openBDBook)
+                    } else {
+                        resolve(book)
+                    }
                 } else if (data.running === false && data.count === 0) {
                     reject()
                 }
@@ -180,45 +198,53 @@ const App = (props) => {
                     newBooks.forEach((book) => {
                         isbns.push(book.isbn)
                     })
-                    const openbdData = await fetch('https://api.openbd.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())
-                    console.log(openbdData)
-
-                    const openbdBooks = []
-                    openbdData.forEach((book) => {
-                        if (book) {
-                            const tags = []
-                            try {
-                                book.onix.DescriptiveDetail.Collection.TitleDetail.TitleElement.forEach((title, i) => {
-                                    // console.log(title)
-                                    // console.log(title.TitleText.content)
-                                    if (!tags.includes(title.TitleText.content)) {
-                                        tags.push(title.TitleText.content)
-                                    }
-                                })
-                            } catch {}
-                            let volume = book.summary.volume
-                            try {
-                                // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
-                                if (volume === '') {
-                                    volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
-                                }
-                            } catch {}
-        
-                            const openbdBook = {
-                                'title': [book.summary.title, volume].join(' '),
-                                'author': book.summary.author,
-                                'publisher': book.summary.publisher,
-                                'isbn': book.summary.isbn,
-                                'pubdate': book.summary.pubdate,
-                                'cover': book.summary.cover,
-                                'tags': tags
-                            }
-                            openbdBooks.push(openbdBook)
-                        }
-                    })
-                    resolve(openbdBooks)
+                    const openBDBooks = await getOpenBD(isbns)
+                    resolve(openBDBooks)
                 }
             })
+        })
+    }
+
+    const getOpenBD = async (isbns) => {
+        return new Promise(async (resolve, reject) => {
+
+            const openBDData = await fetch('https://api.openBD.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())
+            console.log(openBDData)
+
+            const openBDBooks = []
+            openBDData.forEach((book) => {
+                if (book) {
+                    const tags = []
+                    try {
+                        book.onix.DescriptiveDetail.Collection.TitleDetail.TitleElement.forEach((title, i) => {
+                            // console.log(title)
+                            // console.log(title.TitleText.content)
+                            if (!tags.includes(title.TitleText.content)) {
+                                tags.push(title.TitleText.content)
+                            }
+                        })
+                    } catch {}
+                    let volume = book.summary.volume
+                    try {
+                        // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
+                        if (volume === '') {
+                            volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
+                        }
+                    } catch {}
+
+                    const openBDBook = {
+                        'title': [book.summary.title, volume].join(' '),
+                        'author': book.summary.author,
+                        'publisher': book.summary.publisher,
+                        'isbn': book.summary.isbn,
+                        'pubdate': book.summary.pubdate,
+                        'cover': book.summary.cover,
+                        'tags': tags
+                    }
+                    openBDBooks.push(openBDBook)
+                }
+            })
+            resolve(openBDBooks)
         })
     }
 
@@ -258,7 +284,7 @@ const App = (props) => {
                             <Tag className="tag">9784088820118</Tag>
                             <Tag className="tag">ISBN</Tag>
                             <h3>SPY×FAMILY 1</h3>
-                            <img className="thumbnail" src="https://cover.openbd.jp/9784088820118.jpg" alt="" />
+                            <img className="thumbnail" src="https://cover.openBD.jp/9784088820118.jpg" alt="" />
                         </div>
                         <Icon icon="delete" size={25} color={'#ffffff'} />
                     </Card> */}
