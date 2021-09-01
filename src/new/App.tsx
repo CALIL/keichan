@@ -9,52 +9,52 @@ import normalize_isbn from '../normalize_isbn.js'
 
 const REGION = 'recipe'
 
+
+let barcodeStr = ''
+let timer = null
+
+// Window全体でのキー入力を拾う
+const onKeyDown = (e: any, callback: (barcodeStr: string) => {}): void => {
+    const ev = e || window.event
+    const key = ev.keyCode || ev.which || ev.charCode
+    // console.log(barcodeStr)
+    // console.log(e.key)
+    // バーコードリーダーの入力終わり、Enterが押された時の処理
+    if (e.key === 'Enter' || key === 13) {
+        callback(barcodeStr)
+        if (timer) clearTimeout(timer)
+        barcodeStr = ''
+        // 入力された文字を拾う
+    } else {
+        if (e.key.length === 1) {
+            barcodeStr += e.key
+            // codabarの制御コードが入った時
+        } else if (e.key === 'Shift') {
+        } else {
+            barcodeStr = ''
+        }
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+            console.log('clear')
+            callback(barcodeStr)
+            barcodeStr = ''
+        }, 300)
+    }
+}
+
+
+
 const App = (props) => {
 
-    let str = ''
-    let timer = null
 
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
 
     useEffect(() => {
-        window.document.addEventListener('keydown', onKeyDown)
+        window.document.addEventListener('keydown', (e) => onKeyDown(e, checkStr))
     }, [])
 
-    useEffect(() => {
-        window.document.addEventListener('keydown', onKeyDown)
-    }, [])
-
-    // Window全体でのキー入力を拾う
-    const onKeyDown = (e: any): void => {
-        const ev = e || window.event
-        const key = ev.keyCode || ev.which || ev.charCode
-        // console.log(str)
-        // console.log(e.key)
-        // バーコードリーダーの入力終わり、Enterが押された時の処理
-        if (e.key === 'Enter' || key === 13) {
-            checkStr()
-            if (timer) clearTimeout(timer)
-            str = ''
-            // 入力された文字を拾う
-        } else {
-            if (e.key.length === 1) {
-                str += e.key
-                // codabarの制御コードが入った時
-            } else if (e.key === 'Shift') {
-            } else {
-                str = ''
-            }
-            if (timer) clearTimeout(timer)
-            timer = setTimeout(() => {
-                console.log('clear')
-                checkStr()
-                str = ''
-            }, 300)
-        }
-    }
-
-    const checkStr = async () => {
+    const checkStr = async (str) => {
         const isbn = normalize_isbn(str)
         if (isbn) {
             const book = await getBook(isbn)
