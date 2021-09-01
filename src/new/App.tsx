@@ -10,45 +10,67 @@ import normalize_isbn from '../normalize_isbn.js'
 const REGION = 'recipe'
 
 
-let barcodeStr = ''
-let timer = null
+let keyBuffer = ''
+let keyTimer = null
 
 // Window全体でのキー入力を拾う
-const onKeyDown = (e: any, callback: (barcodeStr: string) => {}): void => {
+const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
     const ev = e || window.event
     const key = ev.keyCode || ev.which || ev.charCode
-    // console.log(barcodeStr)
+    // console.log(keyBuffer)
     // console.log(e.key)
     // バーコードリーダーの入力終わり、Enterが押された時の処理
     if (e.key === 'Enter' || key === 13) {
-        callback(barcodeStr)
-        if (timer) clearTimeout(timer)
-        barcodeStr = ''
+        callback(keyBuffer)
+        if (keyTimer) clearTimeout(keyTimer)
+        keyBuffer = ''
         // 入力された文字を拾う
     } else {
         if (e.key.length === 1) {
-            barcodeStr += e.key
-            // codabarの制御コードが入った時
+            keyBuffer += e.key
+        // codabarの制御コードが入った時
         } else if (e.key === 'Shift') {
         } else {
-            barcodeStr = ''
+            keyBuffer = ''
         }
-        if (timer) clearTimeout(timer)
-        timer = setTimeout(() => {
-            console.log('clear')
-            callback(barcodeStr)
-            barcodeStr = ''
+        if (keyTimer) clearTimeout(keyTimer)
+        keyTimer = setTimeout(() => {
+            // console.log('clear')
+            callback(keyBuffer)
+            keyBuffer = ''
         }, 300)
     }
 }
+
+
+// const bookDataList = [
+//     {
+//         id: '10001' or '9784774142230',
+//         items: [
+//             {
+//                 type: 'book',
+//                 title: 'タイトル',
+//                 author: '著者',
+//                 publisher: '出版社',
+//                 isbn: '9784774142230',
+//                 tags: ['ほにゃらら文庫']
+//             }
+//         ]
+//     }
+// ]
 
 
 
 const App = (props) => {
 
 
+    const [bookDataList, setBookDataList] = useState([])
+
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
+ 
+    const [licenseKey, setLicenseKey] = useState('gk-xxxxxxxxxxxxxxx')
+    const [mode, setMode] = useState('isbn')
 
     useEffect(() => {
         window.document.addEventListener('keydown', (e) => onKeyDown(e, checkStr))
@@ -63,9 +85,9 @@ const App = (props) => {
                 await getBooks(book)
             }
         } else {
-            if (str.match(/^192/) === null) {
-                alert('管理バーコード')
-            }
+            if (str.match(/^192/) !== null) return
+            setMode('management')
+
         }
     }
 
@@ -74,7 +96,7 @@ const App = (props) => {
         setSuggestBooks([])
         return new Promise(async (resolve, reject) => {
             const apiInstance = new api({ isbn: isbn, region: REGION }, (data) => {
-                console.log(data)
+                // console.log(data)
                 if (data.count >= 1) {
                     apiInstance.kill()
                     const book = data.books[0]
@@ -197,7 +219,10 @@ const App = (props) => {
     return (
         <div id="new">
             <header>
-                <h1>カーリルtoolbox: keichan</h1>
+                <h1>
+                    カーリルtoolbox: keichan
+                    {mode==='management' ? (<span className="mode">資料コード</span>) : null}
+                </h1>
             </header>
             <main>
                 <div className="left">
