@@ -90,8 +90,8 @@ const App = () => {
     }, [rowList])
 
     const checkStr = async (str) => {
-        console.log(str)
-        console.log(mode)
+        // console.log(str)
+        // console.log(mode)
         const isbn = normalize_isbn(str)
         if (isbn) {
             const book: any = await getBook(isbn)
@@ -105,11 +105,8 @@ const App = () => {
                     }
                     setRowList([...rowList, row])
                 } else if (mode === 'management') {
-                    console.log(rowList)
                     const tempList = [...rowList]
-                    console.log(tempList)
                     const lastRow = tempList[tempList.length - 1]
-                    console.log(lastRow)
                     if (lastRow.items.length === 0) {
                         lastRow.items.push(book)
                         console.log(tempList)
@@ -124,7 +121,7 @@ const App = () => {
             }
         } else {
             if (str.match(/^192/) !== null) return
-            if (str.match(/^[a-zA-Z]\d+[a-zA-Z]$/) === null) return
+            // if (str.match(/^[a-zA-Z]\d+[a-zA-Z]$/) === null) return
             setMode('management')
             setRowList([...rowList, {
                 id: str,
@@ -310,7 +307,7 @@ const App = () => {
                     {currentRow ? (
                         <>
                             {mode === 'management' ? (
-                                <Card className="card active" interactive={true} elevation={Elevation.TWO}>
+                                <Card key="managementCode" className="card active" interactive={true} elevation={Elevation.TWO}>
                                     <div>
                                         <Tag className="tag" large>{currentRow.id}</Tag>
                                         <Tag className="tag">管理バーコード</Tag>
@@ -320,8 +317,10 @@ const App = () => {
                             ) : null}
                             {currentRow.items.map((item, i) => {
                                 if (item.type === 'book') {
+                                    // todo
+                                    const bibHash = item.isbn
                                     return (
-                                        <Card className="card indent" interactive={true} elevation={Elevation.TWO}>
+                                        <Card key={bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
                                             <div>
                                                 <Tag className="tag">{item.type}</Tag>
                                                 <Tag className="tag">{item.isbn}</Tag>
