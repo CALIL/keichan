@@ -1,0 +1,107 @@
+html, body, #app
+    height: 100%
+
+#new
+    height: 100%
+    header
+        background-color: #20B4EA
+        margin: 0
+        h1
+            color: #ffffff
+            text-align: center
+            margin: 1rem auto
+    main
+        display: flex
+        height: 100%
+        .left
+            flex: 1
+            background-color: #CCCCCC
+            .barcode
+                margin-bottom: 1rem
+                background-color: #CCCCCC
+                padding: 1rem
+                &.active
+                    background-color: #106BA3
+                .tag
+                    margin-bottom: 0.5rem
+                p
+                    font-size: 1.25rem
+                    color: #ffffff
+
+
+        .right
+            flex: 1
+            background-color: #CCCCCC
+
+        .main
+            flex: 3
+            background-color: #fff
+            height: 100%
+            width: 300px
+            padding: 1rem
+            h3
+                margin-bottom: 1rem
+            form
+                display: flex
+                align-items: center
+                margin-bottom: 1rem
+                svg
+                    height: 1.5rem
+                    margin-left: 1rem
+            .card
+                position: relative
+                display: flex
+                justify-content: space-between
+                background-color: #999999
+                margin-bottom: 1rem
+                &.active
+                    background-color: #0E9960
+                &.indent
+                    margin-left: 2rem
+                h3
+                    color: #ffffff
+                    margin: 0.5rem 0 0
+                .tag
+                    margin-right: 1rem
+                .thumbnail
+                    position: absolute
+                    top: 0
+                    right: 100px
+                    height: 80px
+            .addMore
+                input
+                    width: 300px
+                    margin-right: 1rem
+                    margin-bottom: 0.5rem
+            .nextBook
+                margin-top: 3rem
+                h2
+                    margin-bottom: 1rem
+                    span
+                        display: inline-block
+                        font-size: 1rem
+                        font-weight: normal
+                        margin-left: 0.5rem
+                .cards
+                    display: grid
+                    grid-template: 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr
+                    .card
+                        cursor: pointer
+                        display: inline-flex
+                        align-items: center
+                        margin: 0.5rem
+                        .card-header
+                            display: flex
+                            align-items: flex-start
+                            h3
+                                font-size: 0.8rem
+                                margin-bottom: 0.5rem
+                            .author
+                                font-size: 0.7rem
+                                color: #ffffff
+                            img
+                                width: 50px
+                                margin-right: 1rem
+                            .bp3-tag
+                                margin-right: 0.5rem
+                                margin-bottom: 0.5rem
