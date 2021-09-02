@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 
-import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup } from "@blueprintjs/core";
+import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay } from "@blueprintjs/core";
 
 import isbn_utils from 'isbn-utils'
 
@@ -76,6 +76,13 @@ const App = () => {
 
     const [checkEnable, setCheckEnable] = useState(true)
 
+    const [alertMessage, setAlertMessage] = useState({
+        // show: true,
+        // message: '資料コードを読んでください'
+        show: false,
+        message: ''
+    })
+
     // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
     // https://github.com/facebook/react/issues/14092
     const callback = (e) => onKeyDown(e, checkStr)
@@ -91,6 +98,15 @@ const App = () => {
         const currentRow = rowList[rowList.length - 1]
         setCurrentRow(currentRow)
     }, [rowList])
+
+    useEffect(() => {
+        setTimeout(() => {
+            setAlertMessage({
+                show: false,
+                message: ''
+            })
+        }, 3000)
+    }, [alertMessage])
 
     const checkStr = async (str) => {
         // console.log(str)
@@ -116,7 +132,10 @@ const App = () => {
                         console.log(tempList)
                         setRowList(tempList)
                     } else {
-                        alert('次は資料番号のバーコードを読んでください')
+                        setAlertMessage({
+                            show: true,
+                            message: '次は資料コードのバーコードを読んでください'
+                        })       
                     }
                 }
             }
@@ -141,7 +160,10 @@ const App = () => {
 
             // すでに同じ資料コードが登録されていないか？
             if (rowList.filter((row) => row.id === str).length > 0) {
-                alert('すでに登録済みの資料コードです')
+                setAlertMessage({
+                    show: true,
+                    message: 'すでに登録済みの資料コードです'
+                })
                 return
             }
 
@@ -322,8 +344,16 @@ const App = () => {
         })
     }
 
+
+
     return (
         <div id="new">
+            <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({show: false, message: ''})} hasBackdrop={false}>
+                <div className="bp3-card bp3-elevation-4 bp3-overlay-content">
+                    <Icon icon="tick" size={25} color={'#000000'} />
+                    {alertMessage.message}
+                </div>
+            </Overlay>
             <header>
                 <h1>
                     カーリルtoolbox: keichan
@@ -348,6 +378,7 @@ const App = () => {
                     })}
                 </div>
                 <div className="main">
+
                     {currentRow ? (
                         <>
                             {mode === 'management' ? (
