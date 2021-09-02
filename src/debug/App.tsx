@@ -87,7 +87,7 @@ const App = () => {
         return () => {
             window.removeEventListener('keydown', callback)
         }
-    }, [mode, rowList, checkEnable])
+    }, [mode, rowList, checkEnable, debugLogs])
 
     useEffect(() => {
         const currentRow = rowList[rowList.length - 1]
