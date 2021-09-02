@@ -122,8 +122,11 @@ const App = () => {
             }
         } else {
             if (str.match(/^192/) !== null) return
-            if (str.match(/\w+/) === null) return
-            // if (str.match(/^[a-zA-Z]\d+[a-zA-Z]$/) === null) return
+            if (str.match(/[a-zA-Z0-9]+/) === null) return
+            // codabarの制御コードが入った時、数字のみにする
+            if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
+                str = RegExp.$1
+            }
             setMode('management')
             setRowList([...rowList, {
                 id: str,
