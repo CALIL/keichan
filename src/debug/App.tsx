@@ -106,21 +106,23 @@ const App = () => {
     const checkStr = async (str) => {
         // console.log(str)
         // console.log(mode)
-        setDebugLogs([...debugLogs, 'バーコードが読み込まれました', str])
+        const logs = []
         if (checkEnable===false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
+            logs.push('本のバーコードが読まれました。')
+            logs.push(str)
             const book: any = await getBook(isbn)
             if (book) {
-                console.log(book)
-                book.type = 'book'
+                // console.log(book)
+                logs.push('本が見つかりました！')
                 if (mode === 'isbn') {
                     book.id = book.isbn
                     setRowList([...rowList, book])
                 } else if (mode === 'management') {
                     const tempList = [...rowList]
                     const lastRow = tempList[tempList.length - 1]
-                    if (lastRow) {
+                    if (lastRow && !lastRow.title) {
                         lastRow.title = book.title
                         lastRow.author = book.author
                         lastRow.publisher = book.publisher
@@ -132,19 +134,32 @@ const App = () => {
                     } else {
                         setAlertMessage({
                             show: true,
-                            message: '次は資料コードのバーコードを読んでください'
+                            message: '次は資料コードのバーコードを読んでください。'
                         })       
+                        logs.push('!! 資料コードのバーコードを読んでください。')
                     }
                 }
             }
         } else {
-            if (str.match(/^192/) !== null) return
-            if (str.match(/[a-zA-Z0-9]+/) === null) return
+            if (str.match(/^192/) !== null) {
+                logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。')
+                setDebugLogs([...debugLogs, ...logs])
+                return
+            }
+            if (str.match(/[a-zA-Z0-9]+/) === null) {
+                logs.push('英数字以外のキーが入力されたました。処理しません。')
+                setDebugLogs([...debugLogs, ...logs])
+                return
+            }
             // codabarの制御コードが入った時、数字のみにする
             if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
                 str = RegExp.$1
+                logs.push('codabarの制御コードを検出しました。')
             }
-            setMode('management')
+            if (mode === 'isbn') {
+                setMode('management')
+                logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます。')
+            }
 
             const prevRow = rowList[rowList.length - 1]
             console.log(prevRow)
@@ -153,6 +168,8 @@ const App = () => {
             if (prevRow && !prevRow.title) {
                 prevRow.id = str
                 setRowList([...rowList])
+                logs.push('別の資料コードが読み込まれたので、上書きしました。')
+                setDebugLogs([...debugLogs, ...logs])
                 return
             }
 
@@ -162,6 +179,8 @@ const App = () => {
                     show: true,
                     message: 'すでに登録済みの資料コードです'
                 })
+                logs.push('すでに登録済みの資料コードです')
+                setDebugLogs([...debugLogs, ...logs])
                 return
             }
 
@@ -169,12 +188,14 @@ const App = () => {
                 id: str,
             }])
 
-            if (prevRow && !prevRow.title) {
+            if (prevRow && prevRow.title) {
                 setTargetBook(prevRow)
                 const books = await getBooks(prevRow)
                 setSuggestBooks(books as any)
             }
         }
+
+        setDebugLogs([...debugLogs, ...logs])
         setCheckEnable(false)
         setTimeout(() => setCheckEnable(true), 100)
     }
@@ -355,35 +376,37 @@ const App = () => {
             </header>
             <main>
                 <div className="main">
-                    {currentRow ? (
-                        <>
-                            {mode === 'management' ? (
-                                <Card key="managementCode" className="card active" interactive={true} elevation={Elevation.TWO}>
-                                    {/* <div>
-                                        <Tag className="tag" large>{currentRow.id}</Tag>
-                                        <Tag className="tag">管理バーコード</Tag>
-                                    </div> */}
-                                    <img src={`https://img.shields.io/badge/%E7%AE%A1%E7%90%86%E3%83%90%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89-${currentRow.id}-brightgreen`} alt="" />
-                                    <Icon icon="delete" size={25} color={'#ffffff'} />
-                                </Card>
-                            ) : null}
-                            {currentRow.title ? (
-                                <Card key={currentRow.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
-                                    <div>
-                                        {currentRow.cover ? (
-                                            <img className="thumbnail" src={currentRow.cover} alt="" />
-                                        ) : null}
+                    {rowList.slice().reverse().map((row, i) => {{
+                        return (
+                            <>
+                                {mode === 'management' ? (
+                                    <Card key="managementCode" className="card active" interactive={true} elevation={Elevation.TWO}>
+                                        {/* <div>
+                                            <Tag className="tag" large>{row.id}</Tag>
+                                            <Tag className="tag">管理バーコード</Tag>
+                                        </div> */}
+                                        <img src={`https://img.shields.io/badge/%E7%AE%A1%E7%90%86%E3%83%90%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-brightgreen`} alt="" />
+                                        <Icon icon="delete" size={25} color={'#ffffff'} />
+                                    </Card>
+                                ) : null}
+                                {row.title ? (
+                                    <Card key={row.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
                                         <div>
-                                            {/* <Tag className="tag">{currentRow.isbn}</Tag> */}
-                                            <img src={`https://img.shields.io/badge/book-${currentRow.isbn}-brightgreen`} alt="" />
-                                            <h3>{currentRow.title}</h3>
+                                            {row.cover ? (
+                                                <img className="thumbnail" src={row.cover} alt="" />
+                                            ) : null}
+                                            <div>
+                                                {/* <Tag className="tag">{row.isbn}</Tag> */}
+                                                <img src={`https://img.shields.io/badge/book-${row.isbn}-brightgreen`} alt="" />
+                                                <h3>{row.title}</h3>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <Icon icon="delete" size={25} color={'#ffffff'} />
-                                </Card>
-                            ) : null}
-                        </>
-                    ) : null}
+                                        <Icon icon="delete" size={25} color={'#ffffff'} />
+                                    </Card>
+                                ) : null}
+                            </>
+                        )
+                    }})}
                     {/* <h3>本を追加</h3> */}
                     {/* <form action="">
                         <div className="bp3-input-group modifier">
@@ -440,7 +463,7 @@ const App = () => {
                 </div>
                 <div className="debug">
                     <div className="logs">
-                        {debugLogs.slice().reverse().map((log, i) => {
+                        {debugLogs.map((log, i) => {
                             return (
                                 <div key={'log'+i}>{log}</div>
                             )
