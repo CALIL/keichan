@@ -7,10 +7,7 @@ import isbn_utils from 'isbn-utils'
 import api from '../api'
 import normalize_isbn from '../normalize_isbn.js'
 
-import Barcode from './Barcode'
-
 const REGION = 'recipe'
-
 
 let keyBuffer = ''
 let keyTimer = null
@@ -50,16 +47,11 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
 // const rowList = [
 //     {
 //         id: '10001' or '9784774142230',
-//         items: [
-//             {
-//                 type: 'book',
-//                 title: 'タイトル',
-//                 author: '著者',
-//                 publisher: '出版社',
-//                 isbn: '9784774142230',
-//                 tags: ['ほにゃらら文庫']
-//             }
-//         ]
+//         title: 'タイトル',
+//         author: '著者',
+//         publisher: '出版社',
+//         isbn: '9784774142230',
+//         tags: ['ほにゃらら文庫']
 //     }
 // ]
 
@@ -107,7 +99,7 @@ const App = () => {
                 show: false,
                 message: ''
             })
-        }, 3000)
+        }, 5000)
     }, [alertMessage])
 
     const checkStr = async (str) => {
@@ -121,16 +113,18 @@ const App = () => {
                 console.log(book)
                 book.type = 'book'
                 if (mode === 'isbn') {
-                    const row = {
-                        id: book.isbn,
-                        items: [book]
-                    }
-                    setRowList([...rowList, row])
+                    book.id = book.isbn
+                    setRowList([...rowList, book])
                 } else if (mode === 'management') {
                     const tempList = [...rowList]
                     const lastRow = tempList[tempList.length - 1]
-                    if (lastRow.items.length === 0) {
-                        lastRow.items.push(book)
+                    if (lastRow) {
+                        lastRow.title = book.title
+                        lastRow.author = book.author
+                        lastRow.publisher = book.publisher
+                        lastRow.isbn = book.isbn
+                        lastRow.tags = book.tags
+                        lastRow.bibHash = book.bibHash
                         console.log(tempList)
                         setRowList(tempList)
                     } else {
@@ -154,7 +148,7 @@ const App = () => {
             console.log(prevRow)
 
             // まだ本が紐つけられていない時は資料コードを変更する
-            if (prevRow && prevRow.items.length === 0) {
+            if (prevRow && !prevRow.title) {
                 prevRow.id = str
                 setRowList([...rowList])
                 return
@@ -171,17 +165,12 @@ const App = () => {
 
             setRowList([...rowList, {
                 id: str,
-                items: []
             }])
 
-            if (prevRow && prevRow.items.length > 0) {
-                const rowBooks = prevRow.items.filter((item) => item.type === 'book')
-                console.log(rowBooks)
-                if (rowBooks.length > 0) {
-                    setTargetBook(rowBooks[0])
-                    const books = await getBooks(rowBooks[0])
-                    setSuggestBooks(books as any)
-                }
+            if (prevRow && !prevRow.title) {
+                setTargetBook(prevRow)
+                const books = await getBooks(prevRow)
+                setSuggestBooks(books as any)
             }
         }
         setCheckEnable(false)
@@ -368,13 +357,7 @@ const App = () => {
                         return (
                             <div key={row.id} className="barcode">
                                 <Tag large className="tag">{row.id}</Tag>
-                                {row.items.map((item, i) => {
-                                    if (item.type==='book') {
-                                        return (
-                                            <p>{item.title}</p>
-                                        )
-                                    }
-                                })}
+                                <p>{row.title}</p>
                             </div>
                         )
                     })}
@@ -392,23 +375,18 @@ const App = () => {
                                     <Icon icon="delete" size={25} color={'#ffffff'} />
                                 </Card>
                             ) : null}
-                            {currentRow.items.map((item, i) => {
-                                if (item.type === 'book') {
-                                    return (
-                                        <Card key={item.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
-                                            <div>
-                                                <Tag className="tag">{item.type}</Tag>
-                                                <Tag className="tag">{item.isbn}</Tag>
-                                                <h3>{item.title}</h3>
-                                                {item.cover ? (
-                                                    <img className="thumbnail" src={item.cover} alt="" />
-                                                ) : null}
-                                            </div>
-                                            <Icon icon="delete" size={25} color={'#ffffff'} />
-                                        </Card>
-                                    )
-                                }
-                            })}
+                            {currentRow.title ? (
+                                <Card key={currentRow.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
+                                    <div>
+                                        <Tag className="tag">{currentRow.isbn}</Tag>
+                                        <h3>{currentRow.title}</h3>
+                                        {currentRow.cover ? (
+                                            <img className="thumbnail" src={currentRow.cover} alt="" />
+                                        ) : null}
+                                    </div>
+                                    <Icon icon="delete" size={25} color={'#ffffff'} />
+                                </Card>
+                            ) : null}
                         </>
                     ) : null}
                     {/* <h3>本を追加</h3> */}
