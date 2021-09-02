@@ -159,7 +159,7 @@ const App = () => {
                 return
             }
             if (str.match(/[a-zA-Z0-9]+/) === null) {
-                logs.push('英数字以外のキーが入力されたました。処理しません。')
+                logs.push('英数字以外のキーが入力されました。処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
