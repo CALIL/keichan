@@ -127,6 +127,7 @@ const App = () => {
                         lastRow.author = book.author
                         lastRow.publisher = book.publisher
                         lastRow.isbn = book.isbn
+                        lastRow.cover = book.cover
                         lastRow.tags = book.tags
                         lastRow.bibHash = book.bibHash
                         console.log(tempList)
@@ -385,7 +386,7 @@ const App = () => {
                                             <Tag className="tag" large>{row.id}</Tag>
                                             <Tag className="tag">管理バーコード</Tag>
                                         </div> */}
-                                        <img src={`https://img.shields.io/badge/%E7%AE%A1%E7%90%86%E3%83%90%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-brightgreen`} alt="" />
+                                        <img src={`https://img.shields.io/badge/%E7%AE%A1%E7%90%86%E3%83%90%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-blue`} alt="" />
                                         <Icon icon="delete" size={25} color={'#ffffff'} />
                                     </Card>
                                 ) : null}
