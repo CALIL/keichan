@@ -119,6 +119,17 @@ const App = () => {
                 if (mode === 'isbn') {
                     book.id = book.isbn
                     setRowList([...rowList, book])
+
+                    const prevRow = rowList[rowList.length - 1]
+                    if (prevRow && prevRow.title) {
+                        logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します。`)
+                        setTargetBook(prevRow)
+                        const books: any = await getBooks(prevRow)
+                        setSuggestBooks(books as any)
+                        if (books.length > 0) {
+                            logs.push(`候補の本が${books.length}冊みつかりました。`)
+                        }
+                    }       
                 } else if (mode === 'management') {
                     const tempList = [...rowList]
                     const lastRow = tempList[tempList.length - 1]
@@ -130,7 +141,7 @@ const App = () => {
                         lastRow.cover = book.cover
                         lastRow.tags = book.tags
                         lastRow.bibHash = book.bibHash
-                        console.log(tempList)
+                        // console.log(tempList)
                         setRowList(tempList)
                     } else {
                         setAlertMessage({
@@ -162,14 +173,16 @@ const App = () => {
                 logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます。')
             }
 
+            logs.push(str)
+
             const prevRow = rowList[rowList.length - 1]
-            console.log(prevRow)
+            // console.log(prevRow)
 
             // まだ本が紐つけられていない時は資料コードを変更する
             if (prevRow && !prevRow.title) {
                 prevRow.id = str
                 setRowList([...rowList])
-                logs.push('別の資料コードが読み込まれたので、上書きしました。')
+                logs.push('! 別の資料コードが読み込まれたので、上書きしました。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
@@ -180,7 +193,7 @@ const App = () => {
                     show: true,
                     message: 'すでに登録済みの資料コードです'
                 })
-                logs.push('すでに登録済みの資料コードです')
+                logs.push('!! すでに登録済みの資料コードです')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
@@ -190,9 +203,13 @@ const App = () => {
             }])
 
             if (prevRow && prevRow.title) {
+                logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します。`)
                 setTargetBook(prevRow)
-                const books = await getBooks(prevRow)
+                const books: any = await getBooks(prevRow)
                 setSuggestBooks(books as any)
+                if (books.length > 0) {
+                    logs.push(`候補の本が${books.length}冊みつかりました。`)
+                }
             }
         }
 
