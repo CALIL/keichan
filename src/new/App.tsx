@@ -13,9 +13,10 @@ const REGION = 'recipe'
 let keyBuffer = ''
 let keyTimer = null
 
+
 // Window全体でのキー入力を拾う
 const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
-    console.log('onKeyDown')
+    // console.log('onKeyDown')
     const ev = e || window.event
     const key = ev.keyCode || ev.which || ev.charCode
     // console.log(keyBuffer)
@@ -73,6 +74,8 @@ const App = () => {
     const [licenseKey, setLicenseKey] = useState('gk-xxxxxxxxxxxxxxx')
     const [mode, setMode] = useState('isbn')
 
+    const [checkEnable, setCheckEnable] = useState(true)
+
     // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
     // https://github.com/facebook/react/issues/14092
     const callback = (e) => onKeyDown(e, checkStr)
@@ -82,7 +85,7 @@ const App = () => {
         return () => {
             window.removeEventListener('keydown', callback)
         }
-    }, [mode, rowList])
+    }, [mode, rowList, checkEnable])
 
     useEffect(() => {
         const currentRow = rowList[rowList.length - 1]
@@ -92,6 +95,7 @@ const App = () => {
     const checkStr = async (str) => {
         // console.log(str)
         // console.log(mode)
+        if (checkEnable===false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
             const book: any = await getBook(isbn)
@@ -118,6 +122,7 @@ const App = () => {
             }
         } else {
             if (str.match(/^192/) !== null) return
+            if (str.match(/\w+/) === null) return
             // if (str.match(/^[a-zA-Z]\d+[a-zA-Z]$/) === null) return
             setMode('management')
             setRowList([...rowList, {
@@ -137,6 +142,8 @@ const App = () => {
                 }
             }
         }
+        setCheckEnable(false)
+        setTimeout(() => setCheckEnable(true), 100)
     }
 
     // todo
