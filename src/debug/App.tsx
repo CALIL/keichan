@@ -106,6 +106,7 @@ const App = () => {
     const checkStr = async (str) => {
         // console.log(str)
         // console.log(mode)
+        setDebugLogs([...debugLogs, 'バーコードが読み込まれました', str])
         if (checkEnable===false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
@@ -353,15 +354,6 @@ const App = () => {
                 </h1>
             </header>
             <main>
-                <div className="left">
-                    <div className="logs">
-                        {debugLogs.map((log, i) => {
-                            return (
-                                <div key={'log'+i}>{log}</div>
-                            )
-                        })}
-                    </div>
-                </div>
                 <div className="main">
                     {currentRow ? (
                         <>
@@ -445,6 +437,15 @@ const App = () => {
                             </div>
                         </div>
                     ) : null}
+                </div>
+                <div className="debug">
+                    <div className="logs">
+                        {debugLogs.slice().reverse().map((log, i) => {
+                            return (
+                                <div key={'log'+i}>{log}</div>
+                            )
+                        })}
+                    </div>
                 </div>
             </main>
         </div>
