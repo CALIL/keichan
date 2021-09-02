@@ -316,7 +316,7 @@ const App = () => {
                 <div className="left">
                     {rowList.slice().reverse().map((row, i) => {
                         return (
-                            <div className="barcode">
+                            <div key={row.id} className="barcode">
                                 <Tag large className="tag">{row.id}</Tag>
                                 {row.items.map((item, i) => {
                                     if (item.type==='book') {
