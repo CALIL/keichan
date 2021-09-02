@@ -61,6 +61,7 @@ const App = () => {
 
     const [rowList, setRowList] = useState([])
     const [currentRow, setCurrentRow] = useState(null)
+    const [debugLogs, setDebugLogs] = useState([])
 
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
@@ -353,14 +354,13 @@ const App = () => {
             </header>
             <main>
                 <div className="left">
-                    {rowList.slice().reverse().map((row, i) => {
-                        return (
-                            <div key={row.id} className="barcode">
-                                <Tag large className="tag">{row.id}</Tag>
-                                <p>{row.title}</p>
-                            </div>
-                        )
-                    })}
+                    <div className="logs">
+                        {debugLogs.map((log, i) => {
+                            return (
+                                <div key={'log'+i}>{log}</div>
+                            )
+                        })}
+                    </div>
                 </div>
                 <div className="main">
                     {currentRow ? (
