@@ -182,7 +182,7 @@ const App = () => {
             if (prevRow && !prevRow.title) {
                 prevRow.id = str
                 setRowList([...rowList])
-                logs.push('! 別の資料コードが読み込まれたので、上書きしました。')
+                logs.push('! 別の資料コードが読み込まれたので、新しい資料コードに変更しました。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
