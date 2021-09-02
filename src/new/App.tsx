@@ -128,13 +128,22 @@ const App = () => {
                 str = RegExp.$1
             }
             setMode('management')
+
+            const prevRow = rowList[rowList.length - 1]
+            console.log(prevRow)
+
+            // まだ本が紐つけられていない時
+            if (prevRow.items.length === 0) {
+                prevRow.id = str
+                setRowList([...rowList])
+                return
+            }
+
             setRowList([...rowList, {
                 id: str,
                 items: []
             }])
 
-            const prevRow = rowList[rowList.length - 1]
-            console.log(prevRow)
             if (prevRow && prevRow.items.length > 0) {
                 const rowBooks = prevRow.items.filter((item) => item.type === 'book')
                 console.log(rowBooks)
