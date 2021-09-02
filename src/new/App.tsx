@@ -7,6 +7,8 @@ import isbn_utils from 'isbn-utils'
 import api from '../api'
 import normalize_isbn from '../normalize_isbn.js'
 
+import Barcode from './Barcode'
+
 const REGION = 'recipe'
 
 
@@ -453,6 +455,59 @@ const App = () => {
                                                         <Tag>{tag}</Tag>
                                                     ))}
                                                     <p>{book.isbn}</p>
+                                                    <svg version="1.1" width="273px" height="40px" x="0px" y="0px" viewBox="0 0 273 40" style={{transform: 'translate(0,0)'}}>
+  <rect x={0} y={0} width={273} height={40} style={{fill: '#ffffff'}} />
+  <g transform="translate(0, 0)" style={{fill: '#000000'}}>
+    <rect x={0} y={0} width="2.25" height={40} />
+    <rect x="4.5" y={0} width="4.5" height={40} />
+    <rect x="13.5" y={0} width="2.25" height={40} />
+    <rect x="20.25" y={0} width="2.25" height={40} />
+    <rect x="24.75" y={0} width="2.25" height={40} />
+    <rect x="29.25" y={0} width="4.5" height={40} />
+    <rect x={36} y={0} width="2.25" height={40} />
+    <rect x="42.75" y={0} width="2.25" height={40} />
+    <rect x="47.25" y={0} width="2.25" height={40} />
+    <rect x="51.75" y={0} width="2.25" height={40} />
+    <rect x="56.25" y={0} width="2.25" height={40} />
+    <rect x={63} y={0} width="4.5" height={40} />
+    <rect x="69.75" y={0} width="2.25" height={40} />
+    <rect x="76.5" y={0} width="4.5" height={40} />
+    <rect x="83.25" y={0} width="2.25" height={40} />
+    <rect x="87.75" y={0} width="2.25" height={40} />
+    <rect x="92.25" y={0} width="2.25" height={40} />
+    <rect x={99} y={0} width="2.25" height={40} />
+    <rect x="103.5" y={0} width="4.5" height={40} />
+    <rect x="110.25" y={0} width="2.25" height={40} />
+    <rect x="114.75" y={0} width="2.25" height={40} />
+    <rect x="119.25" y={0} width="2.25" height={40} />
+    <rect x="123.75" y={0} width="2.25" height={40} />
+    <rect x="130.5" y={0} width="4.5" height={40} />
+    <rect x="137.25" y={0} width="4.5" height={40} />
+    <rect x="146.25" y={0} width="2.25" height={40} />
+    <rect x="150.75" y={0} width="2.25" height={40} />
+    <rect x="155.25" y={0} width="2.25" height={40} />
+    <rect x="159.75" y={0} width="4.5" height={40} />
+    <rect x="166.5" y={0} width="2.25" height={40} />
+    <rect x={171} y={0} width="2.25" height={40} />
+    <rect x="177.75" y={0} width="2.25" height={40} />
+    <rect x="182.25" y={0} width="2.25" height={40} />
+    <rect x="186.75" y={0} width="2.25" height={40} />
+    <rect x="191.25" y={0} width="4.5" height={40} />
+    <rect x="200.25" y={0} width="2.25" height={40} />
+    <rect x="204.75" y={0} width="2.25" height={40} />
+    <rect x="209.25" y={0} width="2.25" height={40} />
+    <rect x={216} y={0} width="2.25" height={40} />
+    <rect x="220.5" y={0} width="4.5" height={40} />
+    <rect x="227.25" y={0} width="4.5" height={40} />
+    <rect x="236.25" y={0} width="2.25" height={40} />
+    <rect x="240.75" y={0} width="2.25" height={40} />
+    <rect x="245.25" y={0} width="2.25" height={40} />
+    <rect x="249.75" y={0} width="2.25" height={40} />
+    <rect x="254.25" y={0} width="4.5" height={40} />
+    <rect x="263.25" y={0} width="2.25" height={40} />
+    <rect x={270} y={0} width="2.25" height={40} />
+  </g>
+</svg>
                                                 </div>
                                             </div>
                                             <Icon icon="add" size={25} color={'#ffffff'} />
