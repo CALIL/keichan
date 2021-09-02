@@ -132,10 +132,16 @@ const App = () => {
             const prevRow = rowList[rowList.length - 1]
             console.log(prevRow)
 
-            // まだ本が紐つけられていない時
-            if (prevRow.items.length === 0) {
+            // まだ本が紐つけられていない時は資料コードを変更する
+            if (prevRow && prevRow.items.length === 0) {
                 prevRow.id = str
                 setRowList([...rowList])
+                return
+            }
+
+            // すでに同じ資料コードが登録されていないか？
+            if (rowList.filter((row) => row.id === str).length > 0) {
+                alert('すでに登録済みの資料コードです')
                 return
             }
 
