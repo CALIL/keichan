@@ -117,14 +117,16 @@ const App = () => {
 
 
     const cmdCursor = useRef(null)
-    setInterval(() => {
-        if (cmdCursor.current) {
-            cmdCursor.current.style.display = 'none'
-            setTimeout(() => {
-                cmdCursor.current.style.display = 'inline'
-            }, 500)
-        }
-    }, 1000)
+    useEffect(() => {
+        setInterval(() => {
+            if (cmdCursor.current) {
+                cmdCursor.current.style.display = 'none'
+                setTimeout(() => {
+                    cmdCursor.current.style.display = 'inline'
+                }, 500)
+            }
+        }, 1000)
+    }, [true])
 
 
     const checkStr = async (str) => {
@@ -180,6 +182,15 @@ const App = () => {
                 }
             }
         } else {
+            if (str.length > 20) {
+                logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
+                logs.push(<>
+                    <span style={{color: 'red'}}>!!</span>
+                    <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません。</span>
+                </>)
+                setDebugLogs([...debugLogs, ...logs])
+                return
+            }
             if (str.match(/^192/) !== null) {
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。')
@@ -216,7 +227,10 @@ const App = () => {
             if (prevRow && !prevRow.title) {
                 prevRow.id = str
                 setRowList([...rowList])
-                logs.push('! 別の資料コードが読み込まれたので、新しい資料コードに変更しました。')
+                logs.push(<>
+                    <span style={{color: 'red'}}>!</span>
+                    <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました。</span>
+                </>)
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
