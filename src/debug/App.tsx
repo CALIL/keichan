@@ -116,7 +116,7 @@ const App = () => {
         // console.log(str)
         // console.log(mode)
         const logs = []
-        if (checkEnable===false) return
+        if (checkEnable === false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
             logs.push('本のバーコードが読まれました。')
@@ -138,7 +138,7 @@ const App = () => {
                         if (books.length > 0) {
                             logs.push(`候補の本が${books.length}冊みつかりました。`)
                         }
-                    }       
+                    }
                 } else if (mode === 'management') {
                     const tempList = [...rowList]
                     const lastRow = tempList[tempList.length - 1]
@@ -156,7 +156,7 @@ const App = () => {
                         setAlertMessage({
                             show: true,
                             message: '次は資料コードのバーコードを読んでください。'
-                        })       
+                        })
                         logs.push('!! 資料コードのバーコードを読んでください。')
                     }
                 }
@@ -229,7 +229,7 @@ const App = () => {
 
     // todo
     const getBibHash = (book: any) => {
-        return book.isbn 
+        return book.isbn
     }
 
     const getBook = async (isbn) => {
@@ -389,7 +389,7 @@ const App = () => {
 
     return (
         <div id="debug">
-            <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({show: false, message: ''})} hasBackdrop={false}>
+            <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
                 <div className="bp3-card bp3-elevation-4 bp3-overlay-content">
                     <Icon icon="tick" size={25} color={'#000000'} />
                     {alertMessage.message}
@@ -403,37 +403,63 @@ const App = () => {
             </header>
             <main>
                 <div className="main">
-                    {rowList.slice().reverse().map((row, i) => {{
-                        return (
-                            <>
-                                {mode === 'management' ? (
-                                    <Card key="managementCode" className="card active" interactive={true} elevation={Elevation.TWO}>
-                                        {/* <div>
+                    {rowList.length === 0 ? (
+                        <div className="description">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                バーコードをスキャンしてください
+                            </div>
+                        </div>
+                    ) : null}
+                    {rowList.length > 0 && rowList[rowList.length - 1].title ? (
+                        <div className="description">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                資料コードのバーコードをスキャンしてください
+                            </div>
+                        </div>
+
+                    ) : null}
+                    {rowList.slice().reverse().map((row, i) => {
+                        {
+                            return (
+                                <>
+                                    {mode === 'management' ? (
+                                        <Card key="managementCode" className="card active" interactive={true} elevation={Elevation.TWO}>
+                                            {/* <div>
                                             <Tag className="tag" large>{row.id}</Tag>
-                                            <Tag className="tag">管理バーコード</Tag>
+                                            <Tag className="tag">資料コード</Tag>
                                         </div> */}
-                                        <img src={`https://img.shields.io/badge/%E7%AE%A1%E7%90%86%E3%83%90%E3%83%BC%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-blue`} alt="" />
-                                        <Icon icon="delete" size={25} color={'#ffffff'} />
-                                    </Card>
-                                ) : null}
-                                {row.title ? (
-                                    <Card key={row.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
-                                        <div>
-                                            {row.cover ? (
-                                                <img className="thumbnail" src={row.cover} alt="" />
-                                            ) : null}
+                                            <img src={`https://img.shields.io/badge/%E8%B3%87%E6%96%99%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-blue`} alt="" />
+                                            <Icon icon="delete" size={25} color={'#ffffff'} />
+                                        </Card>
+                                    ) : null}
+                                    {row.title ? (
+                                        <Card key={row.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
                                             <div>
-                                                {/* <Tag className="tag">{row.isbn}</Tag> */}
-                                                <img src={`https://img.shields.io/badge/book-${row.isbn}-brightgreen`} alt="" />
-                                                <h3>{row.title}</h3>
+                                                {row.cover ? (
+                                                    <img className="thumbnail" src={row.cover} alt="" />
+                                                ) : null}
+                                                <div>
+                                                    {/* <Tag className="tag">{row.isbn}</Tag> */}
+                                                    <img src={`https://img.shields.io/badge/book-${row.isbn}-brightgreen`} alt="" />
+                                                    <h3>{row.title}</h3>
+                                                </div>
+                                            </div>
+                                            <Icon icon="delete" size={25} color={'#ffffff'} />
+                                        </Card>
+                                    ) : (
+                                        <div className="description">
+                                            <div>
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                                管理コードに紐つけるバーコードをスキャンしてください
                                             </div>
                                         </div>
-                                        <Icon icon="delete" size={25} color={'#ffffff'} />
-                                    </Card>
-                                ) : null}
-                            </>
-                        )
-                    }})}
+                                    )}
+                                </>
+                            )
+                        }
+                    })}
                     {/* <h3>本を追加</h3> */}
                     {/* <form action="">
                         <div className="bp3-input-group modifier">
@@ -492,7 +518,7 @@ const App = () => {
                     <div className="logs" ref={debugLogDiv}>
                         {debugLogs.map((log, i) => {
                             return (
-                                <div key={'log'+i}>{log}</div>
+                                <div key={'log' + i}>{log}</div>
                             )
                         })}
                     </div>
