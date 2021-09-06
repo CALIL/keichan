@@ -115,6 +115,18 @@ const App = () => {
         }, 5000)
     }, [alertMessage])
 
+
+    const cmdCursor = useRef(null)
+    setInterval(() => {
+        if (cmdCursor.current) {
+            cmdCursor.current.style.display = 'none'
+            setTimeout(() => {
+                cmdCursor.current.style.display = 'inline'
+            }, 500)
+        }
+    }, 1000)
+
+
     const checkStr = async (str) => {
         // console.log(str)
         // console.log(mode)
@@ -519,6 +531,9 @@ const App = () => {
                                 <div key={'log' + i}>{log}</div>
                             )
                         })}
+                    </div>
+                    <div className="cmd">
+                        &gt; <span ref={cmdCursor}>_</span>
                     </div>
                 </div>
             </main>
