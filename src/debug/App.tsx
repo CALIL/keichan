@@ -433,7 +433,7 @@ const App = () => {
                                             <Tag className="tag">資料コード</Tag>
                                         </div> */}
                                             <img src={`https://img.shields.io/badge/%E8%B3%87%E6%96%99%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-blue`} alt="" />
-                                            <Icon icon="delete" size={25} color={'#ffffff'} />
+                                            {/* <Icon icon="delete" size={25} color={'#ffffff'} /> */}
                                         </Card>
                                     ) : null}
                                     {row.title ? (
@@ -448,7 +448,7 @@ const App = () => {
                                                     <h3>{row.title}</h3>
                                                 </div>
                                             </div>
-                                            <Icon icon="delete" size={25} color={'#ffffff'} />
+                                            {/* <Icon icon="delete" size={25} color={'#ffffff'} /> */}
                                         </Card>
                                     ) : (
                                         <>
