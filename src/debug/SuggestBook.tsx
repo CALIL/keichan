@@ -1,8 +1,23 @@
-import React from 'react'
+import React, {useEffect, useRef} from 'react'
 import { Card, Elevation, Tag, Icon } from "@blueprintjs/core";
+
+import JsBarcode from 'jsbarcode'
 
 const SuggestBook = (props: any) => {
     const book = props.book
+
+    const svgElement = useRef(null)
+
+    useEffect(() => {
+        JsBarcode(svgElement.current, book.isbn, {
+            format: 'codabar',
+            width: 1.25,
+            height: 26,
+            displayValue: false,
+            margin: 10,
+        })
+    }, [])
+
     return (
         <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
             <div className="card-header">
@@ -18,6 +33,7 @@ const SuggestBook = (props: any) => {
                         <Tag>{tag}</Tag>
                     ))}
                     <p>{book.isbn}</p>
+                    <svg ref={svgElement} xmlns="http://www.w3.org/2000/svg" version="1.1"/>
                 </div>
             </div>
             <Icon icon="add" size={25} color={'#ffffff'} />
