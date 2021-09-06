@@ -85,7 +85,6 @@ html, body, #app
                     margin-bottom: 0.5rem
             .nextBook
                 margin-top: 3rem
-                width: 100%
                 height: 280px
                 background-color: #ffffff
                 padding: 1rem
@@ -103,7 +102,7 @@ html, body, #app
                         margin-left: 0.5rem
                 .cards
                     display: grid
-                    grid-template: 1fr 1fr 1fr 1fr / 1fr 1fr 1fr 1fr
+                    grid-template: 1fr / 1fr 1fr 1fr 1fr 1fr
                     .card
                         cursor: pointer
                         display: inline-flex
@@ -124,6 +123,8 @@ html, body, #app
                             .bp3-tag
                                 margin-right: 0.5rem
                                 margin-bottom: 0.5rem
+                            svg
+                                width: 100%
         .debug
             background-color: #000
             .logs

@@ -454,7 +454,7 @@ const App = () => {
                                                 <div className="nextBook">
                                                     <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
                                                     <div className="cards">
-                                                        {suggestBooks.slice(0, 4).map((book) => {
+                                                        {suggestBooks.slice(0, 5).map((book) => {
                                                             return <SuggestBook book={book} key={book.isbn} />
                                                         })}
                                                     </div>

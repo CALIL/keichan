@@ -36,7 +36,7 @@ const SuggestBook = (props: any) => {
                     <svg ref={svgElement} xmlns="http://www.w3.org/2000/svg" version="1.1"/>
                 </div>
             </div>
-            <Icon icon="add" size={25} color={'#ffffff'} />
+            {/* <Icon icon="add" size={25} color={'#ffffff'} /> */}
         </Card>
     )
 }
