@@ -13,8 +13,8 @@ const SuggestBook = (props: any) => {
             format: 'codabar',
             width: 1.25,
             height: 26,
-            displayValue: false,
             margin: 10,
+            fontSize: 12,
         })
     }, [])
 
@@ -32,10 +32,10 @@ const SuggestBook = (props: any) => {
                     {book.tags.map((tag) => (
                         <Tag>{tag}</Tag>
                     ))}
-                    <p>{book.isbn}</p>
-                    <svg ref={svgElement} xmlns="http://www.w3.org/2000/svg" version="1.1"/>
+                    {/* <p>{book.isbn}</p> */}
                 </div>
             </div>
+            <svg ref={svgElement} xmlns="http://www.w3.org/2000/svg" version="1.1"/>
             {/* <Icon icon="add" size={25} color={'#ffffff'} /> */}
         </Card>
     )
