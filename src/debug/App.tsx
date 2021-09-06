@@ -247,7 +247,7 @@ const App = () => {
                 logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます。')
             }
 
-            logs.push(str)
+            logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
 
             const prevRow = rowList[rowList.length - 1]
             // console.log(prevRow)
