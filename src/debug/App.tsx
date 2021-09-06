@@ -403,7 +403,7 @@ const App = () => {
             </header>
             <main>
                 <div className="main">
-                    {rowList.length === 0 ||  rowList.length <= 1 && rowList[rowList.length - 1].title ? (
+                    {rowList.length === 0 || rowList.length <= 1 && rowList[rowList.length - 1].title ? (
                         <div className="description">
                             <div>
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
@@ -440,12 +440,43 @@ const App = () => {
                                             <Icon icon="delete" size={25} color={'#ffffff'} />
                                         </Card>
                                     ) : (
-                                        <div className="description">
-                                            <div>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
-                                                紐つけるバーコードをスキャンしてください
+                                        <>
+                                            <div className="description">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                                    紐つけるバーコードをスキャンしてください
+                                                </div>
                                             </div>
-                                        </div>
+                                            {targetBook && suggestBooks.length > 0 ? (
+                                                <div className="nextBook">
+                                                    <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
+                                                    <div className="cards">
+                                                        {suggestBooks.map((book) => {
+                                                            return (
+                                                                <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
+                                                                    <div className="card-header">
+                                                                        {book.cover ? (
+                                                                            <img src={book.cover} alt={book.title} />
+                                                                        ) : null}
+                                                                        <div>
+                                                                            <h3>{[book.title, book.volume].join(' ')}</h3>
+                                                                            <p className="author">{book.author}</p>
+                                                                            {/* <p>{book.pubdate}</p>
+                                                <p>{book.publisher}</p> */}
+                                                                            {book.tags.map((tag) => (
+                                                                                <Tag>{tag}</Tag>
+                                                                            ))}
+                                                                            <p>{book.isbn}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <Icon icon="add" size={25} color={'#ffffff'} />
+                                                                </Card>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ) : null}
+                                        </>
                                     )}
                                 </>
                             )
@@ -475,35 +506,6 @@ const App = () => {
                             <Button icon="plus">追加</Button>
                         </FormGroup>
                     </div> */}
-                    {targetBook && suggestBooks.length > 0 ? (
-                        <div className="nextBook">
-                            <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
-                            <div className="cards">
-                                {suggestBooks.map((book) => {
-                                    return (
-                                        <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
-                                            <div className="card-header">
-                                                {book.cover ? (
-                                                    <img src={book.cover} alt={book.title} />
-                                                ) : null}
-                                                <div>
-                                                    <h3>{[book.title, book.volume].join(' ')}</h3>
-                                                    <p className="author">{book.author}</p>
-                                                    {/* <p>{book.pubdate}</p>
-                                                <p>{book.publisher}</p> */}
-                                                    {book.tags.map((tag) => (
-                                                        <Tag>{tag}</Tag>
-                                                    ))}
-                                                    <p>{book.isbn}</p>
-                                                </div>
-                                            </div>
-                                            <Icon icon="add" size={25} color={'#ffffff'} />
-                                        </Card>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    ) : null}
                 </div>
                 <div className="debug">
                     <div className="logs" ref={debugLogDiv}>
