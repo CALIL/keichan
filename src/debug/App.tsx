@@ -118,7 +118,7 @@ const App = () => {
 
     const cmdCursor = useRef(null)
     useEffect(() => {
-        setInterval(() => {
+        const timer = setInterval(() => {
             if (cmdCursor.current) {
                 cmdCursor.current.style.display = 'none'
                 setTimeout(() => {
@@ -126,6 +126,9 @@ const App = () => {
                 }, 500)
             }
         }, 1000)
+        return () => {
+            clearInterval(timer)
+        }
     }, [true])
 
 
@@ -183,6 +186,10 @@ const App = () => {
             }
         } else {
             if (str.length > 20) {
+                setAlertMessage({
+                    show: true,
+                    message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません。'
+                })
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push(<>
                     <span style={{color: 'red'}}>!!</span>
@@ -208,8 +215,8 @@ const App = () => {
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
-            if (str.match(/[a-zA-Z]+/)) {
-                logs.push('英数字のみが入力されました。処理しません。')
+            if (str.match(/^[a-zA-Z]*$/)) {
+                logs.push('英字のみが入力されました。処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
