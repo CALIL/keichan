@@ -451,7 +451,7 @@ const App = () => {
                                                 <div className="nextBook">
                                                     <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
                                                     <div className="cards">
-                                                        {suggestBooks.map((book) => {
+                                                        {suggestBooks.slice(0, 4).map((book) => {
                                                             return (
                                                                 <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
                                                                     <div className="card-header">
