@@ -122,7 +122,7 @@ const App = () => {
         if (checkEnable === false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
-            logs.push('本のバーコードが読まれました。')
+            logs.push('ISBNのバーコードが読まれました。')
             logs.push(str)
             const book: any = await getBook(isbn)
             if (book) {
