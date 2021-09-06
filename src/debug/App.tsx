@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay } from "@blueprintjs/core";
 
@@ -93,6 +93,15 @@ const App = () => {
         const currentRow = rowList[rowList.length - 1]
         setCurrentRow(currentRow)
     }, [rowList])
+
+    const debugLogDiv = useRef(null)
+    useEffect(() => {
+        if (debugLogDiv.current) {
+            const element = debugLogDiv.current
+            console.log(element)
+            element.scrollTop = element.scrollHeight
+        }
+    }, [debugLogs])
 
     useEffect(() => {
         setTimeout(() => {
@@ -480,7 +489,7 @@ const App = () => {
                     ) : null}
                 </div>
                 <div className="debug">
-                    <div className="logs">
+                    <div className="logs" ref={debugLogDiv}>
                         {debugLogs.map((log, i) => {
                             return (
                                 <div key={'log'+i}>{log}</div>

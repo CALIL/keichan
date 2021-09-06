@@ -22,6 +22,7 @@ html, body, #app
 #debug
     height: 100%
     header
+        height: 68px
         background-color: #20B4EA
         margin: 0
         h1
@@ -33,40 +34,12 @@ html, body, #app
                 font-size: 0.8rem
                 margin-left: 0.5rem
     main
-        display: flex
+        display: grid
+        grid-template-columns: 1fr 300px
         height: 100%
-        .left
-            flex: 1
-            background-color: #CCCCCC
-            .barcode
-                margin-bottom: 1rem
-                background-color: #CCCCCC
-                padding: 1rem
-                &.active
-                    background-color: #106BA3
-                .tag
-                    margin-bottom: 0.5rem
-                p
-                    font-size: 1.25rem
-                    color: #ffffff
-
-
-        .debug
-            flex: 1
-            background-color: #CCCCCC
-            height: 100%
-            .logs
-                height: 100%
-                color: #ffffff
-                background-color: #000
-                padding: 1rem
-                div
-                    margin-bottom: 0.5rem
         .main
             position: relative
-            flex: 3
             background-color: #fff
-            height: 100%
             padding: 1rem
             h3
                 margin-bottom: 1rem
@@ -106,11 +79,17 @@ html, body, #app
                     margin-bottom: 0.5rem
             .nextBook
                 position: absolute
-                top: 50vh
+                top: 30vh
+                left: 0
                 margin-top: 3rem
-                width: 98%
+                width: 100%
+                height: 60vh
                 background-color: #ffffff
+                padding: 1rem
+                overflow-y: scroll
+                box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 -1px 1px rgb(16 22 26 / 20%), 0 -2px 6px rgb(16 22 26 / 20%)
                 h2
+                    margin-left: 0.5rem
                     margin-bottom: 1rem
                     span
                         display: inline-block
@@ -140,3 +119,16 @@ html, body, #app
                             .bp3-tag
                                 margin-right: 0.5rem
                                 margin-bottom: 0.5rem
+        .debug
+            background-color: #000
+            .logs
+                color: #ffffff
+                padding: 1rem
+                height: 50vh
+                overflow-y: scroll
+                -ms-overflow-style: none
+                scrollbar-width: none
+                &::-webkit-scrollbar
+                    display: none
+                div
+                    margin-bottom: 0.5rem
