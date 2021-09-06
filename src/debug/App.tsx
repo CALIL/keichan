@@ -123,7 +123,7 @@ const App = () => {
         const isbn = normalize_isbn(str)
         if (isbn) {
             logs.push('ISBNのバーコードが読まれました。')
-            logs.push(str)
+            logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
             const book: any = await getBook(isbn)
             if (book) {
                 // console.log(book)
@@ -160,19 +160,22 @@ const App = () => {
                             show: true,
                             message: '次は資料コードのバーコードを読んでください。'
                         })
-                        logs.push('!! 資料コードのバーコードを読んでください。')
+                        logs.push(<>
+                            <span style={{color: 'red'}}>!!</span>
+                            <span> 資料コードのバーコードを読んでください。</span>
+                        </>)
                     }
                 }
             }
         } else {
             if (str.match(/^192/) !== null) {
-                logs.push(str)
+                logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
             if (str.match(/^491/) !== null) {
-                logs.push(str)
+                logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
@@ -212,7 +215,10 @@ const App = () => {
                     show: true,
                     message: 'すでに登録済みの資料コードです'
                 })
-                logs.push('!! すでに登録済みの資料コードです')
+                logs.push(<>
+                    <span style={{color: 'red'}}>!!</span>
+                    <span> すでに登録済みの資料コードです</span>
+                </>)
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
