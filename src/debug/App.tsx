@@ -208,6 +208,11 @@ const App = () => {
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
+            if (str.match(/[a-zA-Z]+/)) {
+                logs.push('英数字のみが入力されました。処理しません。')
+                setDebugLogs([...debugLogs, ...logs])
+                return
+            }
             // codabarの制御コードが入った時、数字のみにする
             if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
                 str = RegExp.$1
@@ -228,7 +233,7 @@ const App = () => {
                 prevRow.id = str
                 setRowList([...rowList])
                 logs.push(<>
-                    <span style={{color: 'red'}}>!</span>
+                    <span style={{color: 'lightgreen'}}>!</span>
                     <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました。</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
