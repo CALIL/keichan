@@ -3,6 +3,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay } from "@blueprintjs/core";
 
 import isbn_utils from 'isbn-utils'
+// @ts-ignore
+import {Howl} from 'howler'
 
 import SuggestBook from './SuggestBook';
 
@@ -11,6 +13,19 @@ import normalize_isbn from '../normalize_isbn.js'
 
 
 const REGION = 'recipe'
+
+
+let warningUrl = '/keichan/src/assets/audio/warning.mp3'
+
+let warningAudio = new Howl({
+    src: [warningUrl],
+    autoplay: false,
+    loop: false,
+    volume: 1,
+    onend: function () {
+        console.log('Finished!')
+    }
+})
 
 let keyBuffer = ''
 let keyTimer = null
@@ -181,6 +196,7 @@ const App = () => {
                             <span style={{color: 'red'}}>!!</span>
                             <span> 資料コードのバーコードを読んでください。</span>
                         </>)
+                        warningAudio.play()
                     }
                 }
             }
@@ -196,6 +212,7 @@ const App = () => {
                     <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません。</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
+                warningAudio.play()
                 return
             }
             if (str.match(/^192/) !== null) {
@@ -258,6 +275,7 @@ const App = () => {
                     <span> すでに登録済みの資料コードです</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
+                warningAudio.play()
                 return
             }
 
