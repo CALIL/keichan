@@ -166,7 +166,14 @@ const App = () => {
             }
         } else {
             if (str.match(/^192/) !== null) {
+                logs.push(str)
                 logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。')
+                setDebugLogs([...debugLogs, ...logs])
+                return
+            }
+            if (str.match(/^491/) !== null) {
+                logs.push(str)
+                logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
