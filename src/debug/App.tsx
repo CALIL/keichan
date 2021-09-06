@@ -4,8 +4,11 @@ import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGr
 
 import isbn_utils from 'isbn-utils'
 
+import SuggestBook from './SuggestBook';
+
 import api from '../api'
 import normalize_isbn from '../normalize_isbn.js'
+
 
 const REGION = 'recipe'
 
@@ -452,26 +455,7 @@ const App = () => {
                                                     <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
                                                     <div className="cards">
                                                         {suggestBooks.slice(0, 4).map((book) => {
-                                                            return (
-                                                                <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
-                                                                    <div className="card-header">
-                                                                        {book.cover ? (
-                                                                            <img src={book.cover} alt={book.title} />
-                                                                        ) : null}
-                                                                        <div>
-                                                                            <h3>{[book.title, book.volume].join(' ')}</h3>
-                                                                            <p className="author">{book.author}</p>
-                                                                            {/* <p>{book.pubdate}</p>
-                                                <p>{book.publisher}</p> */}
-                                                                            {book.tags.map((tag) => (
-                                                                                <Tag>{tag}</Tag>
-                                                                            ))}
-                                                                            <p>{book.isbn}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <Icon icon="add" size={25} color={'#ffffff'} />
-                                                                </Card>
-                                                            )
+                                                            return <SuggestBook book={book} key={book.isbn} />
                                                         })}
                                                     </div>
                                                 </div>
