@@ -27,9 +27,9 @@ export default defineConfig({
           },
           // ファイル名にハッシュを付けない
           output: {
-            entryFileNames: `assets/[name].js`,
-            chunkFileNames: `assets/[name].js`,
-            assetFileNames: `assets/[name].[ext]`
+            // entryFileNames: `assets/[name].js`,
+            // chunkFileNames: `assets/[name].js`,
+            // assetFileNames: `assets/[name].[ext]`
           }
         },
     },
