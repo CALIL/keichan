@@ -15,7 +15,7 @@ import normalize_isbn from './normalize_isbn.js'
 const REGION = 'recipe'
 
 
-let warningUrl = 'https://calil.github.io/keichan/assets/warning.ff1c1691.mp3'
+let warningUrl = './audio/warning.mp3'
 
 let warningAudio = new Howl({
     src: [warningUrl],
