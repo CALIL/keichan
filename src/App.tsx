@@ -298,7 +298,7 @@ const App = () => {
     }
 
     return (
-        <div id="debug">
+        <div id="index">
             <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
                 <div className="bp3-card bp3-elevation-4 bp3-overlay-content">
                     <Icon icon="tick" size={25} color={'#000000'} />
