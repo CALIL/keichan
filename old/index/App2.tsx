@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import normalize_isbn from './normalize_isbn.js'
+import normalize_isbn from '../../src/normalize_isbn.js'
 
 import Spreadsheet, {Matrix, CellBase} from 'react-spreadsheet'
 

@@ -24,17 +24,17 @@ export default defineConfig({
           input: {
             // need a better way to template
             main: resolve(__dirname, 'index.html'),
-            page: resolve(__dirname, 'chat.html'),
-            page: resolve(__dirname, 'suggest.html'),
-            page: resolve(__dirname, 'new.html'),
-            page: resolve(__dirname, 'debug.html'),
+            // page: resolve(__dirname, 'chat.html'),
+            // page: resolve(__dirname, 'suggest.html'),
+            // page: resolve(__dirname, 'new.html'),
+            // page: resolve(__dirname, 'debug.html'),
           },
-        //   // ファイル名にハッシュを付けない
-        //   output: {
-        //     entryFileNames: `assets/[name].js`,
-        //     chunkFileNames: `assets/[name].js`,
-        //     assetFileNames: `assets/[name].[ext]`
-        //   }
+          // ファイル名にハッシュを付けない
+          output: {
+            entryFileNames: `assets/[name].js`,
+            chunkFileNames: `assets/[name].js`,
+            assetFileNames: `assets/[name].[ext]`
+          }
         },
     },
 })
