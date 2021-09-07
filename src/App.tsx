@@ -116,7 +116,6 @@ const App = () => {
     useEffect(() => {
         if (debugLogDiv.current) {
             const element = debugLogDiv.current
-            console.log(element)
             element.scrollTop = element.scrollHeight
         }
     }, [debugLogs])

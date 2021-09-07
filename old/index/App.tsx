@@ -9,7 +9,7 @@ import XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
 
 // import Suggest from '../Suggest'
-import Speech from '../../src/Speech'
+import Speech from '../Speech'
 
 import api from '../../src/api';
 
