@@ -30,7 +30,7 @@ const SuggestBook = (props: any) => {
                     {/* <p>{book.pubdate}</p>
                     <p>{book.publisher}</p> */}
                     {book.tags.map((tag) => (
-                        <Tag>{tag}</Tag>
+                        <Tag key={tag}>{tag}</Tag>
                     ))}
                     {/* <p>{book.isbn}</p> */}
                 </div>
