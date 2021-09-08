@@ -5,6 +5,9 @@ import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGr
 // @ts-ignore
 import {Howl} from 'howler'
 
+import XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
+
 import SuggestBook from './SuggestBook'
 
 import {getBook, getBooks} from './getBooks'
@@ -66,6 +69,33 @@ const speak = (text: string):void => {
         speechText.rate = 1.5
         speechSynthesis.speak(speechText)
     }
+}
+
+const downloadXSLX = (books): void => {
+    const wb = XLSX.utils.book_new();
+    wb.Props = {
+            Title: "",
+            Subject: "",
+            Author: "",
+            CreatedDate: new Date()
+    };
+    wb.SheetNames.push("Test Sheet"); // これ以外の名前にするとデータがないEXCELファイルになる？
+    // const ws_data = [['hello' , 'world']];
+    const ws_data: [string, string, string, string][] = [];
+    books.map((book) => {
+        // @ts-ignore
+        ws_data.push([book.id, book.title, book.author, book.publisher, book.isbn, book.tags.join(',')])
+    })
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    wb.Sheets["Test Sheet"] = ws;
+    const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+    function s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'test.xlsx');
 }
 
 
@@ -359,7 +389,10 @@ const App = () => {
                     カーリルtoolbox: keichan
                     {mode === 'management' ? (<span className="mode">資料コード</span>) : null}
                 </h1>
-                <Button icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
+                <div>
+                    <Button icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
+                    <Button icon="download" onClick={() => downloadXSLX(rowList)}>Excelで保存</Button>
+                </div>
             </header>
             <main>
                 <div className="main">
