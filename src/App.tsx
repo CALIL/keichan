@@ -84,13 +84,19 @@ const speak = (text: string):void => {
 
 const App = () => {
 
-    const [rowList, setRowList] = useState([])
+    const [licenseKey, setLicenseKey] = useState('gk-xxxxxxxxxxxxxxx')
+
+    let rowListData = []
+    const localStorageData = localStorage.getItem('keichanData_' + licenseKey)
+    if (localStorageData) rowListData = JSON.parse(localStorageData)
+
+    const [rowList, setRowList] = useState(rowListData)
+
     const [debugLogs, setDebugLogs] = useState([])
 
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
 
-    const [licenseKey, setLicenseKey] = useState('gk-xxxxxxxxxxxxxxx')
     const [mode, setMode] = useState('isbn')
 
     const [checkEnable, setCheckEnable] = useState(true)
@@ -103,6 +109,11 @@ const App = () => {
         show: false,
         message: ''
     })
+
+    useEffect(() => {
+        localStorage.setItem('keichanData_' + licenseKey, JSON.stringify(rowList))
+    }, [rowList])
+
 
     // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
     // https://github.com/facebook/react/issues/14092
