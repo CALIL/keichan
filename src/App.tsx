@@ -59,6 +59,16 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
 }
 
 
+const speak = (text: string):void => {
+    if ('speechSynthesis' in window) {
+        const speechText = new SpeechSynthesisUtterance(text)
+        // 速度 0.1-10 初期値:1 (倍速なら2, 半分の倍速なら0.5)
+        speechText.rate = 1.5
+        speechSynthesis.speak(speechText)
+    }
+}
+
+
 // const rowList = [
 //     {
 //         id: '10001' or '9784774142230',
@@ -161,6 +171,7 @@ const App = () => {
                 if (mode === 'isbn') {
                     book.id = book.isbn
                     setRowList([...rowList, book])
+                    speak(`${book.title}を追加しました。`)
 
                     const prevRow = rowList[rowList.length - 1]
                     if (prevRow && prevRow.title) {
@@ -185,6 +196,7 @@ const App = () => {
                         lastRow.bibHash = book.bibHash
                         // console.log(tempList)
                         setRowList(tempList)
+                        speak(`${book.title}を追加。`)
                     } else {
                         setAlertMessage({
                             show: true,
