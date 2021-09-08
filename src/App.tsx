@@ -79,14 +79,14 @@ const downloadXSLX = (rows, fileName): void => {
             Author: "",
             CreatedDate: new Date()
     };
-    wb.SheetNames.push("蔵書データ");
+    wb.SheetNames.push('蔵書データ');
     const ws_data: [string, string, string, string, string, string][] = [];
     ws_data.push(['id', 'タイトル', '著者', '出版社', 'ISBN', 'タグ'])
     rows.map((row) => {
         ws_data.push([row.id, row.title, row.author, row.publisher, row.isbn, row.tags.join(',')])
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    wb.Sheets["蔵書データ"] = ws;
+    wb.Sheets['蔵書データ'] = ws;
     const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
     function s2ab(s) {
         const buf = new ArrayBuffer(s.length);
@@ -94,7 +94,7 @@ const downloadXSLX = (rows, fileName): void => {
         for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     }
-    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName + '.xlsx');
+    saveAs(new Blob([s2ab(wbout)],{type:'application/octet-stream'}), fileName + '.xlsx');
 }
 
 
