@@ -391,7 +391,9 @@ const App = () => {
                 </h1>
                 <div>
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
-                    <Button icon="download" onClick={() => downloadXSLX(rowList)}>Excelで保存</Button>
+                    {rowList.length > 0 ? (
+                        <Button icon="download" onClick={() => downloadXSLX(rowList)}>Excelで保存</Button>
+                    ) : null}
                 </div>
             </header>
             <main>
