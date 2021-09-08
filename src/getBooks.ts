@@ -2,6 +2,8 @@ import isbn_utils from 'isbn-utils'
 import api from './api.js'
 import normalize_isbn from './normalize_isbn.js'
 
+import sha1 from 'sha1'
+
 const REGION = 'recipe'
 
 export const getBook = async (isbn) => {
@@ -158,5 +160,5 @@ const getOpenBD = async (isbns) => {
 
 // todo
 const getBibHash = (book: any) => {
-    return book.isbn
+    return sha1(book.id + book.title + book.author + book.publisher + book.isbn)
 }
