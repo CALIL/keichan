@@ -158,7 +158,6 @@ const getOpenBD = async (isbns) => {
 }
 
 
-// todo
 const getBibHash = (book: any) => {
     return sha1(book.id + book.title + book.author + book.publisher + book.isbn)
 }
