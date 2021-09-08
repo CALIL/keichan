@@ -145,13 +145,24 @@ const getOpenBD = async (isbns) => {
 
                 let price = ''
                 try {
-                    console.log(book.onix.ProductSupply.SupplyDetail.Price)
+                    // console.log(book.onix.ProductSupply.SupplyDetail.Price)
                     book.onix.ProductSupply.SupplyDetail.Price.some((p) => {
                         if (p.CurrencyCode=== 'JPY') {
                             price = p.PriceAmount
                         }
                     })
                 } catch { }
+
+                let cCode = ''
+                try {
+                    // console.log(book.onix.DescriptiveDetail.Subject)
+                    book.onix.DescriptiveDetail.Subject.some((s) => {
+                        if (s.SubjectSchemeIdentifier=== '78') {
+                            cCode = s.SubjectCode
+                        }
+                    })
+                } catch { }
+
 
                 const openBDBook: any = {
                     'title': [book.summary.title, volume].join(' '),
@@ -162,7 +173,7 @@ const getOpenBD = async (isbns) => {
                     'cover': book.summary.cover,
                     'tags': tags,
                     'price': price,
-                    'cCode': ''
+                    'cCode': cCode
                 }
                 openBDBook.bibHash = getBibHash(openBDBook)
                 openBDBooks.push(openBDBook)
