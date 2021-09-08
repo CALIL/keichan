@@ -97,7 +97,9 @@ const App = () => {
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
 
-    const [mode, setMode] = useState('isbn')
+    let tempMode = 'isbn'
+    if (localStorageData && rowList[0].id !== rowList[0].isbn) tempMode = 'management'
+    const [mode, setMode] = useState(tempMode)
 
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
