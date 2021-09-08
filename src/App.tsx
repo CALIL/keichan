@@ -235,6 +235,8 @@ const App = () => {
                         lastRow.cover = book.cover
                         lastRow.tags = book.tags
                         lastRow.bibHash = book.bibHash
+                        lastRow.price = book.price
+                        lastRow.cCode = book.cCode
                         // console.log(tempList)
                         setRowList(tempList)
                         if (enableSpeak) speak(`${book.title}を追加。`)

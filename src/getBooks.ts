@@ -21,6 +21,8 @@ export const getBook = async (isbn) => {
                     pubdate: b.pubdate,
                     isbn: b.isbn,
                     tags: [],
+                    price: '',
+                    cCode: ''
                 }
                 book.bibHash = getBibHash(book)
                 let i = isbn_utils.parse(normalize_isbn(book.isbn))
@@ -132,12 +134,23 @@ const getOpenBD = async (isbns) => {
                         }
                     })
                 } catch { }
+
                 let volume = book.summary.volume
                 try {
                     // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
                     if (volume === '') {
                         volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
                     }
+                } catch { }
+
+                let price = ''
+                try {
+                    console.log(book.onix.ProductSupply.SupplyDetail.Price)
+                    book.onix.ProductSupply.SupplyDetail.Price.some((p) => {
+                        if (p.CurrencyCode=== 'JPY') {
+                            price = p.PriceAmount
+                        }
+                    })
                 } catch { }
 
                 const openBDBook: any = {
@@ -147,7 +160,9 @@ const getOpenBD = async (isbns) => {
                     'isbn': book.summary.isbn,
                     'pubdate': book.summary.pubdate,
                     'cover': book.summary.cover,
-                    'tags': tags
+                    'tags': tags,
+                    'price': price,
+                    'cCode': ''
                 }
                 openBDBook.bibHash = getBibHash(openBDBook)
                 openBDBooks.push(openBDBook)
