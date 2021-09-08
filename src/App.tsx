@@ -85,7 +85,6 @@ const speak = (text: string):void => {
 const App = () => {
 
     const [rowList, setRowList] = useState([])
-    const [currentRow, setCurrentRow] = useState(null)
     const [debugLogs, setDebugLogs] = useState([])
 
     const [targetBook, setTargetBook] = useState(null as any)
@@ -116,11 +115,6 @@ const App = () => {
         }
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
-
-    useEffect(() => {
-        const currentRow = rowList[rowList.length - 1]
-        setCurrentRow(currentRow)
-    }, [rowList])
 
     const debugLogDiv = useRef(null)
     useEffect(() => {
@@ -229,15 +223,25 @@ const App = () => {
                 return
             }
             if (str.match(/^192/) !== null) {
+                setAlertMessage({
+                    show: true,
+                    message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。'
+                })
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
+                warningAudio.play()
                 return
             }
             if (str.match(/^491/) !== null) {
+                setAlertMessage({
+                    show: true,
+                    message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません。'
+                })
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません。')
                 setDebugLogs([...debugLogs, ...logs])
+                warningAudio.play()
                 return
             }
             if (str.match(/[a-zA-Z0-9]+/) === null) {
