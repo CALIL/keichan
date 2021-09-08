@@ -71,7 +71,7 @@ const speak = (text: string):void => {
     }
 }
 
-const downloadXSLX = (books): void => {
+const downloadXSLX = (rows, fileName): void => {
     const wb = XLSX.utils.book_new();
     wb.Props = {
             Title: "",
@@ -81,10 +81,10 @@ const downloadXSLX = (books): void => {
     };
     wb.SheetNames.push("Test Sheet"); // これ以外の名前にするとデータがないEXCELファイルになる？
     // const ws_data = [['hello' , 'world']];
-    const ws_data: [string, string, string, string][] = [];
-    books.map((book) => {
-        // @ts-ignore
-        ws_data.push([book.id, book.title, book.author, book.publisher, book.isbn, book.tags.join(',')])
+    const ws_data: [string, string, string, string, string, string][] = [];
+    ws_data.push(['id', 'タイトル', '著者', '出版社', 'ISBN', 'タグ'])
+    rows.map((row) => {
+        ws_data.push([row.id, row.title, row.author, row.publisher, row.isbn, row.tags.join(',')])
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     wb.Sheets["Test Sheet"] = ws;
@@ -95,7 +95,7 @@ const downloadXSLX = (books): void => {
         for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     }
-    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), 'test.xlsx');
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), fileName + '.xlsx');
 }
 
 
@@ -392,7 +392,7 @@ const App = () => {
                 <div>
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                     {rowList.length > 0 ? (
-                        <Button icon="download" onClick={() => downloadXSLX(rowList)}>Excelで保存</Button>
+                        <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
                     ) : null}
                 </div>
             </header>
