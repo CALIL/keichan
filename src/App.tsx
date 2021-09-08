@@ -194,7 +194,6 @@ const App = () => {
         }
     }, [true])
 
-
     const checkStr = async (str) => {
         // console.log(str)
         // console.log(mode)
@@ -361,6 +360,22 @@ const App = () => {
         setTimeout(() => setCheckEnable(true), 100)
     }
 
+    const removeRow = (id: string) => {
+        setRowList(rowList.filter((row) => row.id !== id))
+    }
+
+    const removeBook = (id: string) => {
+        const tempRowList = []
+        rowList.forEach((row) => {
+            if (row.id === id) {
+                tempRowList.push({id: row.id})
+            } else {
+                tempRowList.push(row)
+            }
+        })
+        setRowList([...tempRowList])
+    }
+
     return (
         <div id="index">
             <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
@@ -418,17 +433,17 @@ const App = () => {
                             return (
                                 <div key={'row'+i}>
                                     {mode === 'management' ? (
-                                        <Card key="managementCode" className="card active" interactive={true} elevation={Elevation.TWO}>
+                                        <Card key="managementCode" className="card active" interactive={false} elevation={Elevation.TWO}>
                                             {/* <div>
                                             <Tag className="tag" large>{row.id}</Tag>
                                             <Tag className="tag">資料コード</Tag>
                                         </div> */}
                                             <img src={`https://img.shields.io/badge/%E8%B3%87%E6%96%99%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-blue`} alt="" />
-                                            {/* <Icon icon="delete" size={25} color={'#ffffff'} /> */}
+                                            <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
                                         </Card>
                                     ) : null}
                                     {row.title ? (
-                                        <Card key={row.bibHash} className="card indent" interactive={true} elevation={Elevation.TWO}>
+                                        <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                             <div>
                                                 {row.cover ? (
                                                     <img className="thumbnail" src={row.cover} alt="" />
@@ -439,7 +454,7 @@ const App = () => {
                                                     <h3>{row.title}</h3>
                                                 </div>
                                             </div>
-                                            {/* <Icon icon="delete" size={25} color={'#ffffff'} /> */}
+                                            <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
                                         </Card>
                                     ) : (
                                         <>
