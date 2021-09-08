@@ -115,6 +115,7 @@ const App = () => {
             window.removeEventListener('keydown', callback)
         }
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
+    // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
 
     useEffect(() => {
         const currentRow = rowList[rowList.length - 1]
