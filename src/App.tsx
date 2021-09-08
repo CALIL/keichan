@@ -390,7 +390,7 @@ const App = () => {
                     {mode === 'management' ? (<span className="mode">資料コード</span>) : null}
                 </h1>
                 <div>
-                    <Button icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
+                    <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                     <Button icon="download" onClick={() => downloadXSLX(rowList)}>Excelで保存</Button>
                 </div>
             </header>
