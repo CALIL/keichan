@@ -1,7 +1,7 @@
 #index
     height: 100%
     // alertMessage
-    .bp3-overlay-content
+    .alert-message
         position: absolute
         top: calc(50vh - 1rem)
         left: calc(50vw - 200px)
@@ -9,22 +9,30 @@
         display: flex
         justify-content: center
         align-items: center
+        .settings
+            padding: 1rem
+    .settings-overlay
+        position: absolute
+        top: calc(50vh - 1rem)
+        left: calc(50vw - 200px)
+        width: 400px
+        .settings
+            padding: 1rem
+            h3
+                margin-bottom: 1rem
     header
         display: flex
         justify-content: space-between
         align-items: center
         height: 68px
         background-color: #20B4EA
+        padding: 0 1rem
         h1
             color: #ffffff
             .mode
                 display: inline-block
                 font-size: 0.8rem
                 margin-left: 0.5rem
-        .settings
-            padding: 1rem
-            label
-                color: #ffffff
     main
         display: grid
         grid-template-columns: 1fr 300px

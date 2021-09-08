@@ -96,6 +96,7 @@ const App = () => {
 
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
+    const [showSettings, setShowSettings] = useState(false)
 
     const [alertMessage, setAlertMessage] = useState({
         // show: true,
@@ -313,9 +314,22 @@ const App = () => {
     return (
         <div id="index">
             <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
-                <div className="bp3-card bp3-elevation-4 bp3-overlay-content">
+                <div className="bp3-card bp3-elevation-4 bp3-overlay-content alert-message">
                     <Icon icon="tick" size={25} color={'#000000'} />
                     {alertMessage.message}
+                </div>
+            </Overlay>
+            <Overlay isOpen={showSettings} onClose={() => setShowSettings(false)} hasBackdrop={true}>
+                <div className="bp3-card bp3-elevation-4 bp3-overlay-content settings-overlay">
+                    <div className="settings">
+                    <h3>設定</h3>
+                    {'speechSynthesis' in window ? (
+                            <Switch checked={enableSpeak} label="読み上げ" onChange={() => setEnableSpeak(!enableSpeak)} />
+                    ) : null}
+                    <br />
+                    <br />
+                    <Button icon="cross" onClick={() => setShowSettings(false)}>閉じる</Button>
+                    </div>
                 </div>
             </Overlay>
             <header>
@@ -324,11 +338,7 @@ const App = () => {
                     カーリルtoolbox: keichan
                     {mode === 'management' ? (<span className="mode">資料コード</span>) : null}
                 </h1>
-                {'speechSynthesis' in window ? (
-                    <div className="settings">
-                        <Switch checked={enableSpeak} label="読み上げ" onChange={() => setEnableSpeak(!enableSpeak)} />
-                    </div>
-                ) : null}
+                <Button icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
             </header>
             <main>
                 <div className="main">
