@@ -87,19 +87,22 @@ const App = () => {
     const [licenseKey, setLicenseKey] = useState('gk-xxxxxxxxxxxxxxx')
 
     let rowListData = []
+    let tempMode = 'isbn'
     const localStorageData = localStorage.getItem('keichanData_' + licenseKey)
-    if (localStorageData) rowListData = JSON.parse(localStorageData)
+    if (localStorageData) {
+        const tempData = JSON.parse(localStorageData)
+        rowListData = tempData['rowList']
+        tempMode = tempData['mode']
+    }
 
     const [rowList, setRowList] = useState(rowListData)
+    const [mode, setMode] = useState(tempMode)
 
     const [debugLogs, setDebugLogs] = useState([])
 
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
 
-    let tempMode = 'isbn'
-    if (localStorageData && rowList[0].id !== rowList[0].isbn) tempMode = 'management'
-    const [mode, setMode] = useState(tempMode)
 
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
@@ -113,8 +116,8 @@ const App = () => {
     })
 
     useEffect(() => {
-        localStorage.setItem('keichanData_' + licenseKey, JSON.stringify(rowList))
-    }, [rowList])
+        localStorage.setItem('keichanData_' + licenseKey, JSON.stringify({mode: mode, rowList: rowList}))
+    }, [rowList, mode])
 
 
     // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
