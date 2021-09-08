@@ -454,7 +454,9 @@ const App = () => {
                                                     <h3>{row.title}</h3>
                                                 </div>
                                             </div>
-                                            <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                            {row.id === rowList[rowList.length - 1].id ? (
+                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                            ) : null}
                                         </Card>
                                     ) : (
                                         <>
