@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay } from "@blueprintjs/core";
+import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch } from "@blueprintjs/core";
 
 // @ts-ignore
 import {Howl} from 'howler'
@@ -95,6 +95,7 @@ const App = () => {
     const [mode, setMode] = useState('isbn')
 
     const [checkEnable, setCheckEnable] = useState(true)
+    const [enableSpeak, setEnableSpeak] = useState(true)
 
     const [alertMessage, setAlertMessage] = useState({
         // show: true,
@@ -112,7 +113,7 @@ const App = () => {
         return () => {
             window.removeEventListener('keydown', callback)
         }
-    }, [mode, rowList, checkEnable, debugLogs])
+    }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
 
     useEffect(() => {
         const currentRow = rowList[rowList.length - 1]
@@ -171,7 +172,7 @@ const App = () => {
                 if (mode === 'isbn') {
                     book.id = book.isbn
                     setRowList([...rowList, book])
-                    speak(`${book.title}を追加しました。`)
+                    if (enableSpeak) speak(`${book.title}を追加しました。`)
 
                     const prevRow = rowList[rowList.length - 1]
                     if (prevRow && prevRow.title) {
@@ -196,7 +197,7 @@ const App = () => {
                         lastRow.bibHash = book.bibHash
                         // console.log(tempList)
                         setRowList(tempList)
-                        speak(`${book.title}を追加。`)
+                        if (enableSpeak) speak(`${book.title}を追加。`)
                     } else {
                         setAlertMessage({
                             show: true,
@@ -318,10 +319,16 @@ const App = () => {
                 </div>
             </Overlay>
             <header>
+                <div></div>
                 <h1>
                     カーリルtoolbox: keichan
                     {mode === 'management' ? (<span className="mode">資料コード</span>) : null}
                 </h1>
+                {'speechSynthesis' in window ? (
+                    <div className="settings">
+                        <Switch checked={enableSpeak} label="読み上げ" onChange={() => setEnableSpeak(!enableSpeak)} />
+                    </div>
+                ) : null}
             </header>
             <main>
                 <div className="main">
