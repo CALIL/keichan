@@ -458,32 +458,34 @@ const App = () => {
                                             <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
                                         </Card>
                                     ) : null}
-                                    {row.isbn ? (
-                                        <Card key={row.bibHash+row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
-                                            <div>
-                                                <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" />
-                                            </div>
-                                            {row.id === rowList[rowList.length - 1].id ? (
-                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
-                                            ) : null}
-                                        </Card>
-                                    ) : null}
-                                    {row.title ? (
-                                        <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
-                                            <div>
-                                                {row.cover ? (
-                                                    <img className="thumbnail" src={row.cover} alt="" />
-                                                ) : null}
+                                    <div className="linkedData">
+                                        {row.isbn ? (
+                                            <Card key={row.bibHash+row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                                 <div>
-                                                    {/* <Tag className="tag">{row.isbn}</Tag> */}
-                                                    <h3>{row.title}</h3>
+                                                    <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" />
                                                 </div>
-                                            </div>
-                                            {row.id === rowList[rowList.length - 1].id ? (
-                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
-                                            ) : null}
-                                        </Card>
-                                    ) : null}
+                                                {row.id === rowList[rowList.length - 1].id ? (
+                                                    <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                                ) : null}
+                                            </Card>
+                                        ) : null}
+                                        {row.title ? (
+                                            <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
+                                                <div>
+                                                    {row.cover ? (
+                                                        <img className="thumbnail" src={row.cover} alt="" />
+                                                    ) : null}
+                                                    <div>
+                                                        {/* <Tag className="tag">{row.isbn}</Tag> */}
+                                                        <h3>{row.title}</h3>
+                                                    </div>
+                                                </div>
+                                                {row.id === rowList[rowList.length - 1].id ? (
+                                                    <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                                ) : null}
+                                            </Card>
+                                        ) : null}
+                                    </div>
                                     {row.title ? null : (
                                         <>
                                             <div className="description">
