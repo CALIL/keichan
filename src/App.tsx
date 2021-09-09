@@ -127,7 +127,7 @@ const App = () => {
     if (localStorageData) {
         const tempData = JSON.parse(localStorageData)
         rowListData = tempData['rowList']
-        tempMode = tempData['mode']
+        if (rowListData.length > 0) tempMode = tempData['mode']
     }
 
     const [rowList, setRowList] = useState(rowListData)
@@ -228,23 +228,25 @@ const App = () => {
                 logs.push('codabarの制御コードを検出しました')
             }
 
-            const tempList = [...rowList]
-            const lastRow = tempList[tempList.length - 1]
-            if (lastRow && !lastRow.isbn) {
-                lastRow.isbn = str
-                // console.log(tempList)
-                setRowList(tempList)
-            } else {
-                setAlertMessage({
-                    show: true,
-                    message: '次は資料コードのバーコードを読んでください'
-                })
-                logs.push(<>
-                    <span style={{color: 'red'}}>!!</span>
-                    <span> 資料コードのバーコードを読んでください</span>
-                </>)
-                warningAudio.play()
-                return
+            if (mode==='management' && rowList.length > 0) {
+                const tempList = [...rowList]
+                const lastRow = tempList[tempList.length - 1]
+                if (lastRow && !lastRow.isbn) {
+                    lastRow.isbn = str
+                    // console.log(tempList)
+                    setRowList(tempList)
+                } else {
+                    setAlertMessage({
+                        show: true,
+                        message: '次は資料コードのバーコードを読んでください'
+                    })
+                    logs.push(<>
+                        <span style={{color: 'red'}}>!!</span>
+                        <span> 資料コードのバーコードを読んでください</span>
+                    </>)
+                    warningAudio.play()
+                    return
+                }
             }
             const book: any = await getBook(isbn)
             if (book) {
