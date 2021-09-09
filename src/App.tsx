@@ -207,6 +207,25 @@ const App = () => {
             logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
             setTargetBook(null)
             setSuggestBooks([])
+
+            const tempList = [...rowList]
+            const lastRow = tempList[tempList.length - 1]
+            if (lastRow && !lastRow.isbn) {
+                lastRow.isbn = str
+                // console.log(tempList)
+                setRowList(tempList)
+            } else {
+                setAlertMessage({
+                    show: true,
+                    message: '次は資料コードのバーコードを読んでください。'
+                })
+                logs.push(<>
+                    <span style={{color: 'red'}}>!!</span>
+                    <span> 資料コードのバーコードを読んでください。</span>
+                </>)
+                warningAudio.play()
+                return
+            }
             const book: any = await getBook(isbn)
             if (book) {
                 // console.log(book)
@@ -214,8 +233,11 @@ const App = () => {
                 if (mode === 'isbn') {
                     book.id = book.isbn
                     setRowList([...rowList, book])
-                    if (enableSpeak) speak(`${book.title}を追加しました。`)
-
+                    if (enableSpeak) {
+                        speak(`${book.title}を追加しました。`)
+                    } else {
+                        logs.push(`「${book.title}」を追加しました。`)
+                    }
                     const prevRow = rowList[rowList.length - 1]
                     if (prevRow && prevRow.title) {
                         logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します。`)
@@ -233,7 +255,7 @@ const App = () => {
                         lastRow.title = book.title
                         lastRow.author = book.author
                         lastRow.publisher = book.publisher
-                        lastRow.isbn = book.isbn
+                        // lastRow.isbn = book.isbn
                         lastRow.cover = book.cover
                         lastRow.tags = book.tags
                         lastRow.bibHash = book.bibHash
@@ -242,16 +264,6 @@ const App = () => {
                         // console.log(tempList)
                         setRowList(tempList)
                         if (enableSpeak) speak(`${book.title}を追加。`)
-                    } else {
-                        setAlertMessage({
-                            show: true,
-                            message: '次は資料コードのバーコードを読んでください。'
-                        })
-                        logs.push(<>
-                            <span style={{color: 'red'}}>!!</span>
-                            <span> 資料コードのバーコードを読んでください。</span>
-                        </>)
-                        warningAudio.play()
                     }
                 }
             }
