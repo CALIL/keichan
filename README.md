@@ -1,10 +1,10 @@
 # keichan
 
-バーコードリーダーで図書館の書誌データを作るツール
+バーコードリーダーで書誌データを作るツール
 
 https://calil.github.io/keichan/
 
-## 使い方
+## development
 
 ```
 npm install  
