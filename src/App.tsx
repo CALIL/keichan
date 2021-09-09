@@ -129,7 +129,10 @@ const App = () => {
     const [rowList, setRowList] = useState(rowListData)
     const [mode, setMode] = useState(tempMode)
 
-    const [debugLogs, setDebugLogs] = useState([])
+    const logs = []
+    if (rowList.length === 0) logs.push('バーコードをスキャンしてください') 
+    if (rowList.length >= 1 && rowList[rowList.length - 1].title) logs.push('資料コードをスキャンしてください')
+    const [debugLogs, setDebugLogs] = useState(logs)
 
     const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
