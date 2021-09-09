@@ -29,18 +29,21 @@ let warningAudio = new Howl({
 
 let keyBuffer = ''
 let keyTimer = null
-
+let lastKeyInputTime = null
 
 // Window全体でのキー入力を拾う
 const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
-    // console.log('onKeyDown')
+    console.log('onKeyDown')
+    const nowTime = new Date().getTime()
+    const keyInterval = nowTime - lastKeyInputTime
+    lastKeyInputTime = nowTime
     const ev = e || window.event
     const key = ev.keyCode || ev.which || ev.charCode
     // console.log(keyBuffer)
     // console.log(e.key)
     // バーコードリーダーの入力終わり、Enterが押された時の処理
     if (e.key === 'Enter' || key === 13) {
-        callback(keyBuffer)
+        if (keyInterval < 100) callback(keyBuffer)
         if (keyTimer) clearTimeout(keyTimer)
         keyBuffer = ''
     // 入力された文字を拾う
@@ -55,7 +58,8 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
         if (keyTimer) clearTimeout(keyTimer)
         keyTimer = setTimeout(() => {
             // console.log('clear')
-            callback(keyBuffer)
+            // console.log(keyInterval)
+            if (keyInterval < 100) callback(keyBuffer)
             keyBuffer = ''
         }, 300)
     }
