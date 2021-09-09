@@ -483,7 +483,8 @@ const App = () => {
                                                 <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
                                             ) : null}
                                         </Card>
-                                    ) : (
+                                    ) : null}
+                                    {row.title ? null : (
                                         <>
                                             <div className="description">
                                                 <div>
