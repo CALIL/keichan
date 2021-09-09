@@ -218,6 +218,12 @@ const App = () => {
             setTargetBook(null)
             setSuggestBooks([])
 
+            // codabarの制御コードが入った時、数字のみにする
+            if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
+                str = RegExp.$1
+                logs.push('codabarの制御コードを検出しました')
+            }
+
             const tempList = [...rowList]
             const lastRow = tempList[tempList.length - 1]
             if (lastRow && !lastRow.isbn) {
@@ -492,6 +498,10 @@ const App = () => {
                                                     <div>
                                                         {/* <Tag className="tag">{row.isbn}</Tag> */}
                                                         <h3>{row.title}</h3>
+                                                        <p className="author">{row.author}</p>
+                                                        {row.tags.map((tag) => (
+                                                            <Tag key={tag}>{tag}</Tag>
+                                                        ))}
                                                     </div>
                                                 </div>
                                                 {row.id === rowList[rowList.length - 1].id ? (
