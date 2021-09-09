@@ -3,14 +3,14 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch } from "@blueprintjs/core";
 
 // @ts-ignore
-import {Howl} from 'howler'
+import { Howl } from 'howler'
 
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
 
 import SuggestBook from './SuggestBook'
 
-import {getBook, getBooks} from './getBooks'
+import { getBook, getBooks } from './getBooks'
 
 import normalize_isbn from './normalize_isbn.js'
 
@@ -46,11 +46,11 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
         if (keyInterval < 100) callback(keyBuffer)
         if (keyTimer) clearTimeout(keyTimer)
         keyBuffer = ''
-    // 入力された文字を拾う
+        // 入力された文字を拾う
     } else {
         if (e.key.length === 1) {
             keyBuffer += e.key
-        // codabarの制御コードが入った時
+            // codabarの制御コードが入った時
         } else if (e.key === 'Shift') {
         } else {
             keyBuffer = ''
@@ -66,7 +66,7 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
 }
 
 
-const speak = (text: string):void => {
+const speak = (text: string): void => {
     if ('speechSynthesis' in window) {
         const speechText = new SpeechSynthesisUtterance(text)
         // 速度 0.1-10 初期値:1 (倍速なら2, 半分の倍速なら0.5)
@@ -78,10 +78,10 @@ const speak = (text: string):void => {
 const downloadXSLX = (rows, fileName): void => {
     const wb = XLSX.utils.book_new();
     wb.Props = {
-            Title: "",
-            Subject: "",
-            Author: "",
-            CreatedDate: new Date()
+        Title: "",
+        Subject: "",
+        Author: "",
+        CreatedDate: new Date()
     };
     wb.SheetNames.push('蔵書データ');
     const ws_data: [string, string, string, string, string, string, string, string][] = [];
@@ -93,14 +93,14 @@ const downloadXSLX = (rows, fileName): void => {
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     wb.Sheets['蔵書データ'] = ws;
-    const wbout = XLSX.write(wb, {bookType:'xlsx',  type: 'binary'});
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
     function s2ab(s) {
         const buf = new ArrayBuffer(s.length);
         const view = new Uint8Array(buf);
-        for (let i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
         return buf;
     }
-    saveAs(new Blob([s2ab(wbout)],{type:'application/octet-stream'}), fileName + '.xlsx');
+    saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), fileName + '.xlsx');
 }
 
 
@@ -135,7 +135,7 @@ const App = () => {
 
     const logs = []
     if (rowList.length === 0) {
-        logs.push('バーコードをスキャンしてください') 
+        logs.push('バーコードをスキャンしてください')
     } else {
         if (rowList[rowList.length - 1].title) {
             logs.push('資料コードをスキャンしてください')
@@ -161,7 +161,7 @@ const App = () => {
     })
 
     useEffect(() => {
-        localStorage.setItem('keichanData_' + licenseKey, JSON.stringify({mode: mode, rowList: rowList}))
+        localStorage.setItem('keichanData_' + licenseKey, JSON.stringify({ mode: mode, rowList: rowList }))
     }, [rowList, mode])
 
 
@@ -218,7 +218,7 @@ const App = () => {
         const isbn = normalize_isbn(str)
         if (isbn) {
             logs.push('ISBNのバーコードが読まれました')
-            logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
+            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
             setTargetBook(null)
             setSuggestBooks([])
 
@@ -228,7 +228,7 @@ const App = () => {
                 logs.push('codabarの制御コードを検出しました')
             }
 
-            if (mode==='management' && rowList.length > 0) {
+            if (mode === 'management' && rowList.length > 0) {
                 const tempList = [...rowList]
                 const lastRow = tempList[tempList.length - 1]
                 if (lastRow && !lastRow.isbn) {
@@ -241,7 +241,7 @@ const App = () => {
                         message: '次は資料コードのバーコードを読んでください'
                     })
                     logs.push(<>
-                        <span style={{color: 'red'}}>!!</span>
+                        <span style={{ color: 'red' }}>!!</span>
                         <span> 資料コードのバーコードを読んでください</span>
                     </>)
                     warningAudio.play()
@@ -295,9 +295,9 @@ const App = () => {
                     show: true,
                     message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません'
                 })
-                logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
+                logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
                 logs.push(<>
-                    <span style={{color: 'red'}}>!!</span>
+                    <span style={{ color: 'red' }}>!!</span>
                     <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
@@ -309,7 +309,7 @@ const App = () => {
                     show: true,
                     message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません'
                 })
-                logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
+                logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
                 logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません')
                 setDebugLogs([...debugLogs, ...logs])
                 warningAudio.play()
@@ -320,7 +320,7 @@ const App = () => {
                     show: true,
                     message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません'
                 })
-                logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
+                logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
                 logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません')
                 setDebugLogs([...debugLogs, ...logs])
                 warningAudio.play()
@@ -346,7 +346,7 @@ const App = () => {
                 logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます')
             }
 
-            logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
+            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
 
             const prevRow = rowList[rowList.length - 1]
             // console.log(prevRow)
@@ -356,7 +356,7 @@ const App = () => {
                 prevRow.id = str
                 setRowList([...rowList])
                 logs.push(<>
-                    <span style={{color: 'lightgreen'}}>!</span>
+                    <span style={{ color: 'lightgreen' }}>!</span>
                     <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
@@ -370,7 +370,7 @@ const App = () => {
                     message: 'すでに登録済みの資料コードです'
                 })
                 logs.push(<>
-                    <span style={{color: 'red'}}>!!</span>
+                    <span style={{ color: 'red' }}>!!</span>
                     <span> すでに登録済みの資料コードです</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
@@ -403,15 +403,20 @@ const App = () => {
     }
 
     const removeBook = (id: string) => {
-        const tempRowList = []
-        rowList.forEach((row) => {
-            if (row.id === id) {
-                tempRowList.push({id: row.id})
-            } else {
-                tempRowList.push(row)
-            }
-        })
-        setRowList([...tempRowList])
+        if (mode === 'isbn') {
+            setRowList([...rowList.filter((row) => row.id !== id)])
+        }
+        if (mode === 'management') {
+            const tempRowList = []
+            rowList.forEach((row) => {
+                if (row.id === id) {
+                    tempRowList.push({ id: row.id })
+                } else {
+                    tempRowList.push(row)
+                }
+            })
+            setRowList([...tempRowList])
+        }
     }
 
     return (
@@ -425,13 +430,13 @@ const App = () => {
             <Overlay isOpen={showSettings} onClose={() => setShowSettings(false)} hasBackdrop={true}>
                 <div className="bp3-card bp3-elevation-4 bp3-overlay-content settings-overlay">
                     <div className="settings">
-                    <h3>設定</h3>
-                    {'speechSynthesis' in window ? (
+                        <h3>設定</h3>
+                        {'speechSynthesis' in window ? (
                             <Switch checked={enableSpeak} label="読み上げ" onChange={() => setEnableSpeak(!enableSpeak)} />
-                    ) : null}
-                    <br />
-                    <br />
-                    <Button icon="cross" onClick={() => setShowSettings(false)}>閉じる</Button>
+                        ) : null}
+                        <br />
+                        <br />
+                        <Button icon="cross" onClick={() => setShowSettings(false)}>閉じる</Button>
                     </div>
                 </div>
             </Overlay>
@@ -469,7 +474,7 @@ const App = () => {
                     {rowList.slice().reverse().map((row, i) => {
                         {
                             return (
-                                <div key={'row'+i}>
+                                <div key={'row' + i}>
                                     {mode === 'management' ? (
                                         <Card key="managementCode" className="card active" interactive={false} elevation={Elevation.TWO}>
                                             {/* <div>
@@ -482,7 +487,7 @@ const App = () => {
                                     ) : null}
                                     <div className="linkedData">
                                         {row.isbn ? (
-                                            <Card key={row.bibHash+row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
+                                            <Card key={row.bibHash + row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                                 <div>
                                                     {/* <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" /> */}
                                                     <span className="isbn">
@@ -490,9 +495,9 @@ const App = () => {
                                                         <span className="isbnCode">{row.isbn}</span>
                                                     </span>
                                                 </div>
-                                                {row.id === rowList[rowList.length - 1].id ? (
-                                                    <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
-                                                ) : null}
+                                                {/* {row.id === rowList[rowList.length - 1].id ? ( */}
+                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                                {/* ) : null} */}
                                             </Card>
                                         ) : null}
                                         {row.title ? (
@@ -510,13 +515,13 @@ const App = () => {
                                                         ))}
                                                     </div>
                                                 </div>
-                                                {row.id === rowList[rowList.length - 1].id ? (
-                                                    <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
-                                                ) : null}
+                                                {/* {row.id === rowList[rowList.length - 1].id ? ( */}
+                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                                {/* ) : null} */}
                                             </Card>
                                         ) : null}
                                     </div>
-                                    {row.title ? null : (
+                                    {mode === 'management' && typeof row.title === 'undefined' ? (
                                         <>
                                             <div className="description">
                                                 <div>
@@ -535,7 +540,7 @@ const App = () => {
                                                 </div>
                                             ) : null}
                                         </>
-                                    )}
+                                    ) : null}
                                 </div>
                             )
                         }
