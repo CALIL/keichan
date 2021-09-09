@@ -203,7 +203,7 @@ const App = () => {
         if (checkEnable === false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
-            logs.push('ISBNのバーコードが読まれました。')
+            logs.push('ISBNのバーコードが読まれました')
             logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
             setTargetBook(null)
             setSuggestBooks([])
@@ -217,11 +217,11 @@ const App = () => {
             } else {
                 setAlertMessage({
                     show: true,
-                    message: '次は資料コードのバーコードを読んでください。'
+                    message: '次は資料コードのバーコードを読んでください'
                 })
                 logs.push(<>
                     <span style={{color: 'red'}}>!!</span>
-                    <span> 資料コードのバーコードを読んでください。</span>
+                    <span> 資料コードのバーコードを読んでください</span>
                 </>)
                 warningAudio.play()
                 return
@@ -234,18 +234,18 @@ const App = () => {
                     book.id = book.isbn
                     setRowList([...rowList, book])
                     if (enableSpeak) {
-                        speak(`${book.title}を追加しました。`)
+                        speak(`${book.title}を追加`)
                     } else {
-                        logs.push(`「${book.title}」を追加しました。`)
+                        logs.push(`「${book.title}」を追加`)
                     }
                     const prevRow = rowList[rowList.length - 1]
                     if (prevRow && prevRow.title) {
-                        logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します。`)
+                        logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
                         setTargetBook(prevRow)
                         const books: any = await getBooks(prevRow)
                         setSuggestBooks(books as any)
                         if (books.length > 0) {
-                            logs.push(`候補の本が${books.length}冊みつかりました。`)
+                            logs.push(`候補の本が${books.length}冊みつかりました`)
                         }
                     }
                 } else if (mode === 'management') {
@@ -263,7 +263,7 @@ const App = () => {
                         lastRow.cCode = book.cCode
                         // console.log(tempList)
                         setRowList(tempList)
-                        if (enableSpeak) speak(`${book.title}を追加。`)
+                        if (enableSpeak) speak(`${book.title}を追加`)
                     }
                 }
             }
@@ -271,12 +271,12 @@ const App = () => {
             if (str.length > 20) {
                 setAlertMessage({
                     show: true,
-                    message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません。'
+                    message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません'
                 })
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
                 logs.push(<>
                     <span style={{color: 'red'}}>!!</span>
-                    <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません。</span>
+                    <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
                 warningAudio.play()
@@ -285,10 +285,10 @@ const App = () => {
             if (str.match(/^192/) !== null) {
                 setAlertMessage({
                     show: true,
-                    message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。'
+                    message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません'
                 })
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
-                logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません。')
+                logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません')
                 setDebugLogs([...debugLogs, ...logs])
                 warningAudio.play()
                 return
@@ -296,32 +296,32 @@ const App = () => {
             if (str.match(/^491/) !== null) {
                 setAlertMessage({
                     show: true,
-                    message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません。'
+                    message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません'
                 })
                 logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
-                logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません。')
+                logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません')
                 setDebugLogs([...debugLogs, ...logs])
                 warningAudio.play()
                 return
             }
             if (str.match(/[a-zA-Z0-9]+/) === null) {
-                logs.push('英数字以外のキーが入力されました。処理しません。')
+                logs.push('英数字以外のキーが入力されました。処理しません')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
             if (str.match(/^[a-zA-Z]*$/)) {
-                logs.push('英字のみが入力されました。処理しません。')
+                logs.push('英字のみが入力されました。処理しません')
                 setDebugLogs([...debugLogs, ...logs])
                 return
             }
             // codabarの制御コードが入った時、数字のみにする
             if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
                 str = RegExp.$1
-                logs.push('codabarの制御コードを検出しました。')
+                logs.push('codabarの制御コードを検出しました')
             }
             if (mode === 'isbn') {
                 setMode('management')
-                logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます。')
+                logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます')
             }
 
             logs.push(<span style={{fontFamily: '"Conv_OCRB", Sans-Serif'}}>{str}</span>)
@@ -335,7 +335,7 @@ const App = () => {
                 setRowList([...rowList])
                 logs.push(<>
                     <span style={{color: 'lightgreen'}}>!</span>
-                    <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました。</span>
+                    <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました</span>
                 </>)
                 setDebugLogs([...debugLogs, ...logs])
                 return
@@ -361,12 +361,12 @@ const App = () => {
             }])
 
             if (prevRow && prevRow.title) {
-                logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します。`)
+                logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
                 setTargetBook(prevRow)
                 const books: any = await getBooks(prevRow)
                 setSuggestBooks(books as any)
                 if (books.length > 0) {
-                    logs.push(`候補の本が${books.length}冊みつかりました。`)
+                    logs.push(`候補の本が${books.length}冊みつかりました`)
                 }
             }
         }
@@ -463,6 +463,9 @@ const App = () => {
                                             <div>
                                                 <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" />
                                             </div>
+                                            {row.id === rowList[rowList.length - 1].id ? (
+                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                            ) : null}
                                         </Card>
                                     ) : null}
                                     {row.title ? (
