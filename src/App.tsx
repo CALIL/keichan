@@ -461,12 +461,18 @@ const App = () => {
                                     {row.title ? (
                                         <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                             <div>
+                                                <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" />
+                                            </div>
+                                        </Card>
+                                    ) : null}
+                                    {row.title ? (
+                                        <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
+                                            <div>
                                                 {row.cover ? (
                                                     <img className="thumbnail" src={row.cover} alt="" />
                                                 ) : null}
                                                 <div>
                                                     {/* <Tag className="tag">{row.isbn}</Tag> */}
-                                                    <img src={`https://img.shields.io/badge/book-${row.isbn}-brightgreen`} alt="" />
                                                     <h3>{row.title}</h3>
                                                 </div>
                                             </div>
