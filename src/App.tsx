@@ -472,7 +472,11 @@ const App = () => {
                                         {row.isbn ? (
                                             <Card key={row.bibHash+row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                                 <div>
-                                                    <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" />
+                                                    {/* <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" /> */}
+                                                    <span className="isbn">
+                                                        <span className="isbnHeader">ISBN</span>
+                                                        <span className="isbnCode">{row.isbn}</span>
+                                                    </span>
                                                 </div>
                                                 {row.id === rowList[rowList.length - 1].id ? (
                                                     <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
