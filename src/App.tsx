@@ -43,11 +43,11 @@ const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
         callback(keyBuffer)
         if (keyTimer) clearTimeout(keyTimer)
         keyBuffer = ''
-        // 入力された文字を拾う
+    // 入力された文字を拾う
     } else {
         if (e.key.length === 1) {
             keyBuffer += e.key
-            // codabarの制御コードが入った時
+        // codabarの制御コードが入った時
         } else if (e.key === 'Shift') {
         } else {
             keyBuffer = ''
