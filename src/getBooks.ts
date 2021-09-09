@@ -27,9 +27,9 @@ export const getBook = async (isbn) => {
                 book.bibHash = getBibHash(book)
                 let i = isbn_utils.parse(normalize_isbn(book.isbn))
                 book.isbn = i.asIsbn13()
-                const openBDBooks = await getOpenBD([book.isbn])
-                // console.log(openBDBooks)
-                if (openBDBooks[0] !== null) {
+                const openBDBooks = await getOpenBD([book.isbn]) as any[]
+                if (openBDBooks.length > 0) {
+                    openBDBooks[0].id = book.id
                     resolve(openBDBooks[0])
                 } else {
                     resolve(book)
