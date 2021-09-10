@@ -14,6 +14,18 @@ import { getBook, getBooks } from './getBooks'
 
 import normalize_isbn from './normalize_isbn.js'
 
+let safetyUrl = './audio/safety.mp3'
+
+let safetyUrlAudio = new Howl({
+    src: [safetyUrl],
+    autoplay: false,
+    loop: false,
+    volume: 1,
+    onend: function () {
+        console.log('Finished!')
+    }
+})
+
 let warningUrl = './audio/warning.mp3'
 
 let warningAudio = new Howl({
@@ -217,6 +229,7 @@ const App = () => {
         if (checkEnable === false) return
         const isbn = normalize_isbn(str)
         if (isbn) {
+            safetyUrlAudio.play()
             logs.push('ISBNのバーコードが読まれました')
             logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
             setTargetBook(null)
