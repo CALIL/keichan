@@ -101,11 +101,8 @@ const downloadXSLX = (rows, fileName): void => {
     const ws_data: [string, string, string, string, string, string, string, string][] = [];
     ws_data.push(['id', 'タイトル', '著者', '出版社', 'ISBN', 'タグ', '価格', 'Cコード'])
     rows.map((row) => {
-        if (row.title) {
+        if (row.isbn) {
             ws_data.push([row.id, row.title, row.author, row.publisher, row.isbn, row.tags.join(','), row.price, row.cCode])
-        // 本が見つからなかったケース
-        } else if (row.isbn) {
-            ws_data.push([row.id, '', '', '', row.isbn, '', '', ''])
         }
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
@@ -272,6 +269,21 @@ const App = () => {
                 }
             }
             const book: any = await getBook(isbn10).catch(e => {
+                const tempList = [...rowList]
+                tempList.forEach((row, i) => {
+                    if (normalize_isbn(row.isbn) === isbn10) {
+                        row.title = ''
+                        row.author = ''
+                        row.publisher = ''
+                        row.cover = ''
+                        row.tags = ''
+                        row.bibHash = ''
+                        row.price = ''
+                        row.cCode = ''
+                    }
+                })
+                setRowList(tempList)
+                warningAudio.play()
                 setAlertMessage({
                     show: true,
                     message: '!! 本が見つかりませんでした'
@@ -557,7 +569,7 @@ const App = () => {
                                             </Card>
                                         ) : null}
                                     </div>
-                                    {mode === 'management' && typeof row.title === 'undefined' ? (
+                                    {mode === 'management' && typeof row.isbn === 'undefined' ? (
                                         <>
                                             <div className="description">
                                                 <div>
