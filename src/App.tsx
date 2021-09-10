@@ -199,8 +199,10 @@ const App = () => {
         }
     }, [debugLogs])
 
+    let timer
     useEffect(() => {
-        setTimeout(() => {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
             setAlertMessage({
                 show: false,
                 message: ''
@@ -266,7 +268,16 @@ const App = () => {
                     return
                 }
             }
-            const book: any = await getBook(isbn10).catch(e => {console.log('not found')})
+            const book: any = await getBook(isbn10).catch(e => {
+                setAlertMessage({
+                    show: true,
+                    message: '!! 本が見つかりませんでした'
+                })
+                logs.push(<>
+                    <span style={{ color: 'red' }}>!!</span>
+                    <span> 本が見つかりませんでした</span>
+                </>)
+            })
             if (book) {
                 // console.log(book)
                 logs.push('本が見つかりました！')
