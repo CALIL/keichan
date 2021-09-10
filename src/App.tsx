@@ -13,6 +13,8 @@ import SuggestBook from './SuggestBook'
 import { getBook, getBooks } from './getBooks'
 
 import normalize_isbn from './normalize_isbn.js'
+import isbn_utils from 'isbn-utils'
+// import Row from 'react-spreadsheet/dist/Row';
 
 let safetyUrl = './audio/safety.mp3'
 
@@ -227,8 +229,8 @@ const App = () => {
         // console.log(mode)
         const logs = []
         if (checkEnable === false) return
-        const isbn = normalize_isbn(str)
-        if (isbn) {
+        const isbn10 = normalize_isbn(str)
+        if (isbn10) {
             safetyUrlAudio.play()
             logs.push('ISBNのバーコードが読まれました')
             logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
@@ -245,7 +247,10 @@ const App = () => {
                 const tempList = [...rowList]
                 const lastRow = tempList[tempList.length - 1]
                 if (lastRow && !lastRow.isbn) {
-                    lastRow.isbn = str
+                    let i = isbn_utils.parse(isbn10)
+                    if (i) {
+                        lastRow.isbn = i.asIsbn13()
+                    }
                     // console.log(tempList)
                     setRowList(tempList)
                 } else {
@@ -261,7 +266,7 @@ const App = () => {
                     return
                 }
             }
-            const book: any = await getBook(isbn)
+            const book: any = await getBook(isbn10).catch(e => {console.log('not found')})
             if (book) {
                 // console.log(book)
                 logs.push('本が見つかりました！')
@@ -285,21 +290,21 @@ const App = () => {
                     }
                 } else if (mode === 'management') {
                     const tempList = [...rowList]
-                    const lastRow = tempList[tempList.length - 1]
-                    if (lastRow && !lastRow.title) {
-                        lastRow.title = book.title
-                        lastRow.author = book.author
-                        lastRow.publisher = book.publisher
-                        // lastRow.isbn = book.isbn
-                        lastRow.cover = book.cover
-                        lastRow.tags = book.tags
-                        lastRow.bibHash = book.bibHash
-                        lastRow.price = book.price
-                        lastRow.cCode = book.cCode
-                        // console.log(tempList)
-                        setRowList(tempList)
-                        if (enableSpeak) speak(`${book.title}を追加`)
-                    }
+                    tempList.forEach((row, i) => {
+                        if (normalize_isbn(row.isbn) === isbn10) {
+                            row.title = book.title
+                            row.author = book.author
+                            row.publisher = book.publisher
+                            row.cover = book.cover
+                            row.isbn = book.isbn
+                            row.tags = book.tags
+                            row.bibHash = book.bibHash
+                            row.price = book.price
+                            row.cCode = book.cCode
+                        }
+                    })
+                    setRowList(tempList)
+                    if (enableSpeak) speak(`${book.title}を追加`)
                 }
             }
         } else {
@@ -364,17 +369,17 @@ const App = () => {
             const prevRow = rowList[rowList.length - 1]
             // console.log(prevRow)
 
-            // まだ本が紐つけられていない時は資料コードを変更する
-            if (prevRow && !prevRow.title) {
-                prevRow.id = str
-                setRowList([...rowList])
-                logs.push(<>
-                    <span style={{ color: 'lightgreen' }}>!</span>
-                    <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました</span>
-                </>)
-                setDebugLogs([...debugLogs, ...logs])
-                return
-            }
+            // // まだ本が紐つけられていない時は資料コードを変更する
+            // if (prevRow && !prevRow.title) {
+            //     prevRow.id = str
+            //     setRowList([...rowList])
+            //     logs.push(<>
+            //         <span style={{ color: 'lightgreen' }}>!</span>
+            //         <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました</span>
+            //     </>)
+            //     setDebugLogs([...debugLogs, ...logs])
+            //     return
+            // }
 
             // すでに同じ資料コードが登録されていないか？
             if (rowList.filter((row) => row.id === str).length > 0) {
