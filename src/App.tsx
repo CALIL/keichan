@@ -286,11 +286,11 @@ const App = () => {
                 warningAudio.play()
                 setAlertMessage({
                     show: true,
-                    message: '!! 本が見つかりませんでした'
+                    message: '!! 本が見つかりませんでした。書誌データは追加されません'
                 })
                 logs.push(<>
                     <span style={{ color: 'red' }}>!!</span>
-                    <span> 本が見つかりませんでした</span>
+                    <span> 本が見つかりませんでした。書誌データは追加されません</span>
                 </>)
             })
             if (book) {
