@@ -276,7 +276,7 @@ const App = () => {
                         row.author = ''
                         row.publisher = ''
                         row.cover = ''
-                        row.tags = ''
+                        row.tags = []
                         row.bibHash = ''
                         row.price = ''
                         row.cCode = ''
