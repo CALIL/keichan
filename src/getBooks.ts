@@ -136,7 +136,8 @@ const getOpenBD = async (isbns) => {
                 try {
                     // console.log(book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber)
                     if (volume === '') {
-                        volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber
+                        volume = book.onix.DescriptiveDetail.TitleDetail.TitleElement.PartNumber.split(';')[0]
+                        if (book.summary.title.match(volume)) volume = ''
                     }
                 } catch { }
 
