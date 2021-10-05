@@ -28,7 +28,7 @@ let safetyUrlAudio = new Howl({
     }
 })
 
-let warningUrl = './audio/warning.mp3'
+let warningUrl = './audio/error.mp3'
 
 let warningAudio = new Howl({
     src: [warningUrl],
