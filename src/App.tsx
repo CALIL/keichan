@@ -34,7 +34,7 @@ let warningAudio = new Howl({
     src: [warningUrl],
     autoplay: false,
     loop: false,
-    volume: 1,
+    volume: 0.7,
     onend: function () {
         console.log('Finished!')
     }
