@@ -233,7 +233,6 @@ const App = () => {
         if (checkEnable === false) return
         const isbn10 = normalize_isbn(str)
         if (isbn10) {
-            safetyUrlAudio.play()
             logs.push('ISBNのバーコードが読まれました')
             logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
             setTargetBook(null)
@@ -268,6 +267,7 @@ const App = () => {
                     return
                 }
             }
+            safetyUrlAudio.play()
             const book: any = await getBook(isbn10).catch(e => {
                 const tempList = [...rowList]
                 tempList.forEach((row, i) => {
