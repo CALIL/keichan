@@ -223,7 +223,7 @@ const App = () => {
                     }
                 })
                 setRowList(data['rowList'])
-                if (rowListData.length > 0) setMode(data['mode'])
+                setMode(data['mode'])
             }
             reader.readAsText(f);
         }
