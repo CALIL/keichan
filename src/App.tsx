@@ -144,9 +144,10 @@ const App = () => {
     const localStorageData = localStorage.getItem('keichanData_' + licenseKey)
     if (localStorageData) {
         const tempData = JSON.parse(localStorageData)
+        // sourceが未定義のデータは、openBDにしておく
         tempData['rowList'].map((rowData) => {
             if (typeof rowData.source === 'undefined') {
-                rowData.source = 'OpenBD'
+                rowData.source = 'openBD'
             }
         })
         rowListData = tempData['rowList']
