@@ -117,6 +117,16 @@ const downloadXSLX = (rows, fileName): void => {
     saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), fileName + '.xlsx');
 }
 
+const downloadJSON = (data, fileName): void => {
+      const blob = new Blob([JSON.stringify(data, null, '  ')], {type: 'application\/json'})
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = fileName
+      link.click()
+      URL.revokeObjectURL(url)
+}
+
 
 // 番号がすべてという設計思想
 // 書誌は、情報ソースによって変わることがある
@@ -141,6 +151,8 @@ const App = () => {
 
     let rowListData = []
     let tempMode = 'isbn'
+
+
     const localStorageData = localStorage.getItem('keichanData_' + licenseKey)
     if (localStorageData) {
         const tempData = JSON.parse(localStorageData)
@@ -152,6 +164,7 @@ const App = () => {
         })
         rowListData = tempData['rowList']
         if (rowListData.length > 0) tempMode = tempData['mode']
+
     }
 
     const [rowList, setRowList] = useState(rowListData)
@@ -188,6 +201,33 @@ const App = () => {
         localStorage.setItem('keichanData_' + licenseKey, JSON.stringify({ mode: mode, rowList: rowList }))
     }, [rowList, mode])
 
+
+    // JSONファイルの読み込み
+    const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log(e.target.files)
+        // console.log(e.target.files[0])
+        var files = e.target.files
+        for (var i = 0, f; f = files[i]; i++) {
+            if (!f.type.match('application.*')) {
+                continue;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // console.log(e.target.result)
+                const data = JSON.parse(e.target.result as string)
+                // console.log(jsonData)
+                // sourceが未定義のデータは、openBDにしておく
+                data['rowList'].map((rowData) => {
+                    if (typeof rowData.source === 'undefined') {
+                        rowData.source = 'openBD'
+                    }
+                })
+                setRowList(data['rowList'])
+                if (rowListData.length > 0) setMode(data['mode'])
+            }
+            reader.readAsText(f);
+        }
+    }
 
     // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
     // https://github.com/facebook/react/issues/14092
@@ -503,8 +543,14 @@ const App = () => {
                 </h1>
                 <div>
                     {rowList.length > 0 ? (
-                        <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
+                        <>
+                            <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
+                            &nbsp;
+                            <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey + '.json')}>JSONで保存</Button>
+                        </>
                     ) : null}
+                    <Button icon="upload" onClick={() => document.querySelector('input[type="file"]').click()}>JSONを読み込み</Button>
+                    <input type="file" accept="application/json" onChange={onFileInputChange} style={{display: 'none'}} />
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                 </div>
             </header>
