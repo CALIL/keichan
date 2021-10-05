@@ -118,6 +118,9 @@ const downloadXSLX = (rows, fileName): void => {
 }
 
 
+// 番号がすべてという設計思想
+// 書誌は、情報ソースによって変わることがある
+// ユーザーが追加・編集した場合、情報ソースはユーザーになる
 // const rowList = [
 //     {
 //         id: '10001' or '9784774142230',
@@ -125,7 +128,8 @@ const downloadXSLX = (rows, fileName): void => {
 //         author: '著者',
 //         publisher: '出版社',
 //         isbn: '9784774142230',
-//         tags: ['ほにゃらら文庫']
+//         tags: ['ほにゃらら文庫'],
+//         source: 'OpenBD'
 //     }
 // ]
 
@@ -140,6 +144,11 @@ const App = () => {
     const localStorageData = localStorage.getItem('keichanData_' + licenseKey)
     if (localStorageData) {
         const tempData = JSON.parse(localStorageData)
+        tempData['rowList'].map((rowData) => {
+            if (typeof rowData.source === 'undefined') {
+                rowData.source = 'OpenBD'
+            }
+        })
         rowListData = tempData['rowList']
         if (rowListData.length > 0) tempMode = tempData['mode']
     }
