@@ -422,6 +422,7 @@ const App = () => {
                 return
             }
 
+            safetyUrlAudio.play()
             setRowList([...rowList, {
                 id: str,
             }])
