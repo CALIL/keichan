@@ -549,7 +549,10 @@ const App = () => {
                             <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey + '.json')}>JSONで保存</Button>
                         </>
                     ) : null}
-                    <Button icon="upload" onClick={() => document.querySelector('input[type="file"]').click()}>JSONを読み込み</Button>
+                    <Button icon="upload" onClick={() => {
+                        // @ts-ignore
+                        document.querySelector('input[type="file"]').click()
+                    }}>JSONを読み込み</Button>
                     <input type="file" accept="application/json" onChange={onFileInputChange} style={{display: 'none'}} />
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                 </div>
