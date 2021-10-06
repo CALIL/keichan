@@ -184,7 +184,6 @@ const App = () => {
     }
     const [debugLogs, setDebugLogs] = useState(logs)
 
-    const [targetBook, setTargetBook] = useState(null as any)
     const [suggestBooks, setSuggestBooks] = useState([])
 
 
@@ -650,9 +649,9 @@ const App = () => {
                                                     紐つけるバーコードをスキャンしてください
                                                 </div>
                                             </div>
-                                            {targetBook && suggestBooks.length > 0 ? (
+                                            {rowList.length > 1 && suggestBooks.length > 0 ? (
                                                 <div className="nextBook">
-                                                    <h2>もしかして<span>({targetBook.title}より推定)</span></h2>
+                                                    <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
                                                     <div className="cards">
                                                         {suggestBooks.slice(0, 5).map((book) => {
                                                             return <SuggestBook book={book} key={book.isbn} />
