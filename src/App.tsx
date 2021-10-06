@@ -159,14 +159,13 @@ const App = () => {
     if (localStorageData) {
         const tempData = JSON.parse(localStorageData)
         // sourceが未定義のデータは、openBDにしておく
-        tempData['rowList'].map((rowData) => {
+        tempData.rowList.map((rowData) => {
             if (typeof rowData.source === 'undefined') {
                 rowData.source = 'openBD'
             }
         })
-        rowListData = tempData['rowList']
-        if (rowListData.length > 0) tempMode = tempData['mode']
-
+        rowListData = tempData.rowList
+        if (rowListData.length > 0) tempMode = tempData.mode
     }
 
     const [rowList, setRowList] = useState(rowListData)
@@ -202,42 +201,6 @@ const App = () => {
         localStorage.setItem('keichanData_' + licenseKey, JSON.stringify({ mode: mode, rowList: rowList }))
     }, [rowList, mode])
 
-
-    // JSONファイルの読み込み
-    const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        // console.log(e.target.files)
-        // console.log(e.target.files[0])
-        var files = e.target.files
-        for (var i = 0, f; f = files[i]; i++) {
-            if (!f.type.match('application/json')) continue
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                // console.log(e.target.result)
-                const data = JSON.parse(e.target.result as string)
-                // console.log(data)
-                if (typeof data['rowList'] === 'undefined' || typeof data['mode'] === 'undefined') {
-                    setAlertMessage({
-                        show: true,
-                        message: 'JSONファイルの形式が異なっています'
-                    })
-                    logs.push('JSONファイルの形式が異なっています')
-                    setDebugLogs([...debugLogs, ...logs])
-                    warningAudio.play()
-                    return
-                }
-                // sourceが未定義のデータは、openBDにしておく
-                data['rowList'].map((rowData) => {
-                    if (typeof rowData.source === 'undefined') {
-                        rowData.source = 'openBD'
-                    }
-                })
-                setRowList(data['rowList'])
-                setMode(data['mode'])
-            }
-            reader.readAsText(f)
-        }
-    }
-
     // modeがcheckStrの中で見たときに変更されないため、eventを解除・登録しなおす
     // https://github.com/facebook/react/issues/14092
     const callback = (e) => onKeyDown(e, checkStr)
@@ -249,41 +212,6 @@ const App = () => {
         }
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
-
-    const debugLogDiv = useRef(null)
-    useEffect(() => {
-        if (debugLogDiv.current) {
-            const element = debugLogDiv.current
-            element.scrollTop = element.scrollHeight
-        }
-    }, [debugLogs])
-
-    let timer
-    useEffect(() => {
-        if (timer) clearTimeout(timer)
-        timer = setTimeout(() => {
-            setAlertMessage({
-                show: false,
-                message: ''
-            })
-        }, 6000)
-    }, [alertMessage])
-
-
-    const cmdCursor = useRef(null)
-    useEffect(() => {
-        const timer = setInterval(() => {
-            if (cmdCursor.current) {
-                cmdCursor.current.style.display = 'none'
-                setTimeout(() => {
-                    cmdCursor.current.style.display = 'inline'
-                }, 500)
-            }
-        }, 1000)
-        return () => {
-            clearInterval(timer)
-        }
-    }, [true])
 
     const checkStr = async (str) => {
         // console.log(str)
@@ -521,6 +449,76 @@ const App = () => {
             setRowList([...tempRowList])
         }
     }
+
+    // JSONファイルの読み込み
+    const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        // console.log(e.target.files)
+        // console.log(e.target.files[0])
+        var files = e.target.files
+        for (var i = 0, f; f = files[i]; i++) {
+            if (!f.type.match('application/json')) continue
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                // console.log(e.target.result)
+                const data = JSON.parse(e.target.result as string)
+                // console.log(data)
+                if (typeof data.rowList === 'undefined' || typeof data.mode === 'undefined') {
+                    setAlertMessage({
+                        show: true,
+                        message: 'JSONファイルの形式が異なっています'
+                    })
+                    logs.push('JSONファイルの形式が異なっています')
+                    setDebugLogs([...debugLogs, ...logs])
+                    warningAudio.play()
+                    return
+                }
+                // sourceが未定義のデータは、openBDにしておく
+                data.rowList.map((rowData) => {
+                    if (typeof rowData.source === 'undefined') {
+                        rowData.source = 'openBD'
+                    }
+                })
+                setRowList(data.rowList)
+                setMode(data.mode)
+            }
+            reader.readAsText(f)
+        }
+    }
+
+    const debugLogDiv = useRef(null)
+    useEffect(() => {
+        if (debugLogDiv.current) {
+            const element = debugLogDiv.current
+            element.scrollTop = element.scrollHeight
+        }
+    }, [debugLogs])
+
+    let timer
+    useEffect(() => {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+            setAlertMessage({
+                show: false,
+                message: ''
+            })
+        }, 6000)
+    }, [alertMessage])
+
+
+    const cmdCursor = useRef(null)
+    useEffect(() => {
+        const timer = setInterval(() => {
+            if (cmdCursor.current) {
+                cmdCursor.current.style.display = 'none'
+                setTimeout(() => {
+                    cmdCursor.current.style.display = 'inline'
+                }, 500)
+            }
+        }, 1000)
+        return () => {
+            clearInterval(timer)
+        }
+    }, [true])
 
     return (
         <div id="index">
