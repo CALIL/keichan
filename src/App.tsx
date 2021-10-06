@@ -154,7 +154,6 @@ const App = () => {
     let rowListData = []
     let tempMode = 'isbn'
 
-
     const localStorageData = localStorage.getItem('keichanData_' + licenseKey)
     if (localStorageData) {
         const tempData = JSON.parse(localStorageData)
