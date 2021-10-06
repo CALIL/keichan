@@ -294,7 +294,6 @@ const App = () => {
         if (isbn10) {
             logs.push('ISBNのバーコードが読まれました')
             logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-            setTargetBook(null)
             setSuggestBooks([])
 
             // codabarの制御コードが入った時、数字のみにする
@@ -367,7 +366,6 @@ const App = () => {
                     const prevRow = rowList[rowList.length - 1]
                     if (prevRow && prevRow.title) {
                         logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
-                        setTargetBook(prevRow)
                         const books: any = await getBooks(prevRow)
                         setSuggestBooks(books as any)
                         if (books.length > 0) {
@@ -490,7 +488,6 @@ const App = () => {
 
             if (prevRow && prevRow.title) {
                 logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
-                setTargetBook(prevRow)
                 const books: any = await getBooks(prevRow)
                 setSuggestBooks(books as any)
                 if (books.length > 0) {
