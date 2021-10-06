@@ -212,6 +212,21 @@ const App = () => {
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
 
+    const alertAndLog = (message, str=null) => {
+        setAlertMessage({
+            show: true,
+            message: message.replace('!! ', '')
+        })
+        setDebugLogs([...debugLogs, <>
+            {str ? <>
+                <span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>
+                <br />
+            </> : null}
+            {message.match(/!!/) ? <span style={{ color: 'red' }}>!! </span> : null}
+            <span>{message.replace('!! ', '')}</span>
+        </>])
+    }
+
     const bookNotFound = (isbn10) => {
         const tempList = [...rowList]
         tempList.forEach((row, i) => {
@@ -229,50 +244,22 @@ const App = () => {
         })
         setRowList(tempList)
         warningAudio.play()
-        setAlertMessage({
-            show: true,
-            message: '!! 本が見つかりませんでした。書誌データは追加されません'
-        })
-        logs.push(<>
-            <span style={{ color: 'red' }}>!!</span>
-            <span> 本が見つかりませんでした。書誌データは追加されません</span>
-        </>)
+        alertAndLog('!! 本が見つかりませんでした。書誌データは追加されません')
     }
 
     const validateCode = (str):boolean => {
         if (str.length > 20) {
-            setAlertMessage({
-                show: true,
-                message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません'
-            })
-            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-            logs.push(<>
-                <span style={{ color: 'red' }}>!!</span>
-                <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません</span>
-            </>)
-            setDebugLogs([...debugLogs, ...logs])
+            alertAndLog('資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません', str)
             warningAudio.play()
             return false
         }
         if (str.match(/^192/) !== null) {
-            setAlertMessage({
-                show: true,
-                message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません'
-            })
-            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-            logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません')
-            setDebugLogs([...debugLogs, ...logs])
+            alertAndLog('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません', str)
             warningAudio.play()
             return false
         }
         if (str.match(/^491/) !== null) {
-            setAlertMessage({
-                show: true,
-                message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません'
-            })
-            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-            logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません')
-            setDebugLogs([...debugLogs, ...logs])
+            alertAndLog('491で始まるバーコードのため、雑誌コードと判断して、処理しません', str)
             warningAudio.play()
             return false
         }
@@ -319,15 +306,7 @@ const App = () => {
                     setRowList(tempList)
                 } else {
                     // ISBNが最後の行に設定されているのにISBNを読んだケース
-                    setAlertMessage({
-                        show: true,
-                        message: '次は資料コードのバーコードを読んでください'
-                    })
-                    logs.push(<>
-                        <span style={{ color: 'red' }}>!!</span>
-                        <span> 資料コードのバーコードを読んでください</span>
-                    </>)
-                    setDebugLogs([...debugLogs, ...logs])
+                    alertAndLog('次は資料コードのバーコードを読んでください')
                     warningAudio.play()
                     return
                 }
@@ -410,15 +389,7 @@ const App = () => {
 
             // すでに同じ資料コードが登録されていないか？
             if (rowList.filter((row) => row.id === str).length > 0) {
-                setAlertMessage({
-                    show: true,
-                    message: 'すでに登録済みの資料コードです'
-                })
-                logs.push(<>
-                    <span style={{ color: 'red' }}>!!</span>
-                    <span> すでに登録済みの資料コードです</span>
-                </>)
-                setDebugLogs([...debugLogs, ...logs])
+                alertAndLog('!! すでに登録済みの資料コードです')
                 warningAudio.play()
                 return
             }
@@ -477,12 +448,7 @@ const App = () => {
                 const data = JSON.parse(e.target.result as string)
                 // console.log(data)
                 if (typeof data.rowList === 'undefined' || typeof data.mode === 'undefined') {
-                    setAlertMessage({
-                        show: true,
-                        message: 'JSONファイルの形式が異なっています'
-                    })
-                    logs.push('JSONファイルの形式が異なっています')
-                    setDebugLogs([...debugLogs, ...logs])
+                    alertAndLog('JSONファイルの形式が異なっています')
                     warningAudio.play()
                     return
                 }
