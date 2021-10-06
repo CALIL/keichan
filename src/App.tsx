@@ -218,12 +218,11 @@ const App = () => {
             message: message.replace('!! ', '')
         })
         setDebugLogs([...debugLogs, <>
-            {str ? <>
+            {str ? <div>
                 <span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>
-                <br />
-            </> : null}
-            {message.match(/!!/) ? <span style={{ color: 'red' }}>!! </span> : null}
-            <span>{message.replace('!! ', '')}</span>
+            </div> : null}
+            {message.match(/!!/) ? <div><span style={{ color: 'red' }}>!! </span></div> : null}
+            <div><span>{message.replace('!! ', '')}</span></div>
         </>])
     }
 
@@ -245,6 +244,84 @@ const App = () => {
         setRowList(tempList)
         warningAudio.play()
         alertAndLog('!! 本が見つかりませんでした。書誌データは追加されません')
+    }
+
+    // ISBNが読まれたとき
+    const checkISBN = async (str, isbn10) => {
+        const logs = []
+
+        logs.push('ISBNのバーコードが読まれました')
+        logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
+        setSuggestBooks([])
+
+        // codabarの制御コードが入った時、数字のみにする
+        if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
+            str = RegExp.$1
+            logs.push('codabarの制御コードを検出しました')
+        }
+
+        // ISBNを資料コードに紐つける
+        if (mode === 'management' && rowList.length > 0) {
+            const tempList = [...rowList]
+            const lastRow = tempList[tempList.length - 1]
+            // 最後の行にISBNが設定されているか？
+            if (lastRow && !lastRow.isbn) {
+                let i = isbn_utils.parse(isbn10)
+                if (i) lastRow.isbn = i.asIsbn13()
+                // console.log(tempList)
+                setRowList(tempList)
+            } else {
+                // ISBNが最後の行に設定されているのにISBNを読んだケース
+                alertAndLog('次は資料コードのバーコードを読んでください')
+                warningAudio.play()
+                return
+            }
+        }
+        safetyUrlAudio.play()
+
+        // ISBNから本を探す
+        const book: any = await getBook(isbn10).catch(() => bookNotFound(isbn10))
+        if (book) {
+            // console.log(book)
+            logs.push('本が見つかりました！')
+            if (mode === 'isbn') {
+                book.id = book.isbn
+                setRowList([...rowList, book])
+                if (enableSpeak) {
+                    speak(`${book.title}を追加`)
+                } else {
+                    logs.push(`「${book.title}」を追加`)
+                }
+                const prevRow = rowList[rowList.length - 1]
+                if (prevRow && prevRow.title) {
+                    logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
+                    const books: any = await getBooks(prevRow)
+                    setSuggestBooks(books as any)
+                    if (books.length > 0) {
+                        logs.push(`候補の本が${books.length}冊みつかりました`)
+                    }
+                }
+            } else if (mode === 'management') {
+                const tempList = [...rowList]
+                tempList.forEach((row, i) => {
+                    if (normalize_isbn(row.isbn) === isbn10) {
+                        row.title = book.title
+                        row.author = book.author
+                        row.publisher = book.publisher
+                        row.cover = book.cover
+                        row.isbn = book.isbn
+                        row.tags = book.tags
+                        row.bibHash = book.bibHash
+                        row.price = book.price
+                        row.cCode = book.cCode
+                        row.source = book.source
+                    }
+                })
+                setRowList(tempList)
+                if (enableSpeak) speak(`${book.title}を追加`)
+            }
+        }
+        setDebugLogs([...debugLogs, ...logs])
     }
 
     const validateCode = (str):boolean => {
@@ -276,140 +353,70 @@ const App = () => {
         return true
     }
 
-    const checkStr = async (str) => {
-        // console.log(str)
-        // console.log(mode)
-        const logs = []
-        if (checkEnable === false) return
-        const isbn10 = normalize_isbn(str)
-        // ISBNが読まれたとき
-        if (isbn10) {
-            logs.push('ISBNのバーコードが読まれました')
-            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-            setSuggestBooks([])
+    // 資料コードが読まれたとき
+    const checkCode = async (str) => {
+        if (validateCode(str)===false) return
 
-            // codabarの制御コードが入った時、数字のみにする
-            if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
-                str = RegExp.$1
-                logs.push('codabarの制御コードを検出しました')
-            }
+        // codabarの制御コードが入った時、数字のみにする
+        if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
+            str = RegExp.$1
+            logs.push('codabarの制御コードを検出しました')
+        }
+        if (mode === 'isbn') {
+            setMode('management')
+            logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます')
+        }
 
-            // ISBNを資料コードに紐つける
-            if (mode === 'management' && rowList.length > 0) {
-                const tempList = [...rowList]
-                const lastRow = tempList[tempList.length - 1]
-                // 最後の行にISBNが設定されているか？
-                if (lastRow && !lastRow.isbn) {
-                    let i = isbn_utils.parse(isbn10)
-                    if (i) lastRow.isbn = i.asIsbn13()
-                    // console.log(tempList)
-                    setRowList(tempList)
-                } else {
-                    // ISBNが最後の行に設定されているのにISBNを読んだケース
-                    alertAndLog('次は資料コードのバーコードを読んでください')
-                    warningAudio.play()
-                    return
-                }
-            }
-            safetyUrlAudio.play()
+        logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
 
-            // ISBNから本を探す
-            const book: any = await getBook(isbn10).catch(() => bookNotFound(isbn10))
-            if (book) {
-                // console.log(book)
-                logs.push('本が見つかりました！')
-                if (mode === 'isbn') {
-                    book.id = book.isbn
-                    setRowList([...rowList, book])
-                    if (enableSpeak) {
-                        speak(`${book.title}を追加`)
-                    } else {
-                        logs.push(`「${book.title}」を追加`)
-                    }
-                    const prevRow = rowList[rowList.length - 1]
-                    if (prevRow && prevRow.title) {
-                        logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
-                        const books: any = await getBooks(prevRow)
-                        setSuggestBooks(books as any)
-                        if (books.length > 0) {
-                            logs.push(`候補の本が${books.length}冊みつかりました`)
-                        }
-                    }
-                } else if (mode === 'management') {
-                    const tempList = [...rowList]
-                    tempList.forEach((row, i) => {
-                        if (normalize_isbn(row.isbn) === isbn10) {
-                            row.title = book.title
-                            row.author = book.author
-                            row.publisher = book.publisher
-                            row.cover = book.cover
-                            row.isbn = book.isbn
-                            row.tags = book.tags
-                            row.bibHash = book.bibHash
-                            row.price = book.price
-                            row.cCode = book.cCode
-                            row.source = book.source
-                        }
-                    })
-                    setRowList(tempList)
-                    if (enableSpeak) speak(`${book.title}を追加`)
-                }
-            }
+        const prevRow = rowList[rowList.length - 1]
+        // console.log(prevRow)
 
-        // 資料コードが読まれたとき
-        } else {
-            if (validateCode(str)===false) return
+        // // まだ本が紐つけられていない時は資料コードを変更する
+        // if (prevRow && !prevRow.title) {
+        //     prevRow.id = str
+        //     setRowList([...rowList])
+        //     logs.push(<>
+        //         <span style={{ color: 'lightgreen' }}>!</span>
+        //         <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました</span>
+        //     </>)
+        //     setDebugLogs([...debugLogs, ...logs])
+        //     return
+        // }
 
-            // codabarの制御コードが入った時、数字のみにする
-            if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
-                str = RegExp.$1
-                logs.push('codabarの制御コードを検出しました')
-            }
-            if (mode === 'isbn') {
-                setMode('management')
-                logs.push('資料コードが読み込まれたため、資料コード用のモードに切り替えます')
-            }
+        // すでに同じ資料コードが登録されていないか？
+        if (rowList.filter((row) => row.id === str).length > 0) {
+            alertAndLog('!! すでに登録済みの資料コードです')
+            warningAudio.play()
+            return
+        }
 
-            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
+        safetyUrlAudio.play()
+        setRowList([...rowList, {
+            id: str,
+        }])
 
-            const prevRow = rowList[rowList.length - 1]
-            // console.log(prevRow)
-
-            // // まだ本が紐つけられていない時は資料コードを変更する
-            // if (prevRow && !prevRow.title) {
-            //     prevRow.id = str
-            //     setRowList([...rowList])
-            //     logs.push(<>
-            //         <span style={{ color: 'lightgreen' }}>!</span>
-            //         <span> 別の資料コードが読み込まれたので、新しい資料コードに変更しました</span>
-            //     </>)
-            //     setDebugLogs([...debugLogs, ...logs])
-            //     return
-            // }
-
-            // すでに同じ資料コードが登録されていないか？
-            if (rowList.filter((row) => row.id === str).length > 0) {
-                alertAndLog('!! すでに登録済みの資料コードです')
-                warningAudio.play()
-                return
-            }
-
-            safetyUrlAudio.play()
-            setRowList([...rowList, {
-                id: str,
-            }])
-
-            if (prevRow && prevRow.title) {
-                logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
-                const books: any = await getBooks(prevRow)
-                setSuggestBooks(books as any)
-                if (books.length > 0) {
-                    logs.push(`候補の本が${books.length}冊みつかりました`)
-                }
+        if (prevRow && prevRow.title) {
+            logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
+            const books: any = await getBooks(prevRow)
+            setSuggestBooks(books as any)
+            if (books.length > 0) {
+                logs.push(`候補の本が${books.length}冊みつかりました`)
             }
         }
 
-        setDebugLogs([...debugLogs, ...logs])
+    }
+
+    const checkStr = async (str) => {
+        // console.log(str)
+        // console.log(mode)
+        if (checkEnable === false) return
+        const isbn10 = normalize_isbn(str)
+        if (isbn10) {
+            checkISBN(str, isbn10)
+        } else {
+            checkCode(str)
+        }
         setCheckEnable(false)
         setTimeout(() => setCheckEnable(true), 100)
     }
