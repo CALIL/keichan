@@ -541,6 +541,16 @@ const App = () => {
                         ) : null}
                         <br />
                         <br />
+                        {rowList.length > 0 ? (
+                            <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey)} style={{marginRight: '0.5rem'}}>JSONで保存</Button>
+                        ) : null}
+                        <Button icon="upload" onClick={() => {
+                            // @ts-ignore
+                            document.querySelector('input[type="file"]').click()
+                        }}>JSONを読み込み</Button>
+                        <input type="file" accept="application/json" onChange={onFileInputChange} style={{ display: 'none' }} />
+                        <br />
+                        <br />
                         <Button icon="cross" onClick={() => setShowSettings(false)}>閉じる</Button>
                     </div>
                 </div>
@@ -553,17 +563,8 @@ const App = () => {
                 </h1>
                 <div>
                     {rowList.length > 0 ? (
-                        <>
-                            <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
-                            &nbsp;
-                            <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey)}>JSONで保存</Button>
-                        </>
+                        <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
                     ) : null}
-                    <Button icon="upload" onClick={() => {
-                        // @ts-ignore
-                        document.querySelector('input[type="file"]').click()
-                    }}>JSONを読み込み</Button>
-                    <input type="file" accept="application/json" onChange={onFileInputChange} style={{ display: 'none' }} />
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                 </div>
             </header>
