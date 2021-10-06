@@ -212,8 +212,34 @@ const App = () => {
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
 
+    const bookNotFound = (isbn10) => {
+        const tempList = [...rowList]
+        tempList.forEach((row, i) => {
+            if (normalize_isbn(row.isbn) === isbn10) {
+                row.title = ''
+                row.author = ''
+                row.publisher = ''
+                row.cover = ''
+                row.tags = []
+                row.bibHash = ''
+                row.price = ''
+                row.cCode = ''
+                row.source = ''
+            }
+        })
+        setRowList(tempList)
+        warningAudio.play()
+        setAlertMessage({
+            show: true,
+            message: '!! 本が見つかりませんでした。書誌データは追加されません'
+        })
+        logs.push(<>
+            <span style={{ color: 'red' }}>!!</span>
+            <span> 本が見つかりませんでした。書誌データは追加されません</span>
+        </>)
+    }
 
-    const checkCode = (str):boolean => {
+    const validateCode = (str):boolean => {
         if (str.length > 20) {
             setAlertMessage({
                 show: true,
@@ -281,6 +307,7 @@ const App = () => {
                 logs.push('codabarの制御コードを検出しました')
             }
 
+            // ISBNを資料コードに紐つける
             if (mode === 'management' && rowList.length > 0) {
                 const tempList = [...rowList]
                 const lastRow = tempList[tempList.length - 1]
@@ -300,39 +327,15 @@ const App = () => {
                         <span style={{ color: 'red' }}>!!</span>
                         <span> 資料コードのバーコードを読んでください</span>
                     </>)
+                    setDebugLogs([...debugLogs, ...logs])
                     warningAudio.play()
                     return
                 }
             }
             safetyUrlAudio.play()
-            const book: any = await getBook(isbn10)
-                // 本が見つからなかった場合の処理
-                .catch(e => {
-                    const tempList = [...rowList]
-                    tempList.forEach((row, i) => {
-                        if (normalize_isbn(row.isbn) === isbn10) {
-                            row.title = ''
-                            row.author = ''
-                            row.publisher = ''
-                            row.cover = ''
-                            row.tags = []
-                            row.bibHash = ''
-                            row.price = ''
-                            row.cCode = ''
-                            row.source = ''
-                        }
-                    })
-                    setRowList(tempList)
-                    warningAudio.play()
-                    setAlertMessage({
-                        show: true,
-                        message: '!! 本が見つかりませんでした。書誌データは追加されません'
-                    })
-                    logs.push(<>
-                        <span style={{ color: 'red' }}>!!</span>
-                        <span> 本が見つかりませんでした。書誌データは追加されません</span>
-                    </>)
-                })
+
+            // ISBNから本を探す
+            const book: any = await getBook(isbn10).catch(() => bookNotFound(isbn10))
             if (book) {
                 // console.log(book)
                 logs.push('本が見つかりました！')
@@ -373,9 +376,10 @@ const App = () => {
                     if (enableSpeak) speak(`${book.title}を追加`)
                 }
             }
+
         // 資料コードが読まれたとき
         } else {
-            if (checkCode(str)===false) return
+            if (validateCode(str)===false) return
 
             // codabarの制御コードが入った時、数字のみにする
             if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
