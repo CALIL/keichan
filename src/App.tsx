@@ -212,12 +212,64 @@ const App = () => {
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
 
+
+    const checkCode = (str):boolean => {
+        if (str.length > 20) {
+            setAlertMessage({
+                show: true,
+                message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません'
+            })
+            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
+            logs.push(<>
+                <span style={{ color: 'red' }}>!!</span>
+                <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません</span>
+            </>)
+            setDebugLogs([...debugLogs, ...logs])
+            warningAudio.play()
+            return false
+        }
+        if (str.match(/^192/) !== null) {
+            setAlertMessage({
+                show: true,
+                message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません'
+            })
+            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
+            logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません')
+            setDebugLogs([...debugLogs, ...logs])
+            warningAudio.play()
+            return false
+        }
+        if (str.match(/^491/) !== null) {
+            setAlertMessage({
+                show: true,
+                message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません'
+            })
+            logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
+            logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません')
+            setDebugLogs([...debugLogs, ...logs])
+            warningAudio.play()
+            return false
+        }
+        if (str.match(/[a-zA-Z0-9]+/) === null) {
+            logs.push('英数字以外のキーが入力されました。処理しません')
+            setDebugLogs([...debugLogs, ...logs])
+            return false
+        }
+        if (str.match(/^[a-zA-Z]*$/)) {
+            logs.push('英字のみが入力されました。処理しません')
+            setDebugLogs([...debugLogs, ...logs])
+            return false
+        }
+        return true
+    }
+
     const checkStr = async (str) => {
         // console.log(str)
         // console.log(mode)
         const logs = []
         if (checkEnable === false) return
         const isbn10 = normalize_isbn(str)
+        // ISBNが読まれたとき
         if (isbn10) {
             logs.push('ISBNのバーコードが読まれました')
             logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
@@ -232,14 +284,14 @@ const App = () => {
             if (mode === 'management' && rowList.length > 0) {
                 const tempList = [...rowList]
                 const lastRow = tempList[tempList.length - 1]
+                // 最後の行にISBNが設定されているか？
                 if (lastRow && !lastRow.isbn) {
                     let i = isbn_utils.parse(isbn10)
-                    if (i) {
-                        lastRow.isbn = i.asIsbn13()
-                    }
+                    if (i) lastRow.isbn = i.asIsbn13()
                     // console.log(tempList)
                     setRowList(tempList)
                 } else {
+                    // ISBNが最後の行に設定されているのにISBNを読んだケース
                     setAlertMessage({
                         show: true,
                         message: '次は資料コードのバーコードを読んでください'
@@ -253,32 +305,34 @@ const App = () => {
                 }
             }
             safetyUrlAudio.play()
-            const book: any = await getBook(isbn10).catch(e => {
-                const tempList = [...rowList]
-                tempList.forEach((row, i) => {
-                    if (normalize_isbn(row.isbn) === isbn10) {
-                        row.title = ''
-                        row.author = ''
-                        row.publisher = ''
-                        row.cover = ''
-                        row.tags = []
-                        row.bibHash = ''
-                        row.price = ''
-                        row.cCode = ''
-                        row.source = ''
-                    }
+            const book: any = await getBook(isbn10)
+                // 本が見つからなかった場合の処理
+                .catch(e => {
+                    const tempList = [...rowList]
+                    tempList.forEach((row, i) => {
+                        if (normalize_isbn(row.isbn) === isbn10) {
+                            row.title = ''
+                            row.author = ''
+                            row.publisher = ''
+                            row.cover = ''
+                            row.tags = []
+                            row.bibHash = ''
+                            row.price = ''
+                            row.cCode = ''
+                            row.source = ''
+                        }
+                    })
+                    setRowList(tempList)
+                    warningAudio.play()
+                    setAlertMessage({
+                        show: true,
+                        message: '!! 本が見つかりませんでした。書誌データは追加されません'
+                    })
+                    logs.push(<>
+                        <span style={{ color: 'red' }}>!!</span>
+                        <span> 本が見つかりませんでした。書誌データは追加されません</span>
+                    </>)
                 })
-                setRowList(tempList)
-                warningAudio.play()
-                setAlertMessage({
-                    show: true,
-                    message: '!! 本が見つかりませんでした。書誌データは追加されません'
-                })
-                logs.push(<>
-                    <span style={{ color: 'red' }}>!!</span>
-                    <span> 本が見つかりませんでした。書誌データは追加されません</span>
-                </>)
-            })
             if (book) {
                 // console.log(book)
                 logs.push('本が見つかりました！')
@@ -319,53 +373,10 @@ const App = () => {
                     if (enableSpeak) speak(`${book.title}を追加`)
                 }
             }
+        // 資料コードが読まれたとき
         } else {
-            if (str.length > 20) {
-                setAlertMessage({
-                    show: true,
-                    message: '資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません'
-                })
-                logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-                logs.push(<>
-                    <span style={{ color: 'red' }}>!!</span>
-                    <span> 資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません</span>
-                </>)
-                setDebugLogs([...debugLogs, ...logs])
-                warningAudio.play()
-                return
-            }
-            if (str.match(/^192/) !== null) {
-                setAlertMessage({
-                    show: true,
-                    message: '192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません'
-                })
-                logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-                logs.push('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません')
-                setDebugLogs([...debugLogs, ...logs])
-                warningAudio.play()
-                return
-            }
-            if (str.match(/^491/) !== null) {
-                setAlertMessage({
-                    show: true,
-                    message: '491で始まるバーコードのため、雑誌コードと判断して、処理しません'
-                })
-                logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-                logs.push('491で始まるバーコードのため、雑誌コードと判断して、処理しません')
-                setDebugLogs([...debugLogs, ...logs])
-                warningAudio.play()
-                return
-            }
-            if (str.match(/[a-zA-Z0-9]+/) === null) {
-                logs.push('英数字以外のキーが入力されました。処理しません')
-                setDebugLogs([...debugLogs, ...logs])
-                return
-            }
-            if (str.match(/^[a-zA-Z]*$/)) {
-                logs.push('英字のみが入力されました。処理しません')
-                setDebugLogs([...debugLogs, ...logs])
-                return
-            }
+            if (checkCode(str)===false) return
+
             // codabarの制御コードが入った時、数字のみにする
             if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
                 str = RegExp.$1
