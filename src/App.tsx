@@ -118,13 +118,15 @@ const downloadXSLX = (rows, fileName): void => {
 }
 
 const downloadJSON = (data, fileName): void => {
-      const blob = new Blob([JSON.stringify(data, null, '  ')], {type: 'application\/json'})
-      const url = URL.createObjectURL(blob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = fileName
-      link.click()
-      URL.revokeObjectURL(url)
+    const dt = new Date();
+    fileName += '_' + `${dt.getFullYear()}${dt.getMonth() + 1}${dt.getDate()}` + '.json'
+    const blob = new Blob([JSON.stringify(data, null, '  ')], { type: 'application\/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = fileName
+    link.click()
+    URL.revokeObjectURL(url)
 }
 
 
@@ -208,14 +210,22 @@ const App = () => {
         // console.log(e.target.files[0])
         var files = e.target.files
         for (var i = 0, f; f = files[i]; i++) {
-            if (!f.type.match('application.*')) {
-                continue;
-            }
-            const reader = new FileReader();
+            if (!f.type.match('application/json')) continue
+            const reader = new FileReader()
             reader.onload = (e) => {
                 // console.log(e.target.result)
                 const data = JSON.parse(e.target.result as string)
-                // console.log(jsonData)
+                // console.log(data)
+                if (typeof data['rowList'] === 'undefined' || typeof data['mode'] === 'undefined') {
+                    setAlertMessage({
+                        show: true,
+                        message: 'JSONファイルの形式が異なっています'
+                    })
+                    logs.push('JSONファイルの形式が異なっています')
+                    setDebugLogs([...debugLogs, ...logs])
+                    warningAudio.play()
+                    return
+                }
                 // sourceが未定義のデータは、openBDにしておく
                 data['rowList'].map((rowData) => {
                     if (typeof rowData.source === 'undefined') {
@@ -225,7 +235,7 @@ const App = () => {
                 setRowList(data['rowList'])
                 setMode(data['mode'])
             }
-            reader.readAsText(f);
+            reader.readAsText(f)
         }
     }
 
@@ -546,14 +556,14 @@ const App = () => {
                         <>
                             <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
                             &nbsp;
-                            <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey + '.json')}>JSONで保存</Button>
+                            <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey)}>JSONで保存</Button>
                         </>
                     ) : null}
                     <Button icon="upload" onClick={() => {
                         // @ts-ignore
                         document.querySelector('input[type="file"]').click()
                     }}>JSONを読み込み</Button>
-                    <input type="file" accept="application/json" onChange={onFileInputChange} style={{display: 'none'}} />
+                    <input type="file" accept="application/json" onChange={onFileInputChange} style={{ display: 'none' }} />
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                 </div>
             </header>
