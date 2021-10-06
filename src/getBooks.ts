@@ -22,7 +22,8 @@ export const getBook = async (isbn) => {
                     isbn: b.isbn,
                     tags: [],
                     price: '',
-                    cCode: ''
+                    cCode: '',
+                    source: 'unitrad'
                 }
                 book.bibHash = getBibHash(book)
                 let i = isbn_utils.parse(normalize_isbn(book.isbn))
@@ -75,7 +76,8 @@ export const getBooks = async (targetBook) => {
                             'author': book.author.split(',')[0],
                             'publisher': book.publisher,
                             'isbn': isbn,
-                            'pubdate': pubdate
+                            'pubdate': pubdate,
+                            'source': 'unitrad'
                         })
                     }
                 }))
@@ -171,7 +173,8 @@ const getOpenBD = async (isbns) => {
                     'cover': book.summary.cover,
                     'tags': tags,
                     'price': price,
-                    'cCode': cCode
+                    'cCode': cCode,
+                    'source': 'opendBD'
                 }
                 openBDBook.bibHash = getBibHash(openBDBook)
                 openBDBooks.push(openBDBook)

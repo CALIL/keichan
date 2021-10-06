@@ -340,6 +340,7 @@ const App = () => {
                         row.bibHash = ''
                         row.price = ''
                         row.cCode = ''
+                        row.source = ''
                     }
                 })
                 setRowList(tempList)
@@ -387,6 +388,7 @@ const App = () => {
                             row.bibHash = book.bibHash
                             row.price = book.price
                             row.cCode = book.cCode
+                            row.source = book.source
                         }
                     })
                     setRowList(tempList)
