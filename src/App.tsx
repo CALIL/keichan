@@ -28,10 +28,10 @@ let safetyUrlAudio = new Howl({
     }
 })
 
-let warningUrl = './audio/error.mp3'
+let errorUrl = './audio/error.mp3'
 
-let warningAudio = new Howl({
-    src: [warningUrl],
+let errorAudio = new Howl({
+    src: [errorUrl],
     autoplay: false,
     loop: false,
     volume: 0.7,
@@ -242,7 +242,7 @@ const App = () => {
             }
         })
         setRowList(tempList)
-        warningAudio.play()
+        errorAudio.play()
         alertAndLog('!! 本が見つかりませんでした。書誌データは追加されません')
     }
 
@@ -273,7 +273,7 @@ const App = () => {
             } else {
                 // ISBNが最後の行に設定されているのにISBNを読んだケース
                 alertAndLog('次は資料コードのバーコードを読んでください')
-                warningAudio.play()
+                errorAudio.play()
                 return
             }
         }
@@ -327,17 +327,17 @@ const App = () => {
     const validateCode = (str):boolean => {
         if (str.length > 20) {
             alertAndLog('資料コードが長すぎます。バーコードの連続読み取りと判断して、処理しません', str)
-            warningAudio.play()
+            errorAudio.play()
             return false
         }
         if (str.match(/^192/) !== null) {
             alertAndLog('192で始まるバーコードのため、書籍JANコード(下段)と判断して、処理しません', str)
-            warningAudio.play()
+            errorAudio.play()
             return false
         }
         if (str.match(/^491/) !== null) {
             alertAndLog('491で始まるバーコードのため、雑誌コードと判断して、処理しません', str)
-            warningAudio.play()
+            errorAudio.play()
             return false
         }
         if (str.match(/[a-zA-Z0-9]+/) === null) {
@@ -387,7 +387,7 @@ const App = () => {
         // すでに同じ資料コードが登録されていないか？
         if (rowList.filter((row) => row.id === str).length > 0) {
             alertAndLog('!! すでに登録済みの資料コードです')
-            warningAudio.play()
+            errorAudio.play()
             return
         }
 
@@ -456,7 +456,7 @@ const App = () => {
                 // console.log(data)
                 if (typeof data.rowList === 'undefined' || typeof data.mode === 'undefined') {
                     alertAndLog('JSONファイルの形式が異なっています')
-                    warningAudio.play()
+                    errorAudio.play()
                     return
                 }
                 // sourceが未定義のデータは、openBDにしておく
