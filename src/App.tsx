@@ -422,7 +422,7 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
-    const removeBook = (id: string) => {
+    const removeISBN = (id: string) => {
         if (mode === 'isbn') {
             setRowList([...rowList.filter((row) => row.id !== id)])
         }
@@ -431,6 +431,23 @@ const App = () => {
             rowList.forEach((row) => {
                 if (row.id === id) {
                     tempRowList.push({ id: row.id })
+                } else {
+                    tempRowList.push(row)
+                }
+            })
+            setRowList([...tempRowList])
+        }
+    }
+
+    const removeBook = (id: string) => {
+        if (mode === 'isbn') {
+            setRowList([...rowList.filter((row) => row.id !== id)])
+        }
+        if (mode === 'management') {
+            const tempRowList = []
+            rowList.forEach((row) => {
+                if (row.id === id) {
+                    tempRowList.push({ id: row.id, isbn: row.isbn })
                 } else {
                     tempRowList.push(row)
                 }
@@ -600,7 +617,7 @@ const App = () => {
                                                     </span>
                                                 </div>
                                                 {/* {row.id === rowList[rowList.length - 1].id ? ( */}
-                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeISBN(row.id)} />
                                                 {/* ) : null} */}
                                             </Card>
                                         ) : null}
