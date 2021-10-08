@@ -542,13 +542,14 @@ const App = () => {
                 <div></div>
                 <h1>
                     カーリルtoolbox: keichan
+                </h1>
+                <div>
                     <label htmlFor="">モード:</label> 
                     <span className="modes">
                         <span className={'mode isbn' + (mode === 'isbn' ? ' active': '')} onClick={() => setMode('isbn')}>ISBN</span>
                         <span className={'mode management' + (mode === 'management' ? ' active': '')} onClick={() => setMode('management')}>資料コード</span>
                     </span>
-                </h1>
-                <div>
+
                     {rowList.length > 0 ? (
                         <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
                     ) : null}
