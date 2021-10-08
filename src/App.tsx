@@ -266,6 +266,12 @@ const App = () => {
             return
         }
 
+        if (mode==='isbn' && rowList.filter((row) => row.id === str).length > 0) {
+            alertAndLog('!! すでに登録済みの資料です')
+            errorAudio.play()
+            return
+        }
+
         // ISBNを資料コードに紐つける
         if (mode === 'management' && rowList.length > 0) {
             const tempList = [...rowList]
