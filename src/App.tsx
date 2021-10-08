@@ -169,10 +169,18 @@ const App = () => {
 
     const logs = []
     if (rowList.length === 0) {
-        logs.push('バーコードをスキャンしてください')
+        if (mode === 'isbn') {
+            logs.push('バーコードをスキャンしてください')
+        } else {
+            logs.push('資料コードのバーコードをスキャンしてください')
+        }
     } else {
         if (rowList[rowList.length - 1].title) {
-            logs.push('資料コードをスキャンしてください')
+            if (mode === 'isbn') {
+                logs.push('バーコードをスキャンしてください')
+            } else {
+                logs.push('資料コードのバーコードをスキャンしてください')
+            }
         } else {
             logs.push('紐つけるバーコードをスキャンしてください')
         }
