@@ -182,6 +182,7 @@ const App = () => {
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
     const [showSettings, setShowSettings] = useState(false)
+    const [searching, setSearching] = useState(false)
 
     const [alertMessage, setAlertMessage] = useState({
         // show: true,
@@ -273,8 +274,10 @@ const App = () => {
         }
         safetyUrlAudio.play()
 
+        setSearching(true)
         // ISBNから本を探す
         const book: any = await getBook(isbn10).catch(() => bookNotFound(isbn10))
+        setSearching(false)
         if (book) {
             // console.log(book)
             logs.push('本が見つかりました！')
@@ -621,6 +624,8 @@ const App = () => {
                                                 {/* ) : null} */}
                                             </Card>
                                         ) : null}
+                                        {/* 検索中表示 */}
+                                        {typeof row.title==='undefined' && searching ? (
                                         <Card className="card indent" style={{height: '120px'}} interactive={false} elevation={Elevation.TWO}>
                                             <div className="placeholder">
                                                 <div className="placeholder-line title"></div>
@@ -630,6 +635,7 @@ const App = () => {
                                                 <div className="placeholder-line"></div>
                                             </div>
                                         </Card>
+                                        ) : null}
                                     </div>
                                     {mode === 'management' && typeof row.isbn === 'undefined' ? (
                                         <>
