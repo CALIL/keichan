@@ -617,7 +617,7 @@ const App = () => {
                                                     </span>
                                                 </div>
                                                 {/* {row.id === rowList[rowList.length - 1].id ? ( */}
-                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeISBN(row.id)} />
+                                                {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeISBN(row.id)} /> */}
                                                 {/* ) : null} */}
                                             </Card>
                                         ) : null}
@@ -637,7 +637,7 @@ const App = () => {
                                                     </div>
                                                 </div>
                                                 {/* {row.id === rowList[rowList.length - 1].id ? ( */}
-                                                <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} />
+                                                {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} /> */}
                                                 {/* ) : null} */}
                                             </Card>
                                         ) : null}
