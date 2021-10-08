@@ -554,8 +554,14 @@ const App = () => {
                 <div>
                     <label htmlFor="">モード:</label> 
                     <span className="modes">
-                        <span className={'mode isbn' + (mode === 'isbn' ? ' active': '')} onClick={() => setMode('isbn')}>ISBN</span>
-                        <span className={'mode management' + (mode === 'management' ? ' active': '')} onClick={() => setMode('management')}>資料コード</span>
+                        <span className={'mode isbn' + (mode === 'isbn' ? ' active': '')} onClick={() => {
+                            setMode('isbn')
+                            setDebugLogs([...debugLogs, 'モードをISBNに変更しました', 'バーコードをスキャンしてください'])
+                        }}>ISBN</span>
+                        <span className={'mode management' + (mode === 'management' ? ' active': '')} onClick={() => {
+                            setMode('management')
+                            setDebugLogs([...debugLogs, 'モードを資料コードに変更しました', '資料コードのバーコードをスキャンしてください'])
+                        }}>資料コード</span>
                     </span>
 
                     {rowList.length > 0 ? (
