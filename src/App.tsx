@@ -422,39 +422,39 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
-    const removeISBN = (id: string) => {
-        if (mode === 'isbn') {
-            setRowList([...rowList.filter((row) => row.id !== id)])
-        }
-        if (mode === 'management') {
-            const tempRowList = []
-            rowList.forEach((row) => {
-                if (row.id === id) {
-                    tempRowList.push({ id: row.id })
-                } else {
-                    tempRowList.push(row)
-                }
-            })
-            setRowList([...tempRowList])
-        }
-    }
+    // const removeISBN = (id: string) => {
+    //     if (mode === 'isbn') {
+    //         setRowList([...rowList.filter((row) => row.id !== id)])
+    //     }
+    //     if (mode === 'management') {
+    //         const tempRowList = []
+    //         rowList.forEach((row) => {
+    //             if (row.id === id) {
+    //                 tempRowList.push({ id: row.id })
+    //             } else {
+    //                 tempRowList.push(row)
+    //             }
+    //         })
+    //         setRowList([...tempRowList])
+    //     }
+    // }
 
-    const removeBook = (id: string) => {
-        if (mode === 'isbn') {
-            setRowList([...rowList.filter((row) => row.id !== id)])
-        }
-        if (mode === 'management') {
-            const tempRowList = []
-            rowList.forEach((row) => {
-                if (row.id === id) {
-                    tempRowList.push({ id: row.id, isbn: row.isbn })
-                } else {
-                    tempRowList.push(row)
-                }
-            })
-            setRowList([...tempRowList])
-        }
-    }
+    // const removeBook = (id: string) => {
+    //     if (mode === 'isbn') {
+    //         setRowList([...rowList.filter((row) => row.id !== id)])
+    //     }
+    //     if (mode === 'management') {
+    //         const tempRowList = []
+    //         rowList.forEach((row) => {
+    //             if (row.id === id) {
+    //                 tempRowList.push({ id: row.id, isbn: row.isbn })
+    //             } else {
+    //                 tempRowList.push(row)
+    //             }
+    //         })
+    //         setRowList([...tempRowList])
+    //     }
+    // }
 
     // JSONファイルの読み込み
     const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
