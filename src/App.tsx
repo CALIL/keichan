@@ -161,7 +161,7 @@ const App = () => {
             }
         })
         rowListData = tempData.rowList
-        if (rowListData.length > 0) tempMode = tempData.mode
+        tempMode = tempData.mode
     }
 
     const [rowList, setRowList] = useState(rowListData)
@@ -219,8 +219,10 @@ const App = () => {
             {str ? <div>
                 <span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>
             </div> : null}
-            {message.match(/!!/) ? <div><span style={{ color: 'red' }}>!! </span></div> : null}
-            <div><span>{message.replace('!! ', '')}</span></div>
+            <div>
+                {message.match(/!!/) ? <span style={{ color: 'red' }}>!! </span> : null}
+                <span>{message.replace('!! ', '')}</span>
+            </div>
         </>])
     }
 
@@ -256,6 +258,12 @@ const App = () => {
         if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
             str = RegExp.$1
             logs.push('codabarの制御コードを検出しました')
+        }
+
+        if (mode === 'management' && rowList.length === 0) {
+            alertAndLog('!! 資料コードを読んでください')
+            errorAudio.play()
+            return
         }
 
         // ISBNを資料コードに紐つける
@@ -442,22 +450,22 @@ const App = () => {
     //     }
     // }
 
-    // const removeBook = (id: string) => {
-    //     if (mode === 'isbn') {
-    //         setRowList([...rowList.filter((row) => row.id !== id)])
-    //     }
-    //     if (mode === 'management') {
-    //         const tempRowList = []
-    //         rowList.forEach((row) => {
-    //             if (row.id === id) {
-    //                 tempRowList.push({ id: row.id, isbn: row.isbn })
-    //             } else {
-    //                 tempRowList.push(row)
-    //             }
-    //         })
-    //         setRowList([...tempRowList])
-    //     }
-    // }
+    const removeBook = (id: string) => {
+        if (mode === 'isbn') {
+            setRowList([...rowList.filter((row) => row.id !== id)])
+        }
+        if (mode === 'management') {
+            const tempRowList = []
+            rowList.forEach((row) => {
+                if (row.id === id) {
+                    tempRowList.push({ id: row.id, isbn: row.isbn })
+                } else {
+                    tempRowList.push(row)
+                }
+            })
+            setRowList([...tempRowList])
+        }
+    }
 
     // JSONファイルの読み込み
     const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -608,9 +616,17 @@ const App = () => {
                                             </span>
                                             <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
                                         </Card>
-                                    ) : null}
+                                    ) : (
+                                        <Card key="managementCode" className="card active" interactive={false} elevation={Elevation.TWO}>
+                                            <span className="document">
+                                                <span className="documentHeader">ISBN</span>
+                                                <span className="documentCode">{row.id}</span>
+                                            </span>
+                                            <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
+                                        </Card>
+                                    )}
                                     <div className="linkedData">
-                                        {row.isbn ? (
+                                        {mode==='management' && row.isbn ? (
                                             <Card key={row.bibHash + row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                                 <div className="flex">
                                                     {/* <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" /> */}
@@ -619,9 +635,6 @@ const App = () => {
                                                         <span className="isbnCode">{row.isbn}</span>
                                                     </span>
                                                 </div>
-                                                {/* {row.id === rowList[rowList.length - 1].id ? ( */}
-                                                {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeISBN(row.id)} /> */}
-                                                {/* ) : null} */}
                                             </Card>
                                         ) : null}
                                         {row.title ? (
