@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch } from "@blueprintjs/core";
+import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch, ProgressBar } from "@blueprintjs/core";
 
 // @ts-ignore
 import { Howl } from 'howler'
@@ -14,12 +14,9 @@ import { getBook, getBooks } from './getBooks'
 
 import normalize_isbn from './normalize_isbn.js'
 import isbn_utils from 'isbn-utils'
-// import Row from 'react-spreadsheet/dist/Row';
-
-let safetyUrl = './audio/safety.mp3'
 
 let safetyUrlAudio = new Howl({
-    src: [safetyUrl],
+    src: ['./audio/safety.mp3'],
     autoplay: false,
     loop: false,
     volume: 1,
@@ -28,10 +25,8 @@ let safetyUrlAudio = new Howl({
     }
 })
 
-let errorUrl = './audio/error.mp3'
-
 let errorAudio = new Howl({
-    src: [errorUrl],
+    src: ['./audio/error.mp3'],
     autoplay: false,
     loop: false,
     volume: 0.7,
@@ -39,7 +34,6 @@ let errorAudio = new Howl({
         console.log('Finished!')
     }
 })
-
 
 let keyBuffer = ''
 let keyTimer = null
@@ -509,12 +503,14 @@ const App = () => {
 
     return (
         <div id="index">
+            {/* アラート */}
             <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
                 <div className="bp3-card bp3-elevation-4 bp3-overlay-content alert-message">
                     <Icon icon="tick" size={25} color={'#000000'} />
                     {alertMessage.message}
                 </div>
             </Overlay>
+            {/* 設定 */}
             <Overlay isOpen={showSettings} onClose={() => setShowSettings(false)} hasBackdrop={true}>
                 <div className="bp3-card bp3-elevation-4 bp3-overlay-content settings-overlay">
                     <div className="settings">
@@ -523,6 +519,7 @@ const App = () => {
                             <Switch checked={enableSpeak} label="読み上げ" onChange={() => setEnableSpeak(!enableSpeak)} />
                         ) : null}
                         <br />
+                        <hr />
                         <br />
                         {rowList.length > 0 ? (
                             <Button icon="download" onClick={() => downloadJSON({ mode: mode, rowList: rowList }, 'keichanData_' + licenseKey)} style={{marginRight: '0.5rem'}}>JSONで保存</Button>
@@ -538,6 +535,7 @@ const App = () => {
                     </div>
                 </div>
             </Overlay>
+
             <header>
                 <div></div>
                 <h1>
@@ -551,6 +549,7 @@ const App = () => {
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
                 </div>
             </header>
+
             <main>
                 <div className="main">
                     {rowList.length === 0 ? (
@@ -590,7 +589,7 @@ const App = () => {
                                     <div className="linkedData">
                                         {row.isbn ? (
                                             <Card key={row.bibHash + row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
-                                                <div>
+                                                <div className="flex">
                                                     {/* <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" /> */}
                                                     <span className="isbn">
                                                         <span className="isbnHeader">ISBN</span>
@@ -604,7 +603,7 @@ const App = () => {
                                         ) : null}
                                         {row.title ? (
                                             <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
-                                                <div>
+                                                <div className="flex">
                                                     {row.cover ? (
                                                         <img className="thumbnail" src={row.cover} alt="" />
                                                     ) : null}
@@ -622,6 +621,15 @@ const App = () => {
                                                 {/* ) : null} */}
                                             </Card>
                                         ) : null}
+                                        <Card className="card indent" style={{height: '120px'}} interactive={false} elevation={Elevation.TWO}>
+                                            <div className="placeholder">
+                                                <div className="placeholder-line title"></div>
+                                                <div className="placeholder-line"></div>
+                                                <div className="placeholder-line"></div>
+                                                <div className="placeholder-line"></div>
+                                                <div className="placeholder-line"></div>
+                                            </div>
+                                        </Card>
                                     </div>
                                     {mode === 'management' && typeof row.isbn === 'undefined' ? (
                                         <>
