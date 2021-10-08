@@ -266,7 +266,7 @@ const App = () => {
             return
         }
 
-        if (mode==='isbn' && rowList.filter((row) => row.id === str).length > 0) {
+        if (mode === 'isbn' && rowList.filter((row) => row.id === str).length > 0) {
             alertAndLog('!! すでに登録済みの資料です')
             errorAudio.play()
             return
