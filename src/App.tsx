@@ -311,9 +311,7 @@ const App = () => {
                     logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
                     const books: any = await getBooks(prevRow)
                     setSuggestBooks(books as any)
-                    if (books.length > 0) {
-                        logs.push(`候補の本が${books.length}冊みつかりました`)
-                    }
+                    if (books.length > 0) logs.push(`候補の本が${books.length}冊みつかりました`)
                 }
             } else if (mode === 'management') {
                 const tempList = [...rowList]
@@ -437,40 +435,6 @@ const App = () => {
 
     const removeRow = (id: string) => {
         setRowList(rowList.filter((row) => row.id !== id))
-    }
-
-    // const removeISBN = (id: string) => {
-    //     if (mode === 'isbn') {
-    //         setRowList([...rowList.filter((row) => row.id !== id)])
-    //     }
-    //     if (mode === 'management') {
-    //         const tempRowList = []
-    //         rowList.forEach((row) => {
-    //             if (row.id === id) {
-    //                 tempRowList.push({ id: row.id })
-    //             } else {
-    //                 tempRowList.push(row)
-    //             }
-    //         })
-    //         setRowList([...tempRowList])
-    //     }
-    // }
-
-    const removeBook = (id: string) => {
-        if (mode === 'isbn') {
-            setRowList([...rowList.filter((row) => row.id !== id)])
-        }
-        if (mode === 'management') {
-            const tempRowList = []
-            rowList.forEach((row) => {
-                if (row.id === id) {
-                    tempRowList.push({ id: row.id, isbn: row.isbn })
-                } else {
-                    tempRowList.push(row)
-                }
-            })
-            setRowList([...tempRowList])
-        }
     }
 
     // JSONファイルの読み込み
@@ -609,33 +573,17 @@ const App = () => {
                         {
                             return (
                                 <div key={'row' + i}>
-                                    {mode === 'management' ? (
-                                        <Card key="managementCode" className="card active" interactive={false} elevation={Elevation.TWO}>
-                                            {/* <div>
-                                            <Tag className="tag" large>{row.id}</Tag>
-                                            <Tag className="tag">資料コード</Tag>
-                                        </div> */}
-                                            {/* <img src={`https://img.shields.io/badge/%E8%B3%87%E6%96%99%E3%82%B3%E3%83%BC%E3%83%89-${row.id}-blue`} alt="" /> */}
-                                            <span className="document">
-                                                <span className="documentHeader">資料コード</span>
-                                                <span className="documentCode">{row.id}</span>
-                                            </span>
-                                            <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
-                                        </Card>
-                                    ) : (
-                                        <Card key="managementCode" className="card active" interactive={false} elevation={Elevation.TWO}>
-                                            <span className="document">
-                                                <span className="documentHeader">ISBN</span>
-                                                <span className="documentCode">{row.id}</span>
-                                            </span>
-                                            <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
-                                        </Card>
-                                    )}
+                                    <Card key="managementCode" className="card active" interactive={false} elevation={Elevation.TWO}>
+                                        <span className="document">
+                                            <span className="documentHeader">資料コード</span>
+                                            <span className="documentCode">{row.id}</span>
+                                        </span>
+                                        <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
+                                    </Card>
                                     <div className="linkedData">
                                         {mode==='management' && row.isbn ? (
                                             <Card key={row.bibHash + row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                                 <div className="flex">
-                                                    {/* <img src={`https://img.shields.io/badge/ISBN-${row.isbn}-brightgreen`} alt="" /> */}
                                                     <span className="isbn">
                                                         <span className="isbnHeader">ISBN</span>
                                                         <span className="isbnCode">{row.isbn}</span>
