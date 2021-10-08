@@ -581,7 +581,7 @@ const App = () => {
                                         <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
                                     </Card>
                                     <div className="linkedData">
-                                        {mode==='management' && row.isbn ? (
+                                        {row.isbn ? (
                                             <Card key={row.bibHash + row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
                                                 <div className="flex">
                                                     <span className="isbn">
