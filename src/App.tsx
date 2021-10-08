@@ -135,6 +135,9 @@ const downloadJSON = (data, fileName): void => {
 //         publisher: '出版社',
 //         isbn: '9784774142230',
 //         tags: ['ほにゃらら文庫'],
+//         bibHash: '20486a5478f6fb7aa1c21e1c049fdb4194a5996a',
+//         price: '',
+//         cCode: '',
 //         source: 'OpenBD'
 //     }
 // ]
