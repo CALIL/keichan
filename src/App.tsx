@@ -8,7 +8,9 @@ import { Howl } from 'howler'
 import XLSX from 'xlsx'
 import { saveAs } from 'file-saver'
 
-import SuggestBook from './SuggestBook'
+import ProposalBook from './ProposalBook'
+
+import Suggest from './Suggest'
 
 import { getBook, getBooks } from './getBooks'
 
@@ -35,6 +37,8 @@ let errorAudio = new Howl({
     }
 })
 
+const REGION = 'recipe'
+
 let keyBuffer = ''
 let keyTimer = null
 let lastKeyInputTime = null
@@ -42,6 +46,8 @@ let lastKeyInputTime = null
 // Window全体でのキー入力を拾う
 const onKeyDown = (e: any, callback: (keyBuffer: string) => {}): void => {
     console.log('onKeyDown')
+    // 手入力フォームの場合は判定しない
+    if (e.target.closest('.addMore')) return
     const nowTime = new Date().getTime()
     const keyInterval = nowTime - lastKeyInputTime
     lastKeyInputTime = nowTime
@@ -187,13 +193,15 @@ const App = () => {
     }
     const [debugLogs, setDebugLogs] = useState(logs)
 
-    const [suggestBooks, setSuggestBooks] = useState([])
+    const [ProposalBooks, setProposalBooks] = useState([])
 
+    const [query, setQuery] = useState('')
 
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
     const [showSettings, setShowSettings] = useState(false)
     const [searching, setSearching] = useState(false)
+    const [showSuggest, setShowSuggest] = useState(false)
 
     const [alertMessage, setAlertMessage] = useState({
         // show: true,
@@ -217,6 +225,12 @@ const App = () => {
         }
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
+
+    useEffect(() => {
+        document.body.addEventListener('click', (e: any) => {
+            setShowSuggest(false)
+        });
+    }, [true])
 
     const alertAndLog = (message, str=null) => {
         setAlertMessage({
@@ -260,7 +274,7 @@ const App = () => {
 
         logs.push('ISBNのバーコードが読まれました')
         logs.push(<span style={{ fontFamily: '"Conv_OCRB", Sans-Serif' }}>{str}</span>)
-        setSuggestBooks([])
+        setProposalBooks([])
 
         // codabarの制御コードが入った時、数字のみにする
         if (str.match(/^[a-zA-Z](\d+)[a-zA-Z]$/)) {
@@ -318,7 +332,7 @@ const App = () => {
                 if (prevRow && prevRow.title) {
                     logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
                     const books: any = await getBooks(prevRow)
-                    setSuggestBooks(books as any)
+                    setProposalBooks(books as any)
                     if (books.length > 0) logs.push(`候補の本が${books.length}冊みつかりました`)
                 }
             } else if (mode === 'management') {
@@ -419,7 +433,7 @@ const App = () => {
         if (prevRow && prevRow.title) {
             logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
             const books: any = await getBooks(prevRow)
-            setSuggestBooks(books as any)
+            setProposalBooks(books as any)
             if (books.length > 0) {
                 logs.push(`候補の本が${books.length}冊みつかりました`)
             }
@@ -644,12 +658,12 @@ const App = () => {
                                                     紐つけるバーコードをスキャンしてください
                                                 </div>
                                             </div>
-                                            {rowList.length > 1 && suggestBooks.length > 0 ? (
+                                            {rowList.length > 1 && ProposalBooks.length > 0 ? (
                                                 <div className="nextBook">
                                                     <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
                                                     <div className="cards">
-                                                        {suggestBooks.slice(0, 5).map((book) => {
-                                                            return <SuggestBook book={book} key={book.isbn} />
+                                                        {ProposalBooks.slice(0, 5).map((book) => {
+                                                            return <ProposalBook book={book} key={book.isbn} />
                                                         })}
                                                     </div>
                                                 </div>
@@ -660,16 +674,34 @@ const App = () => {
                             )
                         }
                     })}
-                    {/* <h3>本を追加</h3> */}
-                    {/* <form action="">
-                        <div className="bp3-input-group modifier">
-                            <span className="bp3-icon bp3-icon-search"></span>
-                            <input className="bp3-input" type="search" placeholder="キーワード or ISBN..." dir="auto" />
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg>
-                    </form>
                     <div className="addMore">
-                        
+                        <h3>本を追加</h3>
+                        <form action="" onSubmit={(e: any) => {
+                            e.preventDefault()
+                            const queryInput = e.target.querySelector('input') as HTMLInputElement
+                            setQuery(queryInput.value)
+                            setShowSuggest(true)
+                            var rect = queryInput.getBoundingClientRect();
+                            var elemtop = rect.top + window.pageYOffset;
+                            var elemleft = rect.left + window.pageXOffset;
+                            var elembottom = rect.bottom + window.pageYOffset;
+                            var elemright = rect.right + window.pageXOffset;
+                            // todo: react wayにする
+                            const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
+                            suggestDiv.style.top = `${elembottom}px`
+                            suggestDiv.style.left = `${elemleft}px`
+                            suggestDiv.style.width = `${rect.right - rect.left}px`
+                        }}>
+                            <div className="bp3-input-group modifier">
+                                <span className="bp3-icon bp3-icon-search"></span>
+                                <input className="bp3-input" type="search" placeholder="キーワード or ISBN..." dir="auto" />
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg>
+                        </form>
+                        <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
+                            <Suggest region={REGION} open={(book) => console.log(book)} query={query} />
+                        </div>
+
                         <FormGroup
                             helperText=""
                             label="タイトル著者名を自分で入力"
@@ -683,7 +715,7 @@ const App = () => {
                             <InputGroup small placeholder="メモを追加" />
                             <Button icon="plus">追加</Button>
                         </FormGroup>
-                    </div> */}
+                    </div>
                 </div>
                 <div className="debug">
                     <div className="logs" ref={debugLogDiv}>

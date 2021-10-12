@@ -3,7 +3,7 @@ import { Card, Elevation, Tag, Icon } from "@blueprintjs/core";
 
 import JsBarcode from 'jsbarcode'
 
-const SuggestBook = (props: any) => {
+const ProposalBook = (props: any) => {
     const book = props.book
 
     const svgElement = useRef(null)
@@ -41,4 +41,4 @@ const SuggestBook = (props: any) => {
     )
 }
 
-export default SuggestBook
+export default ProposalBook

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-import Book from '../src/SuggestBook.jsx';
+import Book from './SuggestBook.jsx';
 
 import ISBN from 'isbnjs';
-import api from '../src/api';
+import api from './api';
 
 export default class Search extends Component {
     constructor(props) {
