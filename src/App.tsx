@@ -680,11 +680,19 @@ const App = () => {
                                                 </form>
                                                 <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
                                                     <Suggest region={REGION} open={(book) => {
+                                                        let pubdate = ''
+                                                        if (book.pubdate) {
+                                                            if (typeof (book.pubdate) !== 'string') {
+                                                                pubdate = book.pubdate
+                                                            } else {
+                                                                pubdate = book.pubdate.replace(/[^0-9０-９]+/, '')
+                                                            }
+                                                        }
                                                         setFormState({
                                                             title: book.title,
                                                             author: book.author,
                                                             publisher: book.publisher,
-                                                            pubdate: book.pubdate,
+                                                            pubdate: pubdate.toString(),
                                                             isbn: book.isbn,
                                                         })
                                                     }} query={query} />
