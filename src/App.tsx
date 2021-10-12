@@ -734,7 +734,7 @@ const App = () => {
                                                 </div>
                                             ) : null}
                                                                                         <div className="addMore">
-                                                <h3>本を入力して追加</h3>
+                                                <h3>バーコードのない本を追加</h3>
                                                 <form action="" onSubmit={(e: any) => {
                                                     e.preventDefault()
                                                     const queryInput = e.target.querySelector('input') as HTMLInputElement
