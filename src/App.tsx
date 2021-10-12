@@ -689,7 +689,6 @@ const App = () => {
                                                         })
                                                     }} query={query} />
                                                 </div>
-                        
                                                 <FormGroup
                                                     helperText=""
                                                     label="書誌情報を自分で入力"

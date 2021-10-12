@@ -11,7 +11,9 @@ export default class Book extends Component {
             <div className="book" onClick={() => this.props.open(this.props.book)}>
                 {this.props.book.isbn && (this.props.count < this.props.updateCount * 10 || this.props.completed) ? (
                     <img src={`https://calil.jp/cover/${this.props.book.isbn}`} />
-                ) : null}
+                ) : (
+                    <div className="no_book_cover" />
+                )}
                 <div>
                     <div className="title">{this.props.book.title}</div>
                     <div className="author">{this.props.book.author}</div>
