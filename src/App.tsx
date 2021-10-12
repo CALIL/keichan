@@ -12,7 +12,7 @@ import ProposalBook from './ProposalBook'
 
 import Suggest from './Suggest'
 
-import { getBook, getBooks } from './getBooks'
+import { getBook, getBooks, getBibHash } from './getBooks'
 
 import normalize_isbn from './normalize_isbn.js'
 import isbn_utils from 'isbn-utils'
@@ -474,6 +474,29 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
+    const addBook = (book: any) => {
+        if (formState.title === '') {
+            alertAndLog('タイトルは必須です')
+            errorAudio.play()
+            return false
+        }
+        const tempList = [...rowList]
+        const row = tempList[tempList.length - 1]
+        row.title = formState.title
+        row.author = formState.author
+        row.publisher = formState.publisher
+        row.pubdate = formState.pubdate
+        row.cover = formState.isbn!=='' ? 'https://calil.jp/cover/' + formState.isbn : ''
+        row.isbn = formState.isbn
+        row.tags = []
+        row.bibHash = getBibHash({...row, ...formState})
+        row.price = ''
+        row.cCode = ''
+        row.source = 'user'
+        setRowList(tempList)
+        if (enableSpeak) speak(`${row.title}を追加`)
+    }
+
     // JSONファイルの読み込み
     const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // console.log(e.target.files)
@@ -739,7 +762,7 @@ const App = () => {
                                                     <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} />
                                                     <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} />
                                                     <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} />
-                                                    <Button icon="plus">追加</Button>
+                                                    <Button icon="plus" onClick={addBook}>追加</Button>
                                                 </FormGroup>
                                             </div>
                                         </>
