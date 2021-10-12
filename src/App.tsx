@@ -653,9 +653,40 @@ const App = () => {
                                                 {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} /> */}
                                                 {/* ) : null} */}
                                             </Card>
-                                        ) : (
-                                            <div className="addMore">
-                                                <h3>本を追加</h3>
+                                        ) : null}
+                                        {/* 検索中表示 */}
+                                        {typeof row.title==='undefined' && searching ? (
+                                        <Card className="card indent" style={{height: '120px'}} interactive={false} elevation={Elevation.TWO}>
+                                            <div className="placeholder">
+                                                <div className="placeholder-line title"></div>
+                                                <div className="placeholder-line"></div>
+                                                <div className="placeholder-line"></div>
+                                                <div className="placeholder-line"></div>
+                                                <div className="placeholder-line"></div>
+                                            </div>
+                                        </Card>
+                                        ) : null}
+                                    </div>
+                                    {mode === 'management' && typeof row.isbn === 'undefined' ? (
+                                        <>
+                                            <div className="description">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                                    紐つけるバーコードをスキャンしてください
+                                                </div>
+                                            </div>
+                                            {rowList.length > 1 && ProposalBooks.length > 0 ? (
+                                                <div className="nextBook">
+                                                    <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
+                                                    <div className="cards">
+                                                        {ProposalBooks.slice(0, 5).map((book) => {
+                                                            return <ProposalBook book={book} key={book.isbn} />
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ) : null}
+                                                                                        <div className="addMore">
+                                                <h3>本を入力して追加</h3>
                                                 <form action="" onSubmit={(e: any) => {
                                                     e.preventDefault()
                                                     const queryInput = e.target.querySelector('input') as HTMLInputElement
@@ -674,7 +705,7 @@ const App = () => {
                                                 }}>
                                                     <div className="bp3-input-group modifier">
                                                         <span className="bp3-icon bp3-icon-search"></span>
-                                                        <input className="bp3-input" type="search" placeholder="キーワード or ISBN..." dir="auto" />
+                                                        <input className="bp3-input" type="search" placeholder="キーワード or ISBNで探す" dir="auto" />
                                                     </div>
                                                     {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg> */}
                                                 </form>
@@ -710,39 +741,7 @@ const App = () => {
                                                     <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} />
                                                     <Button icon="plus">追加</Button>
                                                 </FormGroup>
-                                            </div>                    
-                                        )}
-                                        {/* 検索中表示 */}
-                                        {typeof row.title==='undefined' && searching ? (
-                                        <Card className="card indent" style={{height: '120px'}} interactive={false} elevation={Elevation.TWO}>
-                                            <div className="placeholder">
-                                                <div className="placeholder-line title"></div>
-                                                <div className="placeholder-line"></div>
-                                                <div className="placeholder-line"></div>
-                                                <div className="placeholder-line"></div>
-                                                <div className="placeholder-line"></div>
                                             </div>
-                                        </Card>
-                                        ) : null}
-                                    </div>
-                                    {mode === 'management' && typeof row.isbn === 'undefined' ? (
-                                        <>
-                                            <div className="description">
-                                                <div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
-                                                    紐つけるバーコードをスキャンしてください
-                                                </div>
-                                            </div>
-                                            {rowList.length > 1 && ProposalBooks.length > 0 ? (
-                                                <div className="nextBook">
-                                                    <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
-                                                    <div className="cards">
-                                                        {ProposalBooks.slice(0, 5).map((book) => {
-                                                            return <ProposalBook book={book} key={book.isbn} />
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            ) : null}
                                         </>
                                     ) : null}
                                 </div>
