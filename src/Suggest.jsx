@@ -64,12 +64,12 @@ export default class Search extends Component {
                 const openBDBooks = await getOpenBD(isbns)
                 // console.log(openBDBooks)
                 console.log(newBooks)
-                const books = newBooks.map((book) => {
-                    const openBDBook = openBDBooks.find((openBDBook) => openBDBook.isbn === book.isbn)
+                const books = newBooks.map((newBook) => {
+                    const openBDBook = openBDBooks.find((openBDBook) => openBDBook.isbn === newBook.isbn)
                     if (openBDBook) {
                         return openBDBook
                     } else {
-                        return book
+                        return newBook
                     }
                 })
                 this.setState({
