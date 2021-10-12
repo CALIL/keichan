@@ -766,12 +766,12 @@ const App = () => {
                                                     labelFor="text-input"
                                                     labelInfo=""
                                                 >
-                                                    <InputGroup className="title" small placeholder="タイトル" value={formState.title} />
-                                                    <InputGroup className="author" small placeholder="著者名" value={formState.author} />
-                                                    <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} />
-                                                    <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} />
-                                                    <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} />
-                                                    <Button icon="plus" onClick={addBook}>追加</Button>
+                                                    <InputGroup className="title" small placeholder="タイトル" value={formState.title} onChange={(e) => setFormState({...formState, title: e.target.value})} />
+                                                    <InputGroup className="author" small placeholder="著者名" value={formState.author} onChange={(e) => setFormState({...formState, author: e.target.value})} />
+                                                    <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
+                                                    <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
+                                                    <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
+                                                    <Button icon="plus" onClick={() => addBook(formState)}>追加</Button>
                                                 </FormGroup>
                                             </div>
                                         </>
