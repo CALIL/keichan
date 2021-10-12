@@ -114,7 +114,7 @@ export const getBooks = async (targetBook) => {
     })
 }
 
-const getOpenBD = async (isbns) => {
+export const getOpenBD = async (isbns) => {
     return new Promise(async (resolve, reject) => {
 
         const openBDData = await fetch('https://api.openBD.jp/v1/get?isbn=' + isbns.join(',')).then(r => r.json())

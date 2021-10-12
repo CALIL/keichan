@@ -4,6 +4,7 @@ import Book from './SuggestBook.jsx';
 
 import ISBN from 'isbnjs';
 import api from './api';
+import {getOpenBD} from './getBooks';
 
 export default class Search extends Component {
     constructor(props) {
@@ -35,7 +36,7 @@ export default class Search extends Component {
         if (this.props.query != '' && this.props.query != this.prevQuery) {
             this.kill();
             this.prevQuery = this.props.query;
-            this.api = new api({ free: this.props.query, region: this.props.region }, (data) => {
+            this.api = new api({ free: this.props.query, region: this.props.region }, async (data) => {
                 let newBooks = [];
                 data.books.slice(0, 300).map((book) => {
                     if (book.isbn && book.isbn.length>=10) {
@@ -57,8 +58,21 @@ export default class Search extends Component {
                     running = false;
                     this.kill()
                 }
+                const isbns = []
+                newBooks.forEach((book) => {
+                    isbns.push(book.isbn)
+                })
+                const openBDBooks = await getOpenBD(isbns)
+                const books = newBooks.map((book) => {
+                    const openBDBook = openBDBooks.find((openBDBook) => openBDBook.isbn === book.isbn)
+                    if (openBDBook) {
+                        return openBDBook
+                    } else {
+                        return book
+                    }
+                })
                 this.setState({
-                    books: newBooks,
+                    books: books,
                     loading: running && newBooks.length<10,
                     running: running,
                     notFound: running===false && newBooks.length===0,
