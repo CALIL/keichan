@@ -653,7 +653,58 @@ const App = () => {
                                                 {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} /> */}
                                                 {/* ) : null} */}
                                             </Card>
-                                        ) : null}
+                                        ) : (
+                                            <div className="addMore">
+                                                <h3>本を追加</h3>
+                                                <form action="" onSubmit={(e: any) => {
+                                                    e.preventDefault()
+                                                    const queryInput = e.target.querySelector('input') as HTMLInputElement
+                                                    setQuery(queryInput.value)
+                                                    setShowSuggest(true)
+                                                    var rect = queryInput.getBoundingClientRect();
+                                                    var elemtop = rect.top + window.pageYOffset;
+                                                    var elemleft = rect.left + window.pageXOffset;
+                                                    var elembottom = rect.bottom + window.pageYOffset;
+                                                    var elemright = rect.right + window.pageXOffset;
+                                                    // todo: react wayにする
+                                                    const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
+                                                    suggestDiv.style.top = `${elembottom}px`
+                                                    suggestDiv.style.left = `${elemleft}px`
+                                                    suggestDiv.style.width = `${rect.right - rect.left}px`
+                                                }}>
+                                                    <div className="bp3-input-group modifier">
+                                                        <span className="bp3-icon bp3-icon-search"></span>
+                                                        <input className="bp3-input" type="search" placeholder="キーワード or ISBN..." dir="auto" />
+                                                    </div>
+                                                    {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg> */}
+                                                </form>
+                                                <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
+                                                    <Suggest region={REGION} open={(book) => {
+                                                        setFormState({
+                                                            title: book.title,
+                                                            author: book.author,
+                                                            publisher: book.publisher,
+                                                            pubdate: book.pubdate,
+                                                            isbn: book.isbn,
+                                                        })
+                                                    }} query={query} />
+                                                </div>
+                        
+                                                <FormGroup
+                                                    helperText=""
+                                                    label="書誌情報を自分で入力"
+                                                    labelFor="text-input"
+                                                    labelInfo=""
+                                                >
+                                                    <InputGroup className="title" small placeholder="タイトル" value={formState.title} />
+                                                    <InputGroup className="author" small placeholder="著者名" value={formState.author} />
+                                                    <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} />
+                                                    <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} />
+                                                    <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} />
+                                                    <Button icon="plus">追加</Button>
+                                                </FormGroup>
+                                            </div>                    
+                                        )}
                                         {/* 検索中表示 */}
                                         {typeof row.title==='undefined' && searching ? (
                                         <Card className="card indent" style={{height: '120px'}} interactive={false} elevation={Elevation.TWO}>
@@ -691,56 +742,6 @@ const App = () => {
                             )
                         }
                     })}
-                    <div className="addMore">
-                        <h3>本を追加</h3>
-                        <form action="" onSubmit={(e: any) => {
-                            e.preventDefault()
-                            const queryInput = e.target.querySelector('input') as HTMLInputElement
-                            setQuery(queryInput.value)
-                            setShowSuggest(true)
-                            var rect = queryInput.getBoundingClientRect();
-                            var elemtop = rect.top + window.pageYOffset;
-                            var elemleft = rect.left + window.pageXOffset;
-                            var elembottom = rect.bottom + window.pageYOffset;
-                            var elemright = rect.right + window.pageXOffset;
-                            // todo: react wayにする
-                            const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
-                            suggestDiv.style.top = `${elembottom}px`
-                            suggestDiv.style.left = `${elemleft}px`
-                            suggestDiv.style.width = `${rect.right - rect.left}px`
-                        }}>
-                            <div className="bp3-input-group modifier">
-                                <span className="bp3-icon bp3-icon-search"></span>
-                                <input className="bp3-input" type="search" placeholder="キーワード or ISBN..." dir="auto" />
-                            </div>
-                            {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg> */}
-                        </form>
-                        <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
-                            <Suggest region={REGION} open={(book) => {
-                                setFormState({
-                                    title: book.title,
-                                    author: book.author,
-                                    publisher: book.publisher,
-                                    pubdate: book.pubdate,
-                                    isbn: book.isbn,
-                                })
-                            }} query={query} />
-                        </div>
-
-                        <FormGroup
-                            helperText=""
-                            label="タイトル著者名を自分で入力"
-                            labelFor="text-input"
-                            labelInfo=""
-                        >
-                            <InputGroup className="title" small placeholder="タイトル" value={formState.title} />
-                            <InputGroup className="author" small placeholder="著者名" value={formState.author} />
-                            <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} />
-                            <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} />
-                            <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} />
-                            <Button icon="plus">追加</Button>
-                        </FormGroup>
-                    </div>
                 </div>
                 <div className="debug">
                     <div className="logs" ref={debugLogDiv}>
