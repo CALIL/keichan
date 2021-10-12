@@ -38,13 +38,12 @@ export default class Search extends Component {
             this.prevQuery = this.props.query;
             this.api = new api({ free: this.props.query, region: this.props.region }, async (data) => {
                 let newBooks = [];
-                data.books.slice(0, 300).map((book) => {
+                data.books.slice(0, 20).map((book) => {
                     if (book.isbn && book.isbn.length>=10) {
+                        book.isbn = book.isbn.replace(/-/g, '');
                         const isbn = ISBN.parse(book.isbn);
                         if (isbn) {
-                            book.isbn = isbn.asIsbn13();  
-                        } else {
-                            book.isbn = book.isbn.replace(/-/g, '');
+                            book.isbn = isbn.asIsbn13();
                         }
                         newBooks.push(book);
                     } else {
@@ -63,6 +62,8 @@ export default class Search extends Component {
                     isbns.push(book.isbn)
                 })
                 const openBDBooks = await getOpenBD(isbns)
+                // console.log(openBDBooks)
+                console.log(newBooks)
                 const books = newBooks.map((book) => {
                     const openBDBook = openBDBooks.find((openBDBook) => openBDBook.isbn === book.isbn)
                     if (openBDBook) {
