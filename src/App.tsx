@@ -98,11 +98,11 @@ const downloadXSLX = (rows, fileName): void => {
         CreatedDate: new Date()
     };
     wb.SheetNames.push('蔵書データ');
-    const ws_data: [string, string, string, string, string, string, string, string][] = [];
-    ws_data.push(['id', 'タイトル', '著者', '出版社', 'ISBN', 'タグ', '価格', 'Cコード'])
+    const ws_data: [string, string, string, string, string, string, string, string, string][] = [];
+    ws_data.push(['id', 'タイトル', '著者', '出版社', '発売日', 'ISBN', 'タグ', '価格', 'Cコード'])
     rows.map((row) => {
         if (row.isbn) {
-            ws_data.push([row.id, row.title, row.author, row.publisher, row.isbn, row.tags.join(','), row.price, row.cCode])
+            ws_data.push([row.id, row.title, row.author, row.publisher, row.pubdate, row.isbn, row.tags.join(','), row.price, row.cCode])
         }
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
@@ -139,6 +139,7 @@ const downloadJSON = (data, fileName): void => {
 //         title: 'タイトル',
 //         author: '著者',
 //         publisher: '出版社',
+//         pubdate: '2021/10/10',
 //         isbn: '9784774142230',
 //         tags: ['ほにゃらら文庫'],
 //         bibHash: '20486a5478f6fb7aa1c21e1c049fdb4194a5996a',
@@ -162,6 +163,9 @@ const App = () => {
         const tempData = JSON.parse(localStorageData)
         // sourceが未定義のデータは、openBDにしておく
         tempData.rowList.map((rowData) => {
+            if (typeof rowData.pubdate === 'undefined') {
+                rowData.pubdate = ''
+            }
             if (typeof rowData.source === 'undefined') {
                 rowData.source = 'openBD'
             }
@@ -196,6 +200,13 @@ const App = () => {
     const [ProposalBooks, setProposalBooks] = useState([])
 
     const [query, setQuery] = useState('')
+    const [formState, setFormState] = useState({
+        title: '',
+        author: '',
+        publisher: '',
+        pubdate: '',
+        isbn: '',
+    })
 
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
@@ -255,6 +266,8 @@ const App = () => {
                 row.title = ''
                 row.author = ''
                 row.publisher = ''
+                row.pubdate = ''
+                row.isbn = ''
                 row.cover = ''
                 row.tags = []
                 row.bibHash = ''
@@ -342,6 +355,7 @@ const App = () => {
                         row.title = book.title
                         row.author = book.author
                         row.publisher = book.publisher
+                        row.pubdate = book.pubdate
                         row.cover = book.cover
                         row.isbn = book.isbn
                         row.tags = book.tags
@@ -479,6 +493,9 @@ const App = () => {
                 }
                 // sourceが未定義のデータは、openBDにしておく
                 data.rowList.map((rowData) => {
+                    if (typeof rowData.pubdate === 'undefined') {
+                        rowData.pubdate = ''
+                    }
                     if (typeof rowData.source === 'undefined') {
                         rowData.source = 'openBD'
                     }
