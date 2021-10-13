@@ -538,6 +538,8 @@ const App = () => {
             isbn: '',
         })
         if (enableSpeak) speak(`${book.title}を追加`)
+        logs.push(`「${book.title}」を追加`)
+        setDebugLogs([...debugLogs, ...logs])
     }
 
     // JSONファイルの読み込み
