@@ -208,6 +208,7 @@ const App = () => {
         isbn: '',
     })
     const [editState, setEditState] = useState({
+        id: '',
         title: '',
         author: '',
         publisher: '',
@@ -550,14 +551,14 @@ const App = () => {
         setDebugLogs([...debugLogs, ...logs])
     }
 
-    const editBook = (book: any, id: string) => {
+    const editBook = (book: any) => {
         if (book.title === '') {
             alertAndLog('タイトルは必須です')
             errorAudio.play()
             return false
         }
         const tempList = [...rowList]
-        const row = tempList.find((row) => row.id===id)
+        const row = tempList.find((row) => row.id===book.id)
         if (row) {
             row.title = book.title
             row.author = book.author
@@ -572,6 +573,7 @@ const App = () => {
             row.source = 'user'
             setRowList(tempList)
             setEditState({
+                id: '',
                 title: '',
                 author: '',
                 publisher: '',
@@ -762,27 +764,30 @@ const App = () => {
                                                 {/* {row.id === rowList[rowList.length - 1].id ? ( */}
                                                 {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} /> */}
                                                 {/* ) : null} */}
-                                                <Icon icon="edit" size={25} color={'#ffffff'} onClick={() => setEditState({
-                                                    title: row.title,
-                                                    author: row.author,
-                                                    publisher: row.publisher,
-                                                    pubdate: row.pubdate,
-                                                    isbn: row.isbn,
-                                                })} />
-                                                <FormGroup
-                                                    helperText=""
-                                                    label="書誌情報を編集"
-                                                    labelFor="text-input"
-                                                    labelInfo=""
-                                                >
-                                                    <InputGroup className="title" small placeholder="タイトル" value={editState.title} onChange={(e) => setEditState({...editState, title: e.target.value})} />
-                                                    <InputGroup className="author" small placeholder="著者名" value={editState.author} onChange={(e) => setEditState({...editState, author: e.target.value})} />
-                                                    <InputGroup className="publisher" small placeholder="出版社" value={editState.publisher} onChange={(e) => setEditState({...editState, publisher: e.target.value})} />
-                                                    <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
-                                                    <InputGroup className="isbn" small placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
-                                                    <Button icon="plus" onClick={() => editBook(editState, row.id)}>追加</Button>
-                                                </FormGroup>
-
+                                                {row.id !== editState.id ? (
+                                                    <Icon icon="edit" size={25} color={'#ffffff'} onClick={() => setEditState({
+                                                        id: row.id,
+                                                        title: row.title,
+                                                        author: row.author,
+                                                        publisher: row.publisher,
+                                                        pubdate: row.pubdate,
+                                                        isbn: row.isbn,
+                                                    })} />
+                                                ) : (
+                                                    <FormGroup
+                                                        helperText=""
+                                                        label="書誌情報を編集"
+                                                        labelFor="text-input"
+                                                        labelInfo=""
+                                                    >
+                                                        <InputGroup className="title" small placeholder="タイトル" value={editState.title} onChange={(e) => setEditState({...editState, title: e.target.value})} />
+                                                        <InputGroup className="author" small placeholder="著者名" value={editState.author} onChange={(e) => setEditState({...editState, author: e.target.value})} />
+                                                        <InputGroup className="publisher" small placeholder="出版社" value={editState.publisher} onChange={(e) => setEditState({...editState, publisher: e.target.value})} />
+                                                        <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
+                                                        <InputGroup className="isbn" small placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
+                                                        <Button icon="edit" onClick={() => editBook(editState)}>編集</Button>
+                                                    </FormGroup>
+                                                )}
                                             </Card>
                                         ) : null}
                                         {/* 検索中表示 */}
