@@ -557,6 +557,15 @@ const App = () => {
             errorAudio.play()
             return false
         }
+        // ISBNのバリデーション
+        if (book.isbn !== '') {
+            const isbn = isbn_utils.parse(book.isbn)
+            if (isbn===null) {
+                alertAndLog('ISBNが不正です')
+                errorAudio.play()
+                return false
+            }
+        }
         const tempList = [...rowList]
         const row = tempList.find((row) => row.id===book.id)
         if (row) {
