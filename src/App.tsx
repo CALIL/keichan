@@ -506,10 +506,11 @@ const App = () => {
             publisher: book.publisher,
             pubdate: pubdate.toString(),
             isbn: book.isbn,
+            source: book.source
         })
     }
 
-    const addBook = (book: any) => {
+    const addBook = (book: any, edit=false) => {
         if (book.title === '') {
             alertAndLog('タイトルは必須です')
             errorAudio.play()
@@ -527,7 +528,7 @@ const App = () => {
         row.bibHash = getBibHash({...row, ...book})
         row.price = ''
         row.cCode = ''
-        row.source = 'user'
+        row.source = edit ? 'user' : book.source
         setRowList(tempList)
         setFormState({
             title: '',
@@ -773,7 +774,7 @@ const App = () => {
                                                     <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
                                                     <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
                                                     <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
-                                                    <Button icon="plus" onClick={() => addBook(formState)}>追加</Button>
+                                                    <Button icon="plus" onClick={() => addBook(formState, true)}>追加</Button>
                                                 </FormGroup>
                                             </div>
                                         </>
