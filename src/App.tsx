@@ -747,7 +747,7 @@ const App = () => {
                                                 <div className="nextBook">
                                                     <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
                                                     <div className="cards">
-                                                        {ProposalBooks.slice(0, 5).map((book) => {
+                                                        {ProposalBooks.slice(0, 4).map((book) => {
                                                             return <ProposalBook book={book} key={book.isbn} />
                                                         })}
                                                     </div>
