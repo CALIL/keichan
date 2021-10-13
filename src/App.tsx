@@ -765,7 +765,7 @@ const App = () => {
                                                 {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} /> */}
                                                 {/* ) : null} */}
                                                 {row.id !== editState.id ? (
-                                                    <Icon icon="edit" size={25} color={'#ffffff'} onClick={() => setEditState({
+                                                    <Icon className="edit" icon="edit" size={25} color={'#ffffff'} onClick={() => setEditState({
                                                         id: row.id,
                                                         title: row.title,
                                                         author: row.author,
@@ -775,6 +775,7 @@ const App = () => {
                                                     })} />
                                                 ) : (
                                                     <FormGroup
+                                                        className="edit-form"
                                                         helperText=""
                                                         label="書誌情報を編集"
                                                         labelFor="text-input"
