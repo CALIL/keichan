@@ -41,9 +41,12 @@ export default class Search extends Component {
                 data.books.slice(0, 20).map((book) => {
                     if (book.isbn && book.isbn.length>=10) {
                         book.isbn = book.isbn.replace(/-/g, '');
-                        const isbn = ISBN.parse(book.isbn);
+                        let isbn = ISBN.parse(book.isbn);
                         if (isbn) {
                             book.isbn = isbn.asIsbn13();
+                        } else {
+                            isbn = ISBN.parse(book.id);
+                            if (isbn) book.isbn = isbn.asIsbn13();
                         }
                         newBooks.push(book);
                     } else {

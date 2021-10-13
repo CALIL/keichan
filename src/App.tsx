@@ -474,6 +474,23 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
+    const searchSuggestBook = (e: any) => {
+        e.preventDefault()
+        const queryInput = e.target.querySelector('input') as HTMLInputElement
+        setQuery(queryInput.value)
+        setShowSuggest(true)
+        var rect = queryInput.getBoundingClientRect();
+        var elemtop = rect.top + window.pageYOffset;
+        var elemleft = rect.left + window.pageXOffset;
+        var elembottom = rect.bottom + window.pageYOffset;
+        var elemright = rect.right + window.pageXOffset;
+        // todo: react wayにする
+        const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
+        suggestDiv.style.top = `${elembottom}px`
+        suggestDiv.style.left = `${elemleft}px`
+        suggestDiv.style.width = `${rect.right - rect.left}px`
+    }
+
     const selectBook = (book: any) => {
         let pubdate = ''
         if (book.pubdate) {
@@ -735,22 +752,7 @@ const App = () => {
                                             ) : null}
                                                                                         <div className="addMore">
                                                 <h3>バーコードのない本を追加</h3>
-                                                <form action="" onSubmit={(e: any) => {
-                                                    e.preventDefault()
-                                                    const queryInput = e.target.querySelector('input') as HTMLInputElement
-                                                    setQuery(queryInput.value)
-                                                    setShowSuggest(true)
-                                                    var rect = queryInput.getBoundingClientRect();
-                                                    var elemtop = rect.top + window.pageYOffset;
-                                                    var elemleft = rect.left + window.pageXOffset;
-                                                    var elembottom = rect.bottom + window.pageYOffset;
-                                                    var elemright = rect.right + window.pageXOffset;
-                                                    // todo: react wayにする
-                                                    const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
-                                                    suggestDiv.style.top = `${elembottom}px`
-                                                    suggestDiv.style.left = `${elemleft}px`
-                                                    suggestDiv.style.width = `${rect.right - rect.left}px`
-                                                }}>
+                                                <form action="" onSubmit={searchSuggestBook}>
                                                     <div className="bp3-input-group modifier">
                                                         <span className="bp3-icon bp3-icon-search"></span>
                                                         <input className="bp3-input" type="search" placeholder="キーワード or ISBNで探す" dir="auto" />
