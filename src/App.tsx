@@ -207,6 +207,15 @@ const App = () => {
         pubdate: '',
         isbn: '',
     })
+    const [editState, setEditState] = useState({
+        id: '',
+        title: '',
+        author: '',
+        publisher: '',
+        pubdate: '',
+        isbn: '',
+    })
+
 
     const [checkEnable, setCheckEnable] = useState(true)
     const [enableSpeak, setEnableSpeak] = useState(true)
@@ -474,6 +483,23 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
+    const searchSuggestBook = (e: any) => {
+        e.preventDefault()
+        const queryInput = e.target.querySelector('input') as HTMLInputElement
+        setQuery(queryInput.value)
+        setShowSuggest(true)
+        var rect = queryInput.getBoundingClientRect();
+        var elemtop = rect.top + window.pageYOffset;
+        var elemleft = rect.left + window.pageXOffset;
+        var elembottom = rect.bottom + window.pageYOffset;
+        var elemright = rect.right + window.pageXOffset;
+        // todo: react wayにする
+        const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
+        suggestDiv.style.top = `${elembottom}px`
+        suggestDiv.style.left = `${elemleft}px`
+        suggestDiv.style.width = `${rect.right - rect.left}px`
+    }
+
     const selectBook = (book: any) => {
         let pubdate = ''
         if (book.pubdate) {
@@ -489,10 +515,11 @@ const App = () => {
             publisher: book.publisher,
             pubdate: pubdate.toString(),
             isbn: book.isbn,
+            source: book.source
         })
     }
 
-    const addBook = (book: any) => {
+    const addBook = (book: any, edit=false) => {
         if (book.title === '') {
             alertAndLog('タイトルは必須です')
             errorAudio.play()
@@ -510,7 +537,7 @@ const App = () => {
         row.bibHash = getBibHash({...row, ...book})
         row.price = ''
         row.cCode = ''
-        row.source = 'user'
+        row.source = edit ? 'user' : book.source
         setRowList(tempList)
         setFormState({
             title: '',
@@ -520,6 +547,52 @@ const App = () => {
             isbn: '',
         })
         if (enableSpeak) speak(`${book.title}を追加`)
+        logs.push(`「${book.title}」を追加`)
+        setDebugLogs([...debugLogs, ...logs])
+    }
+
+    const editBook = (book: any) => {
+        if (book.title === '') {
+            alertAndLog('タイトルは必須です')
+            errorAudio.play()
+            return false
+        }
+        // ISBNのバリデーション
+        if (book.isbn !== '') {
+            const isbn = isbn_utils.parse(book.isbn)
+            if (isbn===null) {
+                alertAndLog('ISBNが不正です')
+                errorAudio.play()
+                return false
+            }
+        }
+        const tempList = [...rowList]
+        const row = tempList.find((row) => row.id===book.id)
+        if (row) {
+            row.title = book.title
+            row.author = book.author
+            row.publisher = book.publisher
+            row.pubdate = book.pubdate
+            row.cover = book.isbn!=='' ? 'https://calil.jp/cover/' + book.isbn : ''
+            row.isbn = book.isbn
+            row.tags = []
+            row.bibHash = getBibHash({...row, ...book})
+            row.price = ''
+            row.cCode = ''
+            row.source = 'user'
+            setRowList(tempList)
+            setEditState({
+                id: '',
+                title: '',
+                author: '',
+                publisher: '',
+                pubdate: '',
+                isbn: '',
+            })
+            if (enableSpeak) speak(`${book.title}を編集`)
+            logs.push(`「${book.title}」を編集`)
+            setDebugLogs([...debugLogs, ...logs])    
+        }
     }
 
     // JSONファイルの読み込み
@@ -700,6 +773,31 @@ const App = () => {
                                                 {/* {row.id === rowList[rowList.length - 1].id ? ( */}
                                                 {/* <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeBook(row.id)} /> */}
                                                 {/* ) : null} */}
+                                                {row.id !== editState.id ? (
+                                                    <Icon className="edit" icon="edit" size={25} color={'#ffffff'} onClick={() => setEditState({
+                                                        id: row.id,
+                                                        title: row.title,
+                                                        author: row.author,
+                                                        publisher: row.publisher,
+                                                        pubdate: row.pubdate,
+                                                        isbn: row.isbn,
+                                                    })} />
+                                                ) : (
+                                                    <FormGroup
+                                                        className="edit-form"
+                                                        helperText=""
+                                                        label="書誌情報を編集"
+                                                        labelFor="text-input"
+                                                        labelInfo=""
+                                                    >
+                                                        <InputGroup className="title" small placeholder="タイトル" value={editState.title} onChange={(e) => setEditState({...editState, title: e.target.value})} />
+                                                        <InputGroup className="author" small placeholder="著者名" value={editState.author} onChange={(e) => setEditState({...editState, author: e.target.value})} />
+                                                        <InputGroup className="publisher" small placeholder="出版社" value={editState.publisher} onChange={(e) => setEditState({...editState, publisher: e.target.value})} />
+                                                        <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
+                                                        <InputGroup className="isbn" small placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
+                                                        <Button icon="edit" onClick={() => editBook(editState)}>編集</Button>
+                                                    </FormGroup>
+                                                )}
                                             </Card>
                                         ) : null}
                                         {/* 検索中表示 */}
@@ -727,7 +825,7 @@ const App = () => {
                                                 <div className="nextBook">
                                                     <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
                                                     <div className="cards">
-                                                        {ProposalBooks.slice(0, 5).map((book) => {
+                                                        {ProposalBooks.slice(0, 4).map((book) => {
                                                             return <ProposalBook book={book} key={book.isbn} />
                                                         })}
                                                     </div>
@@ -735,22 +833,7 @@ const App = () => {
                                             ) : null}
                                                                                         <div className="addMore">
                                                 <h3>バーコードのない本を追加</h3>
-                                                <form action="" onSubmit={(e: any) => {
-                                                    e.preventDefault()
-                                                    const queryInput = e.target.querySelector('input') as HTMLInputElement
-                                                    setQuery(queryInput.value)
-                                                    setShowSuggest(true)
-                                                    var rect = queryInput.getBoundingClientRect();
-                                                    var elemtop = rect.top + window.pageYOffset;
-                                                    var elemleft = rect.left + window.pageXOffset;
-                                                    var elembottom = rect.bottom + window.pageYOffset;
-                                                    var elemright = rect.right + window.pageXOffset;
-                                                    // todo: react wayにする
-                                                    const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
-                                                    suggestDiv.style.top = `${elembottom}px`
-                                                    suggestDiv.style.left = `${elemleft}px`
-                                                    suggestDiv.style.width = `${rect.right - rect.left}px`
-                                                }}>
+                                                <form action="" onSubmit={searchSuggestBook}>
                                                     <div className="bp3-input-group modifier">
                                                         <span className="bp3-icon bp3-icon-search"></span>
                                                         <input className="bp3-input" type="search" placeholder="キーワード or ISBNで探す" dir="auto" />
@@ -771,7 +854,7 @@ const App = () => {
                                                     <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
                                                     <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
                                                     <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
-                                                    <Button icon="plus" onClick={() => addBook(formState)}>追加</Button>
+                                                    <Button icon="plus" onClick={() => addBook(formState, true)}>追加</Button>
                                                 </FormGroup>
                                             </div>
                                         </>
