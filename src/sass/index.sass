@@ -97,7 +97,7 @@
                 position: relative
                 display: flex
                 justify-content: space-between
-                align-items: center
+                align-items: flex-start
                 background-color: #999999
                 margin-bottom: 1rem
                 &.active
@@ -153,62 +153,75 @@
                             border-top-right-radius: 3px
                             border-bottom-right-radius: 3px
                 .edit
-                    flex: 0.8
+                    flex: 1
                     display: flex
                     justify-content: flex-end
                 .edit-form
-                    flex: 0.8
+                    flex: 1
+                    input
+                        margin-right: 1rem
+                        margin-bottom: 0.5rem
             .linkedData
 
-            .addMore
-                input
-                    width: 300px
+            // 他のアクション 書誌の手動入力、もしかして候補本から
+            .orActions
+                display: flex
+                .addMore
+                    padding: 0.5rem
+                    border-radius: 5px
+                    border: 1px solid #CCCCCCCC
                     margin-right: 1rem
-                    margin-bottom: 0.5rem
-            // もしかして
-            .nextBook
-                margin-top: 1rem
-                // height: 280px
-                background-color: #ffffff
-                padding: 1rem
-                margin-bottom: 1rem
-                border-radius: 5px
-                border: 1px solid #CCCCCCCC
-                // box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 -1px 1px rgb(16 22 26 / 20%), 0 -2px 6px rgb(16 22 26 / 20%)
-                h2
-                    margin-left: 0.5rem
-                    margin-bottom: 0.5rem
-                    span
-                        display: inline-block
-                        font-size: 1rem
-                        font-weight: normal
+                    margin-bottom: 1rem
+                    input
+                        width: 300px
+                        margin-right: 1rem
+                        margin-bottom: 0.5rem
+                // もしかして
+                .nextBook
+                    margin-top: 1rem
+                    // height: 280px
+                    background-color: #ffffff
+                    padding: 1rem
+                    margin-bottom: 1rem
+                    border-radius: 5px
+                    border: 1px solid #CCCCCCCC
+                    // box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 -1px 1px rgb(16 22 26 / 20%), 0 -2px 6px rgb(16 22 26 / 20%)
+                    h2
                         margin-left: 0.5rem
-                .cards
-                    display: grid
-                    grid-template: 1fr / 1fr 1fr 1fr 1fr 1fr
-                    .card
-                        cursor: pointer
-                        display: block
-                        align-items: center
-                        margin: 0.5rem
-                        .card-header
-                            display: flex
-                            align-items: flex-start
-                            h3
-                                font-size: 0.8rem
-                                margin-bottom: 0.5rem
-                            .author
-                                font-size: 0.7rem
-                                color: #ffffff
-                            img
-                                width: 50px
-                                margin-right: 1rem
-                            .bp3-tag
-                                margin-right: 0.5rem
-                                margin-bottom: 0.5rem
-                        svg
-                            width: auto
-                            margin-top: 1rem
+                        margin-bottom: 0.5rem
+                        span
+                            display: inline-block
+                            font-size: 1rem
+                            font-weight: normal
+                            margin-left: 0.5rem
+                    .cards
+                        display: grid
+                        grid-template: 1fr / 1fr 1fr 1fr 1fr 1fr
+                        .card
+                            cursor: pointer
+                            display: block
+                            align-items: center
+                            margin: 0.5rem
+                            .card-header
+                                display: flex
+                                align-items: flex-start
+                                h3
+                                    color: #ffffff
+                                    font-size: 0.8rem
+                                    margin-bottom: 0.5rem
+                                .author
+                                    font-size: 0.7rem
+                                    color: #ffffff
+                                img
+                                    width: 50px
+                                    margin-right: 1rem
+                                .bp3-tag
+                                    margin-right: 0.5rem
+                                    margin-bottom: 0.5rem
+                                    font-size: 0.6rem
+                            svg
+                                width: auto
+                                margin-top: 1rem
         .debug
             background-color: #000
             .logs
