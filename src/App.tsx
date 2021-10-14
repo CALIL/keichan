@@ -790,12 +790,12 @@ const App = () => {
                                                         labelFor="text-input"
                                                         labelInfo=""
                                                     >
-                                                        <InputGroup className="title" small placeholder="タイトル" value={editState.title} onChange={(e) => setEditState({...editState, title: e.target.value})} />
-                                                        <InputGroup className="author" small placeholder="著者名" value={editState.author} onChange={(e) => setEditState({...editState, author: e.target.value})} />
-                                                        <InputGroup className="publisher" small placeholder="出版社" value={editState.publisher} onChange={(e) => setEditState({...editState, publisher: e.target.value})} />
-                                                        <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
-                                                        <InputGroup className="isbn" small placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
-                                                        <Button icon="edit" onClick={() => editBook(editState)}>編集</Button>
+                                                        <InputGroup className="title" placeholder="タイトル" value={editState.title} onChange={(e) => setEditState({...editState, title: e.target.value})} />
+                                                        <InputGroup className="author" placeholder="著者名" value={editState.author} onChange={(e) => setEditState({...editState, author: e.target.value})} />
+                                                        <InputGroup className="publisher"placeholder="出版社" value={editState.publisher} onChange={(e) => setEditState({...editState, publisher: e.target.value})} />
+                                                        <InputGroup className="pubdate" placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
+                                                        <InputGroup className="isbn" placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
+                                                        <Button className="bp3-intent-primary" large={true} icon="edit" onClick={() => editBook(editState)}>編集</Button>
                                                     </FormGroup>
                                                 )}
                                             </Card>
@@ -840,12 +840,12 @@ const App = () => {
                                                         labelFor="text-input"
                                                         labelInfo=""
                                                     >
-                                                        <InputGroup className="title" small placeholder="タイトル" value={formState.title} onChange={(e) => setFormState({...formState, title: e.target.value})} />
-                                                        <InputGroup className="author" small placeholder="著者名" value={formState.author} onChange={(e) => setFormState({...formState, author: e.target.value})} />
-                                                        <InputGroup className="publisher" small placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
-                                                        <InputGroup className="pubdate" small placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
-                                                        <InputGroup className="isbn" small placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
-                                                        <Button icon="plus" onClick={() => addBook(formState, true)}>追加</Button>
+                                                        <InputGroup className="title" placeholder="タイトル" value={formState.title} onChange={(e) => setFormState({...formState, title: e.target.value})} />
+                                                        <InputGroup className="author" placeholder="著者名" value={formState.author} onChange={(e) => setFormState({...formState, author: e.target.value})} />
+                                                        <InputGroup className="publisher" placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
+                                                        <InputGroup className="pubdate" placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
+                                                        <InputGroup className="isbn" placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
+                                                        <Button className="bp3-intent-primary" icon="plus" large={true} onClick={() => addBook(formState, true)}>追加</Button>
                                                     </FormGroup>
                                                 </div>
                                                 {rowList.length > 1 && ProposalBooks.length > 0 ? (
