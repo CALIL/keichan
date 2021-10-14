@@ -110,6 +110,49 @@
                     button
                         width: 100%
                         margin-top: 0.5rem
+            // もしかして
+            .nextBook
+                width: calc(100% - 300px)
+                overflow-x: auto
+                background-color: #ffffff
+                padding: 1rem
+                border-radius: 5px
+                border: 1px solid #CCCCCCCC
+                margin-bottom: 1rem
+                h2
+                    margin-left: 0.5rem
+                    margin-bottom: 0.5rem
+                    span
+                        display: inline-block
+                        font-size: 1rem
+                        font-weight: normal
+                        margin-left: 0.5rem
+                .cards
+                    display: flex
+                    .card
+                        display: block
+                        align-items: center
+                        margin: 0.5rem
+                        .card-header
+                            display: flex
+                            align-items: flex-start
+                            h3
+                                color: #ffffff
+                                font-size: 0.8rem
+                                margin-bottom: 0.5rem
+                            .author
+                                font-size: 0.7rem
+                                color: #ffffff
+                            img
+                                width: 50px
+                                margin-right: 1rem
+                            .bp3-tag
+                                margin-right: 0.5rem
+                                margin-bottom: 0.5rem
+                                font-size: 0.6rem
+                        svg
+                            width: auto
+                            margin-top: 1rem
 
             .card
                 position: relative
@@ -187,49 +230,6 @@
                         margin-top: 0.5rem
             .linkedData
 
-            // もしかして
-            .nextBook
-                background-color: #ffffff
-                padding: 1rem
-                border-radius: 5px
-                border: 1px solid #CCCCCCCC
-                margin-bottom: 1rem
-                h2
-                    margin-left: 0.5rem
-                    margin-bottom: 0.5rem
-                    span
-                        display: inline-block
-                        font-size: 1rem
-                        font-weight: normal
-                        margin-left: 0.5rem
-                .cards
-                    display: grid
-                    grid-template: 1fr / 1fr 1fr 1fr 1fr 1fr
-                    .card
-                        cursor: pointer
-                        display: block
-                        align-items: center
-                        margin: 0.5rem
-                        .card-header
-                            display: flex
-                            align-items: flex-start
-                            h3
-                                color: #ffffff
-                                font-size: 0.8rem
-                                margin-bottom: 0.5rem
-                            .author
-                                font-size: 0.7rem
-                                color: #ffffff
-                            img
-                                width: 50px
-                                margin-right: 1rem
-                            .bp3-tag
-                                margin-right: 0.5rem
-                                margin-bottom: 0.5rem
-                                font-size: 0.6rem
-                        svg
-                            width: auto
-                            margin-top: 1rem
         .debug
             background-color: #000
             .logs

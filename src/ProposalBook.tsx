@@ -19,7 +19,14 @@ const ProposalBook = (props: any) => {
     }, [])
 
     return (
-        <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO}>
+        <Card key={book.isbn} className="card" interactive={true} elevation={Elevation.TWO} onClick={() => props.onClick({
+            title: book.title,
+            author: book.author,
+            publisher: book.publisher,
+            pubdate: book.pubdate,
+            isbn: book.isbn,
+            source: book.source
+        })}>
             <div className="card-header">
                 {book.cover ? (
                     <img src={book.cover} alt={book.title} />
