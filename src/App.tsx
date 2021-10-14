@@ -595,6 +595,17 @@ const App = () => {
         }
     }
 
+    const cancelEdit = (book: any) => {
+        setEditState({
+            id: '',
+            title: '',
+            author: '',
+            publisher: '',
+            pubdate: '',
+            isbn: '',
+        })
+    }
+
     // JSONファイルの読み込み
     const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         // console.log(e.target.files)
@@ -795,7 +806,10 @@ const App = () => {
                                                         <InputGroup className="publisher"placeholder="出版社" value={editState.publisher} onChange={(e) => setEditState({...editState, publisher: e.target.value})} />
                                                         <InputGroup className="pubdate" placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
                                                         <InputGroup className="isbn" placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
-                                                        <Button className="bp3-intent-primary" large={true} icon="edit" onClick={() => editBook(editState)}>編集</Button>
+                                                        <div className="buttons">
+                                                            <Button className="bp3-intent-primary" large={true} icon="edit" onClick={() => editBook(editState)}>編集</Button>
+                                                            <Button large={true} onClick={cancelEdit}>キャンセル</Button>
+                                                        </div>
                                                     </FormGroup>
                                                 )}
                                             </Card>
