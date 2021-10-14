@@ -768,7 +768,7 @@ const App = () => {
                                         ) : null}
                                         {row.title ? (
                                             <Card key={row.bibHash} className="card indent" interactive={false} elevation={Elevation.TWO}>
-                                                <div className="flex">
+                                                <div>
                                                     {row.cover ? (
                                                         <img className="thumbnail" src={row.cover} alt="" />
                                                     ) : null}
@@ -829,13 +829,13 @@ const App = () => {
                                     </div>
                                     {mode === 'management' && typeof row.isbn === 'undefined' ? (
                                         <>
-                                            <div className="description">
-                                                <div>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
-                                                    紐つけるバーコードをスキャンしてください
+                                            <div className="actions">
+                                                <div className="description">
+                                                    <div>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                                        紐つけるバーコードをスキャンしてください
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div className="orActions">
                                                 <div className="addMore">
                                                     <h3>バーコードのない本を追加</h3>
                                                     <form action="" onSubmit={searchSuggestBook}>
@@ -862,17 +862,17 @@ const App = () => {
                                                         <Button className="bp3-intent-primary" icon="plus" large={true} onClick={() => addBook(formState, true)}>追加</Button>
                                                     </FormGroup>
                                                 </div>
-                                                {rowList.length > 1 && ProposalBooks.length > 0 ? (
-                                                    <div className="nextBook">
-                                                        <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
-                                                        <div className="cards">
-                                                            {ProposalBooks.slice(0, 3).map((book) => {
-                                                                return <ProposalBook book={book} key={book.isbn} />
-                                                            })}
-                                                        </div>
-                                                    </div>
-                                                ) : null}
                                             </div>
+                                            {rowList.length > 1 && ProposalBooks.length > 0 ? (
+                                                <div className="nextBook">
+                                                    <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
+                                                    <div className="cards">
+                                                        {ProposalBooks.slice(0, 5).map((book) => {
+                                                            return <ProposalBook book={book} key={book.isbn} />
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ) : null}
                                         </>
                                     ) : null}
                                 </div>

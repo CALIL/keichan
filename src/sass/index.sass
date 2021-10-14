@@ -73,26 +73,44 @@
         .main
             background-color: #fff
             padding: 1rem
-            h3
-                margin-bottom: 1rem
-            form
+            .actions
                 display: flex
-                align-items: center
                 margin-bottom: 1rem
-                svg
-                    height: 1.5rem
-                    margin-left: 1rem
-            .description
-                text-align: center
-                background-color: #EEEEEE
-                border: 1px solid #CCCCCCCC
-                border-radius: 10px
-                padding: 3rem
-                margin-bottom: 1rem
-                svg
-                    display: block
-                    width: 75px
-                    margin: 0 auto
+                .description
+                    flex: 6
+                    display: flex
+                    justify-content: center
+                    align-items: center
+                    background-color: #EEEEEE
+                    border: 1px solid #CCCCCCCC
+                    border-radius: 10px
+                    padding: 3rem
+                    margin-right: 1rem
+                    svg
+                        display: block
+                        width: 75px
+                        margin: 0 auto
+                .addMore
+                    padding: 1rem
+                    border-radius: 5px
+                    border: 1px solid #CCCCCCCC
+                    h3
+                        margin-bottom: 1rem
+                    //　書誌検索フォーム
+                    form
+                        display: flex
+                        align-items: center
+                        margin-bottom: 1rem
+                        svg
+                            height: 1.5rem
+                            margin-left: 1rem
+                    input
+                        width: 300px
+                        margin-bottom: 0.5rem
+                    button
+                        width: 100%
+                        margin-top: 0.5rem
+
             .card
                 position: relative
                 display: flex
@@ -104,6 +122,36 @@
                     background-color: #0E9960
                 &.indent
                     margin-left: 2rem
+                    > div
+                        display: flex
+                        flex: 2
+                        margin-right: 1rem
+                        .thumbnail
+                            height: 80px
+                            margin-right: 1rem
+                        > div
+                            h3
+                                color: #ffffff
+                                margin: 0.5rem 0 0
+                            .author
+                                color: #ffffff
+                            .bp3-tag
+                                margin-right: 0.5rem
+                        .isbn
+                            .isbnHeader
+                                color: #ffffff
+                                font-size: 0.7rem
+                                background-color: #565656
+                                padding: 0.3rem
+                                border-top-left-radius: 3px
+                                border-bottom-left-radius: 3px
+                            .isbnCode
+                                color: #ffffff
+                                font-size: 0.7rem
+                                background-color: #49C31B
+                                padding: 0.3rem
+                                border-top-right-radius: 3px
+                                border-bottom-right-radius: 3px
                 .bp3-icon-delete
                     cursor: pointer
                 .document
@@ -122,36 +170,6 @@
                         padding: 0.3rem
                         border-top-right-radius: 3px
                         border-bottom-right-radius: 3px
-                .flex
-                    display: flex
-                    flex: 2
-                    margin-right: 1rem
-                    .thumbnail
-                        height: 80px
-                        margin-right: 1rem
-                    > div
-                        h3
-                            color: #ffffff
-                            margin: 0.5rem 0 0
-                        .author
-                            color: #ffffff
-                        .bp3-tag
-                            margin-right: 0.5rem
-                    .isbn
-                        .isbnHeader
-                            color: #ffffff
-                            font-size: 0.7rem
-                            background-color: #565656
-                            padding: 0.3rem
-                            border-top-left-radius: 3px
-                            border-bottom-left-radius: 3px
-                        .isbnCode
-                            color: #ffffff
-                            font-size: 0.7rem
-                            background-color: #49C31B
-                            padding: 0.3rem
-                            border-top-right-radius: 3px
-                            border-bottom-right-radius: 3px
                 .edit
                     flex: 1
                     display: flex
@@ -166,64 +184,52 @@
                     .buttons
                         display: flex
                         justify-content: space-between
+                        margin-top: 0.5rem
             .linkedData
 
-            // 他のアクション 書誌の手動入力、もしかして候補本から
-            .orActions
-                display: flex
+            // もしかして
+            .nextBook
+                background-color: #ffffff
+                padding: 1rem
+                border-radius: 5px
+                border: 1px solid #CCCCCCCC
                 margin-bottom: 1rem
-                .addMore
-                    padding: 1rem
-                    border-radius: 5px
-                    border: 1px solid #CCCCCCCC
-                    margin-right: 1rem
-                    input
-                        width: 300px
-                        margin-bottom: 0.5rem
-                // もしかして
-                .nextBook
-                    height: 390px
-                    background-color: #ffffff
-                    padding: 1rem
-                    border-radius: 5px
-                    border: 1px solid #CCCCCCCC
-                    // box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 -1px 1px rgb(16 22 26 / 20%), 0 -2px 6px rgb(16 22 26 / 20%)
-                    h2
+                h2
+                    margin-left: 0.5rem
+                    margin-bottom: 0.5rem
+                    span
+                        display: inline-block
+                        font-size: 1rem
+                        font-weight: normal
                         margin-left: 0.5rem
-                        margin-bottom: 0.5rem
-                        span
-                            display: inline-block
-                            font-size: 1rem
-                            font-weight: normal
-                            margin-left: 0.5rem
-                    .cards
-                        display: grid
-                        grid-template: 1fr / 1fr 1fr 1fr 1fr 1fr
-                        .card
-                            cursor: pointer
-                            display: block
-                            align-items: center
-                            margin: 0.5rem
-                            .card-header
-                                display: flex
-                                align-items: flex-start
-                                h3
-                                    color: #ffffff
-                                    font-size: 0.8rem
-                                    margin-bottom: 0.5rem
-                                .author
-                                    font-size: 0.7rem
-                                    color: #ffffff
-                                img
-                                    width: 50px
-                                    margin-right: 1rem
-                                .bp3-tag
-                                    margin-right: 0.5rem
-                                    margin-bottom: 0.5rem
-                                    font-size: 0.6rem
-                            svg
-                                width: auto
-                                margin-top: 1rem
+                .cards
+                    display: grid
+                    grid-template: 1fr / 1fr 1fr 1fr 1fr 1fr
+                    .card
+                        cursor: pointer
+                        display: block
+                        align-items: center
+                        margin: 0.5rem
+                        .card-header
+                            display: flex
+                            align-items: flex-start
+                            h3
+                                color: #ffffff
+                                font-size: 0.8rem
+                                margin-bottom: 0.5rem
+                            .author
+                                font-size: 0.7rem
+                                color: #ffffff
+                            img
+                                width: 50px
+                                margin-right: 1rem
+                            .bp3-tag
+                                margin-right: 0.5rem
+                                margin-bottom: 0.5rem
+                                font-size: 0.6rem
+                        svg
+                            width: auto
+                            margin-top: 1rem
         .debug
             background-color: #000
             .logs
