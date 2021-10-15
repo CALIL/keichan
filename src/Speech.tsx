@@ -5,17 +5,29 @@ import { Icon } from "@blueprintjs/core";
 // @ts-ignore
 declare const webkitSpeechRecognition: typeof SpeechRecognition
 
-// import { Howl } from 'howler'
+import { Howl } from 'howler'
 
-// let safetyUrlAudio = new Howl({
-//     src: ['./audio/safety.mp3'],
-//     autoplay: false,
-//     loop: false,
-//     volume: 1,
-//     onend: function () {
-//         console.log('Finished!')
-//     }
-// })
+let healingUrlAudio = new Howl({
+    src: ['./audio/healing.ogg'],
+    autoplay: false,
+    loop: false,
+    volume: 1,
+    rate: 0.5,
+    onend: function () {
+        console.log('Finished!')
+    }
+})
+
+let healedUrlAudio = new Howl({
+    src: ['./audio/healed.ogg'],
+    autoplay: false,
+    loop: false,
+    volume: 1,
+    onend: function () {
+        console.log('Finished!')
+    }
+})
+
 
 interface Speech {
     recognition: any
@@ -39,6 +51,7 @@ class Speech extends Component<Props, State> {
     }
 
     start() {
+        if (this.state.isRecognition) return
         const LANG_JAPAN = "ja-JP";
         const recognition = new webkitSpeechRecognition();
         recognition.lang = LANG_JAPAN;
@@ -50,11 +63,15 @@ class Speech extends Component<Props, State> {
         }
         recognition.onresult = (e: any) => {
             if (e.results.length > 0) {
+                healedUrlAudio.play()
                 this.props.onEnd(e.results[0][0].transcript);
                 // this.setState({results: [e.results[0][0].transcript].concat(this.state.results)});
             }
         }
-        recognition.onstart = () => { console.log('on start') }
+        recognition.onstart = () => { 
+            console.log('on start')
+            healingUrlAudio.play()
+        }
 
         recognition.onspeechstart = () => { console.log('on speech start') }
         recognition.onspeechend = () => { console.log('on speech end') }
