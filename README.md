@@ -10,3 +10,9 @@ https://calil.github.io/keichan/
 npm install  
 npm start
 ```
+
+## 効果音
+
+http://vnctst.tir.jp/ja/materials/se.html
+
+こちらのサイトのCCライセンスの音声ファイルを使用
