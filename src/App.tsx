@@ -507,11 +507,11 @@ const App = () => {
             }
         }
         addBook({
-            title: book.title,
-            author: book.author,
-            publisher: book.publisher,
-            pubdate: pubdate.toString(),
-            isbn: book.isbn,
+            title: book.title || '',
+            author: book.author || '',
+            publisher: book.publisher || '',
+            pubdate: pubdate ? pubdate.toString() : '',
+            isbn: book.isbn || '',
             source: book.source
         })
     }
@@ -525,11 +525,11 @@ const App = () => {
         const tempList = [...rowList]
         const row = tempList[tempList.length - 1]
         row.title = book.title
-        row.author = book.author
-        row.publisher = book.publisher
-        row.pubdate = book.pubdate
+        row.author = book.author || ''
+        row.publisher = book.publisher || ''
+        row.pubdate = book.pubdate || ''
         row.cover = book.isbn!=='' ? 'https://calil.jp/cover/' + book.isbn : ''
-        row.isbn = book.isbn
+        row.isbn = book.isbn || ''
         row.tags = []
         row.bibHash = getBibHash({...row, ...book})
         row.price = ''
