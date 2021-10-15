@@ -32,6 +32,22 @@ export default class Search extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props.queryInput)
+        const suggestDiv = this.refs.suggest;
+        if (suggestDiv && this.props.queryInput) {
+            console.log(suggestDiv)
+            const queryInput = this.props.queryInput;
+            var rect = queryInput.getBoundingClientRect();
+            var elemtop = rect.top + window.pageYOffset;
+            console.log(elemtop)
+            var elemleft = rect.left + window.pageXOffset;
+            var elembottom = rect.bottom + window.pageYOffset;
+            var elemright = rect.right + window.pageXOffset;
+            // suggestDiv.style.top = `${elembottom}px`
+            // suggestDiv.style.left = `${elemleft}px`
+            suggestDiv.style.width = `${rect.right - rect.left}px`
+        }
+
         if (this.props.query === this.prevQuery) this.state.showResult = true
         if (this.props.query != '' && this.props.query != this.prevQuery) {
             this.kill();
@@ -96,7 +112,7 @@ export default class Search extends Component {
     render() {
         let count = 0;
         return (
-            <div className={'suggest'}>
+            <div className="suggest" ref="suggest">
                 {this.state.books.length > 0 ? (
                     <div className="results">
                         {this.state.books.map((book) => {

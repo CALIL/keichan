@@ -11,6 +11,7 @@ import { saveAs } from 'file-saver'
 import ProposalBook from './ProposalBook'
 
 import Suggest from './Suggest'
+import Speech from './Speech'
 
 import { getBook, getBooks, getBibHash } from './getBooks'
 
@@ -222,6 +223,7 @@ const App = () => {
     const [showSettings, setShowSettings] = useState(false)
     const [searching, setSearching] = useState(false)
     const [showSuggest, setShowSuggest] = useState(false)
+    const queryInput = useRef(null)
 
     const [alertMessage, setAlertMessage] = useState({
         // show: true,
@@ -483,22 +485,17 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
-    const searchSuggestBook = (e: any) => {
-        e.preventDefault()
-        const queryInput = e.target.querySelector('input') as HTMLInputElement
-        setQuery(queryInput.value)
+    const searchSuggest = (e) => {
+        setQuery(e.target.value)
         setShowSuggest(true)
-        var rect = queryInput.getBoundingClientRect();
-        var elemtop = rect.top + window.pageYOffset;
-        var elemleft = rect.left + window.pageXOffset;
-        var elembottom = rect.bottom + window.pageYOffset;
-        var elemright = rect.right + window.pageXOffset;
-        // todo: react wayにする
-        const suggestDiv = document.querySelector('.suggest') as HTMLDivElement
-        suggestDiv.style.top = `${elembottom}px`
-        suggestDiv.style.left = `${elemleft}px`
-        suggestDiv.style.width = `${rect.right - rect.left}px`
     }
+
+    const speech = (str: string) => {
+        // console.log(str)
+        setQuery(str)
+        setShowSuggest(true)
+    }
+
 
     const selectBook = (book: any) => {
         let pubdate = ''
@@ -755,6 +752,54 @@ const App = () => {
                                         </span>
                                         <Icon icon="delete" size={25} color={'#ffffff'} onClick={() => removeRow(row.id)} />
                                     </Card>
+                                    {mode === 'management' && typeof row.isbn === 'undefined' ? (
+                                        <>
+                                            <div className="actions">
+                                                <div className="description">
+                                                    <div>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
+                                                        紐つけるバーコードをスキャンしてください
+                                                    </div>
+                                                </div>
+                                                <div className="addMore">
+                                                    <h3>バーコードのない本を追加</h3>
+                                                    <form action="" onSubmit={(e) => e.preventDefault()}>
+                                                        <div className="bp3-input-group modifier">
+                                                            <span className="bp3-icon bp3-icon-search"></span>
+                                                            <input ref={queryInput} className="bp3-input" type="search" value={query} placeholder="キーワード or ISBNで探す" dir="auto" onChange={searchSuggest} />
+                                                        </div>
+                                                        <Speech onEnd={speech} />
+                                                    </form>
+                                                    <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
+                                                        <Suggest region={REGION} open={selectBook} query={query} queryInput={queryInput.current} />
+                                                    </div>
+                                                    <FormGroup
+                                                        helperText=""
+                                                        label="書誌情報を自分で入力"
+                                                        labelFor="text-input"
+                                                        labelInfo=""
+                                                    >
+                                                        <InputGroup className="title" placeholder="タイトル" value={formState.title} onChange={(e) => setFormState({...formState, title: e.target.value})} />
+                                                        <InputGroup className="author" placeholder="著者名" value={formState.author} onChange={(e) => setFormState({...formState, author: e.target.value})} />
+                                                        <InputGroup className="publisher" placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
+                                                        <InputGroup className="pubdate" placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
+                                                        <InputGroup className="isbn" placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
+                                                        <Button className="bp3-intent-primary" icon="plus" large={true} onClick={() => addBook(formState, true)}>追加</Button>
+                                                    </FormGroup>
+                                                </div>
+                                            </div>
+                                            {rowList.length > 1 && ProposalBooks.length > 0 ? (
+                                                <div className="nextBook">
+                                                    <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
+                                                    <div className="cards">
+                                                        {ProposalBooks.slice(0, 5).map((book) => {
+                                                            return <ProposalBook book={book} key={book.isbn} onClick={addBook} />
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            ) : null}
+                                        </>
+                                    ) : null}
                                     <div className="linkedData">
                                         {row.isbn ? (
                                             <Card key={row.bibHash + row.isbn} className="card indent" interactive={false} elevation={Elevation.TWO}>
@@ -827,54 +872,6 @@ const App = () => {
                                         </Card>
                                         ) : null}
                                     </div>
-                                    {mode === 'management' && typeof row.isbn === 'undefined' ? (
-                                        <>
-                                            <div className="actions">
-                                                <div className="description">
-                                                    <div>
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M0 448V64h18v384H0zm26.857-.273V64H36v383.727h-9.143zm27.143 0V64h8.857v383.727H54zm44.857 0V64h8.857v383.727h-8.857zm36 0V64h17.714v383.727h-17.714zm44.857 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm18 0V64h8.857v383.727h-8.857zm35.715 0V64h18v383.727h-18zm44.857 0V64h18v383.727h-18zm35.999 0V64h18.001v383.727h-18.001zm36.001 0V64h18.001v383.727h-18.001zm26.857 0V64h18v383.727h-18zm45.143 0V64h26.857v383.727h-26.857zm35.714 0V64h9.143v383.727H476zm18 .273V64h18v384h-18z" /></svg>
-                                                        紐つけるバーコードをスキャンしてください
-                                                    </div>
-                                                </div>
-                                                <div className="addMore">
-                                                    <h3>バーコードのない本を追加</h3>
-                                                    <form action="" onSubmit={searchSuggestBook}>
-                                                        <div className="bp3-input-group modifier">
-                                                            <span className="bp3-icon bp3-icon-search"></span>
-                                                            <input className="bp3-input" type="search" placeholder="キーワード or ISBNで探す" dir="auto" />
-                                                        </div>
-                                                        {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M176 352c53.02 0 96-42.98 96-96V96c0-53.02-42.98-96-96-96S80 42.98 80 96v160c0 53.02 42.98 96 96 96zm160-160h-16c-8.84 0-16 7.16-16 16v48c0 74.8-64.49 134.82-140.79 127.38C96.71 376.89 48 317.11 48 250.3V208c0-8.84-7.16-16-16-16H16c-8.84 0-16 7.16-16 16v40.16c0 89.64 63.97 169.55 152 181.69V464H96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h160c8.84 0 16-7.16 16-16v-16c0-8.84-7.16-16-16-16h-56v-33.77C285.71 418.47 352 344.9 352 256v-48c0-8.84-7.16-16-16-16z"/></svg> */}
-                                                    </form>
-                                                    <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
-                                                        <Suggest region={REGION} open={selectBook} query={query} />
-                                                    </div>
-                                                    <FormGroup
-                                                        helperText=""
-                                                        label="書誌情報を自分で入力"
-                                                        labelFor="text-input"
-                                                        labelInfo=""
-                                                    >
-                                                        <InputGroup className="title" placeholder="タイトル" value={formState.title} onChange={(e) => setFormState({...formState, title: e.target.value})} />
-                                                        <InputGroup className="author" placeholder="著者名" value={formState.author} onChange={(e) => setFormState({...formState, author: e.target.value})} />
-                                                        <InputGroup className="publisher" placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
-                                                        <InputGroup className="pubdate" placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
-                                                        <InputGroup className="isbn" placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
-                                                        <Button className="bp3-intent-primary" icon="plus" large={true} onClick={() => addBook(formState, true)}>追加</Button>
-                                                    </FormGroup>
-                                                </div>
-                                            </div>
-                                            {rowList.length > 1 && ProposalBooks.length > 0 ? (
-                                                <div className="nextBook">
-                                                    <h2>もしかして<span>({rowList[rowList.length - 2].title}より推定)</span></h2>
-                                                    <div className="cards">
-                                                        {ProposalBooks.slice(0, 5).map((book) => {
-                                                            return <ProposalBook book={book} key={book.isbn} onClick={addBook} />
-                                                        })}
-                                                    </div>
-                                                </div>
-                                            ) : null}
-                                        </>
-                                    ) : null}
                                 </div>
                             )
                         }
