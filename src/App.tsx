@@ -485,8 +485,8 @@ const App = () => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
 
-    const searchSuggest = (e) => {
-        setQuery(e.target.value)
+    const searchSuggest = (str) => {
+        setQuery(str)
         setShowSuggest(true)
     }
 
@@ -763,10 +763,13 @@ const App = () => {
                                                 </div>
                                                 <div className="addMore">
                                                     <h3>バーコードのない本を追加</h3>
-                                                    <form action="" onSubmit={(e) => e.preventDefault()}>
+                                                    <form action="" onSubmit={(e) => {
+                                                        e.preventDefault()
+                                                        searchSuggest(query)
+                                                    }}>
                                                         <div className="bp3-input-group modifier">
                                                             <span className="bp3-icon bp3-icon-search"></span>
-                                                            <input ref={queryInput} className="bp3-input" type="search" value={query} placeholder="キーワード or ISBNで探す" dir="auto" onChange={searchSuggest} />
+                                                            <input ref={queryInput} className="bp3-input" type="search" value={query} placeholder="キーワード or ISBNで探す" dir="auto" onChange={(e) => searchSuggest(e.target.value)} />
                                                         </div>
                                                         <Speech onEnd={speech} />
                                                     </form>
