@@ -32,7 +32,7 @@ export default class Search extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props.queryInput)
+        // console.log(this.props.queryInput)
         const suggestDiv = this.refs.suggest;
         if (suggestDiv && this.props.queryInput) {
             const queryInput = this.props.queryInput;

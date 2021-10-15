@@ -5,6 +5,18 @@ import { Icon } from "@blueprintjs/core";
 // @ts-ignore
 declare const webkitSpeechRecognition: typeof SpeechRecognition
 
+// import { Howl } from 'howler'
+
+// let safetyUrlAudio = new Howl({
+//     src: ['./audio/safety.mp3'],
+//     autoplay: false,
+//     loop: false,
+//     volume: 1,
+//     onend: function () {
+//         console.log('Finished!')
+//     }
+// })
+
 interface Speech {
     recognition: any
 }
