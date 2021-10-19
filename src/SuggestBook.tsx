@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 const SuggestBook = ({ book, open }) => (
     <div className="book" onClick={() => open(book)}>

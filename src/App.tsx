@@ -13,6 +13,8 @@ import ProposalBook from './ProposalBook'
 import Suggest from './Suggest'
 import Speech from './Speech'
 
+import SearchForm from './SearchForm';
+
 import { getBook, getBooks, getBibHash } from './getBooks'
 
 import normalize_isbn from './normalize_isbn.js'
@@ -200,7 +202,6 @@ const App = () => {
 
     const [ProposalBooks, setProposalBooks] = useState([])
 
-    const [query, setQuery] = useState('')
     const [formState, setFormState] = useState({
         title: '',
         author: '',
@@ -222,8 +223,6 @@ const App = () => {
     const [enableSpeak, setEnableSpeak] = useState(true)
     const [showSettings, setShowSettings] = useState(false)
     const [searching, setSearching] = useState(false)
-    const [showSuggest, setShowSuggest] = useState(false)
-    const queryInput = useRef(null)
 
     const [alertMessage, setAlertMessage] = useState({
         // show: true,
@@ -484,18 +483,6 @@ const App = () => {
     const removeRow = (id: string) => {
         setRowList(rowList.filter((row) => row.id !== id))
     }
-
-    const searchSuggest = (str) => {
-        setQuery(str)
-        setShowSuggest(true)
-    }
-
-    const speech = (str: string) => {
-        // console.log(str)
-        setQuery(str)
-        setShowSuggest(true)
-    }
-
 
     const selectBook = (book: any) => {
         let pubdate = ''
@@ -763,19 +750,7 @@ const App = () => {
                                                 </div>
                                                 <div className="addMore">
                                                     <h3>バーコードのない本を追加</h3>
-                                                    <form action="" onSubmit={(e) => {
-                                                        e.preventDefault()
-                                                        searchSuggest(query)
-                                                    }}>
-                                                        <div className="bp3-input-group modifier">
-                                                            <span className="bp3-icon bp3-icon-search"></span>
-                                                            <input ref={queryInput} className="bp3-input" type="search" value={query} placeholder="キーワード or ISBNで探す" dir="auto" onChange={(e) => searchSuggest(e.target.value)} />
-                                                        </div>
-                                                        <Speech onEnd={speech} />
-                                                    </form>
-                                                    <div className={showSuggest ? 'show_suggest' : 'hide_suggest'}>
-                                                        <Suggest region={REGION} open={selectBook} query={query} queryInput={queryInput.current} />
-                                                    </div>
+                                                    <SearchForm REGION={REGION} selectBook={selectBook} />
                                                     <FormGroup
                                                         helperText=""
                                                         label="書誌情報を自分で入力"
