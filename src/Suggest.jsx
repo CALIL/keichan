@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ISBN from 'isbnjs';
 import api from './api';
 import {getOpenBD} from './getBooks';
-import SuggestBook from './SuggestBook.jsx';
+import SuggestBook from './SuggestBook';
 
 export default class Suggest extends Component {
     constructor(props) {
