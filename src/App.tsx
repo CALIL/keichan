@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch, ProgressBar } from "@blueprintjs/core";
+import { Button, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch } from "@blueprintjs/core";
 
 // @ts-ignore
 import { Howl } from 'howler'
