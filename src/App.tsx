@@ -332,7 +332,7 @@ const App = () => {
 
         setSearching(true)
         // ISBNから本を探す
-        const book: any = await getBook(isbn10).catch(() => bookNotFound(isbn10))
+        const book: any = await getBook(isbn10, REGION).catch(() => bookNotFound(isbn10))
         setSearching(false)
         if (book) {
             // console.log(book)
@@ -348,7 +348,7 @@ const App = () => {
                 const prevRow = rowList[rowList.length - 1]
                 if (prevRow && prevRow.title) {
                     logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
-                    const books: any = await getBooks(prevRow)
+                    const books: any = await getBooks(prevRow, REGION)
                     setProposalBooks(books as any)
                     if (books.length > 0) logs.push(`候補の本が${books.length}冊みつかりました`)
                 }
@@ -450,7 +450,7 @@ const App = () => {
 
         if (prevRow && prevRow.title) {
             logs.push(`一つ前の本、「${prevRow.title}」から次の本の候補を探します`)
-            const books: any = await getBooks(prevRow)
+            const books: any = await getBooks(prevRow, REGION)
             setProposalBooks(books as any)
             if (books.length > 0) {
                 logs.push(`候補の本が${books.length}冊みつかりました`)

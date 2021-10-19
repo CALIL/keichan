@@ -37,11 +37,9 @@ function hankana2Zenkana(str) {
             .replace(/ﾟ/g, '゜');
 };
 
-const REGION = 'recipe'
-
-export const getBook = async (isbn) => {
+export const getBook = async (isbn, region) => {
     return new Promise(async (resolve, reject) => {
-        const apiInstance = new api({ isbn: isbn, region: REGION }, async (data) => {
+        const apiInstance = new api({ isbn: isbn, region: region }, async (data) => {
             // console.log(data)
             if (data.count >= 1) {
                 apiInstance.kill()
@@ -75,7 +73,7 @@ export const getBook = async (isbn) => {
     })
 }
 
-export const getBooks = async (targetBook) => {
+export const getBooks = async (targetBook, region) => {
     // console.log(book)
 
     const author = targetBook.author.split(',')[0]
@@ -84,7 +82,7 @@ export const getBooks = async (targetBook) => {
 
     return new Promise(async (resolve, reject) => {
 
-        let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: REGION }, async (data) => {
+        let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: region }, async (data) => {
             if (apiInstance.killed) return
             if (data.count > 5) apiInstance.kill()
             console.log(data)
