@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 
-import Book from './SuggestBook.jsx';
-
 import ISBN from 'isbnjs';
 import api from './api';
 import {getOpenBD} from './getBooks';
+import SuggestBook from './SuggestBook.jsx';
 
-export default class Search extends Component {
+export default class Suggest extends Component {
     constructor(props) {
         super(props);
         this.api = null;
@@ -102,16 +101,13 @@ export default class Search extends Component {
     }
 
     render() {
-        let count = 0;
         return (
             <div className="suggest" ref="suggest">
                 {this.state.books.length > 0 ? (
                     <div className="results">
-                        {this.state.books.map((book) => {
-                            count += 1;
+                        {this.state.books.map((book, index) => {
                             return (
-                                <Book book={book} key={book.id}
-                                    count={count} updateCount={this.state.updateCount} completed={!this.state.running}
+                                <SuggestBook book={book} key={index}
                                     open={(book) => {
                                         this.props.open(book);
                                     }}
