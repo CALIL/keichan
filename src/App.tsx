@@ -502,25 +502,10 @@ const App = () => {
         }
         const tempList = [...rowList]
         const row = tempList[tempList.length - 1]
-        row.title = book.title
-        row.author = book.author || ''
-        row.publisher = book.publisher || ''
-        row.pubdate = book.pubdate || ''
-        row.cover = book.isbn!=='' ? 'https://calil.jp/cover/' + book.isbn : ''
-        row.isbn = book.isbn || ''
-        row.tags = []
-        row.bibHash = getBibHash({...row, ...book})
-        row.price = ''
-        row.cCode = ''
+        setBookOnRow(row, book)
         row.source = edit ? 'user' : book.source
         setRowList(tempList)
-        setFormState({
-            title: '',
-            author: '',
-            publisher: '',
-            pubdate: '',
-            isbn: '',
-        })
+        clearFormState()
         if (enableSpeak) speak(`${book.title}を追加`)
         logs.push(`「${book.title}」を追加`)
         setDebugLogs([...debugLogs, ...logs])
@@ -529,48 +514,43 @@ const App = () => {
     const editBook = (book: any) => {
         if (book.title === '') {
             alertAndLog('タイトルは必須です')
-            errorAudio.play()
-            return false
+            return errorAudio.play()
         }
         // ISBNのバリデーション
         if (book.isbn !== '') {
             const isbn = isbn_utils.parse(book.isbn)
             if (isbn===null) {
                 alertAndLog('ISBNが不正です')
-                errorAudio.play()
-                return false
+                return errorAudio.play()
             }
         }
         const tempList = [...rowList]
         const row = tempList.find((row) => row.id===book.id)
         if (row) {
-            row.title = book.title
-            row.author = book.author
-            row.publisher = book.publisher
-            row.pubdate = book.pubdate
-            row.cover = book.isbn!=='' ? 'https://calil.jp/cover/' + book.isbn : ''
-            row.isbn = book.isbn
-            row.tags = []
-            row.bibHash = getBibHash({...row, ...book})
-            row.price = ''
-            row.cCode = ''
+            setBookOnRow(row, book)
             row.source = 'user'
             setRowList(tempList)
-            setEditState({
-                id: '',
-                title: '',
-                author: '',
-                publisher: '',
-                pubdate: '',
-                isbn: '',
-            })
+            clearFormState()
             if (enableSpeak) speak(`${book.title}を編集`)
             logs.push(`「${book.title}」を編集`)
             setDebugLogs([...debugLogs, ...logs])    
         }
     }
 
-    const cancelEdit = (book: any) => {
+    const setBookOnRow = (row: any, book: any) => {
+        row.title = book.title
+        row.author = book.author
+        row.publisher = book.publisher
+        row.pubdate = book.pubdate
+        row.cover = book.isbn!=='' ? 'https://calil.jp/cover/' + book.isbn : ''
+        row.isbn = book.isbn
+        row.tags = []
+        row.bibHash = getBibHash({...row, ...book})
+        row.price = ''
+        row.cCode = ''
+    }
+
+    const clearFormState = () => {
         setEditState({
             id: '',
             title: '',
@@ -822,7 +802,7 @@ const App = () => {
                                                         <InputGroup className="isbn" placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
                                                         <div className="buttons">
                                                             <Button className="bp3-intent-primary" large={true} icon="edit" onClick={() => editBook(editState)}>編集</Button>
-                                                            <Button large={true} onClick={cancelEdit}>キャンセル</Button>
+                                                            <Button large={true} onClick={clearFormState}>キャンセル</Button>
                                                         </div>
                                                     </FormGroup>
                                                 )}
