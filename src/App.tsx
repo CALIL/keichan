@@ -247,12 +247,6 @@ const App = () => {
     }, [mode, rowList, checkEnable, debugLogs, enableSpeak])
     // ↑内部で使うstateを、ここに追加しないとcheckStrに反映されない
 
-    useEffect(() => {
-        document.body.addEventListener('click', (e: any) => {
-            setShowSuggest(false)
-        });
-    }, [true])
-
     const alertAndLog = (message, str=null) => {
         setAlertMessage({
             show: true,
