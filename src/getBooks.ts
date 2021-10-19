@@ -1,6 +1,6 @@
 import isbn_utils from 'isbn-utils'
 import api from './api.js'
-import normalize_isbn from './normalize_isbn.js'
+import normalize_isbn from './normalize_isbn'
 
 import sha1 from 'sha1'
 

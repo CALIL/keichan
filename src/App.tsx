@@ -10,14 +10,11 @@ import { saveAs } from 'file-saver'
 
 import ProposalBook from './ProposalBook'
 
-import Suggest from './Suggest'
-import Speech from './Speech'
-
 import SearchForm from './SearchForm';
 
 import { getBook, getBooks, getBibHash } from './getBooks'
 
-import normalize_isbn from './normalize_isbn.js'
+import normalize_isbn from './normalize_isbn'
 import isbn_utils from 'isbn-utils'
 
 let safetyUrlAudio = new Howl({
