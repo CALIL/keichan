@@ -686,7 +686,7 @@ const App = () => {
                         <Button icon="download" onClick={() => downloadXSLX(rowList, licenseKey)}>Excelで保存</Button>
                     ) : null}
                     <Button className="settingsButton" icon="cog" onClick={() => setShowSettings(true)}>設定</Button>
-                    <a className="github" href="https://github.com/CALIL/ajime" target="_blank">
+                    <a className="github" href="https://github.com/CALIL/keichan" target="_blank">
                         <Button icon="git-repo">
                             GitHub
                         </Button>
