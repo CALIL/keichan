@@ -90,6 +90,7 @@ const speak = (text: string): void => {
 }
 
 const downloadXSLX = (rows, fileName): void => {
+    console.log(rows)
     const wb = XLSX.utils.book_new();
     wb.Props = {
         Title: "",
@@ -101,9 +102,7 @@ const downloadXSLX = (rows, fileName): void => {
     const ws_data: [string, string, string, string, string, string, string, string, string][] = [];
     ws_data.push(['id', 'タイトル', '著者', '出版社', '発売日', 'ISBN', 'タグ', '価格', 'Cコード'])
     rows.map((row) => {
-        if (row.isbn) {
-            ws_data.push([row.id, row.title, row.author, row.publisher, row.pubdate, row.isbn, row.tags.join(','), row.price, row.cCode])
-        }
+        ws_data.push([row.id, row.title, row.author, row.publisher, row.pubdate, row.isbn, row.tags.join(','), row.price, row.cCode])
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     wb.Sheets['蔵書データ'] = ws;
