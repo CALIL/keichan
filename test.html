@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  <script type="module" crossorigin src="/keichan/assets/test.abbdb5cf.js"></script>
+    <script type="module">!function(){try{new Function("m","return import(m)")}catch(o){console.warn("vite: loading legacy build because dynamic import is unsupported, syntax error above should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}}();</script>
+  </head>
+
+<body>
+    <style>
+        body {
+            background-image: url('/book.png');
+            background-repeat: no-repeat;
+            background-position: top left;
+        }
+        .fluffy {
+            width: 300px;
+            height: 300px;
+            margin: 100px;
+            margin-top: 250px;
+            margin-left: 600px;
+            animation: fluffy1 3s ease infinite;
+        }
+
+        @keyframes fluffy1 {
+            0% { transform:translateY(0) }
+            5% { transform:translateY(0) }
+            10% { transform:translateY(0) }
+            20% { transform:translateY(-15px) }
+            25% { transform:translateY(0) }
+            30% { transform:translateY(-15px) }
+            50% { transform:translateY(0) }
+            100% { transform:translateY(0) }
+        }
+    </style>
+    <script>
+        document.addEventListener('keydown', () => {
+            const led = document.getElementById('led');
+            led.style.fill = '#0000ff';
+            setTimeout(() => {
+                led.style.fill = '#363636';
+            }, 300);
+        })
+    </script>
+    <!-- <img src="book.png" alt=""> -->
+    <svg class="fluffy" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="224.71" height="405"
+        viewBox="0 0 224.71 405">
+        <defs>
+            <clipPath id="a">
+                <rect width="9.96" height="40.399" fill="#363636" />
+            </clipPath>
+        </defs>
+        <g transform="translate(-773.333 -522)">
+            <rect width="196.304" height="35" transform="translate(774.348 552.435)" fill="#fff" />
+            <path
+                d="M60.444,286.509c4.521-.329,9.2-2.059,13.274,1.532C77.9,305.4,92.836,315.6,110.963,313.483c15.767-1.838,27.764-15.789,27.8-32.489.056-24.724-.014-49.447.046-74.171.064-26.492,16.433-47.785,41.7-54.242a73.355,73.355,0,0,1,8.16-1.176c3.865-.533,4.987,1.61,4.462,4.924-.437,2.76,2,6.982-3.684,7.289-20.514,1.108-38.535,17.833-38.442,44.976q.121,35.951-.011,71.9c-.079,22.479-14.3,39.819-36.368,44.588-20.524,4.434-41.852-6.74-50.485-26.691-1.634-3.778-4.775-7.21-3.7-11.883"
+                transform="translate(804.754 600.951)" fill="#6b6b6b" />
+            <path
+                d="M198.32,47.74c-14.3-11.749-31.068-12.92-48.367-12.78q-50.169.411-100.342,0c-17.3-.146-34.12.87-48.548,12.291C-4.806,25.276,14.473.544,38,.289,78.988-.153,119.985-.023,160.976.242c21.227.138,41.956,21.665,37.343,47.5"
+                transform="translate(773.333 522)" fill="#6b6b6b" />
+            <path
+                d="M90.216,350.719a53.056,53.056,0,0,1-41-53.215c.823-44.115.224-88.256.224-132.388,0-11.9-4.769-21.513-14.391-28.347C14.353,122.07,2.609,101.811.363,76.9c-.9-10,.674-20.341-.233-30.651-.668-7.577,11.478-17.288,22.551-19.509a87.618,87.618,0,0,1,17.874-1.806c30.661.205,61.324.134,91.986.16,2.053,1.091,4.395.849,6.563,1.441,8.5,2.319,15.231,7.566,15.814,16.293,1.581,23.629,3.555,47.527-7.418,69.887-4.011,8.179-8.312,16.31-15.277,22.342-10.859,9.4-14.175,21.6-14.18,35.266-.014,44.683.084,89.365-.052,134.048-.05,17.075-6.19,31.485-19.767,42.306a19.926,19.926,0,0,1-8.009,4.042"
+                transform="translate(773.371 535.009)" fill="#f5f5f9" />
+            <path
+                d="M59.31,350.717c4.6-5.571,11.582-8.377,15.712-14.752,5.9-9.108,9.868-18.635,9.888-29.517.079-44.631.21-89.265-.056-133.9-.1-16.162,4.421-29.354,16.5-41.064,13.93-13.5,20.105-31.547,21.24-50.943.557-9.549.1-19.159.1-28.739,0-14.394-3.812-19.871-17.13-24.777a40.236,40.236,0,0,1-3.932-1.939c15.458.627,31.028-1.957,46.34,2.783,12.393,3.838,18.777,11.049,18.516,23.709-.257,12.55,1.611,25.233-1.545,37.625-4.536,17.809-13.312,33.2-28.388,43.946-12.717,9.06-18.88,20.294-18.676,36.246.537,42.6.173,85.219.186,127.827,0,16.619-4.81,31.054-17.859,42.227a48.49,48.49,0,0,1-19.078,9.969c-2.675.743-6.309.485-6.935,4.559-4.573.793-9.092,1.111-13.274-1.534Z"
+                transform="translate(804.277 535.011)" fill="#dfdde0" />
+            <g transform="translate(866.598 619.015)" opacity="0.7">
+                <g transform="translate(0 0)">
+                    <g clip-path="url(#a)">
+                        <rect id="led" width="9.961" height="40.399" transform="translate(-0.002)" fill="#363636" />
+                    </g>
+                </g>
+            </g>
+        </g>
+    </svg>
+
+  <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
+    <script nomodule id="vite-legacy-polyfill" src="/keichan/assets/polyfills-legacy.df7d11d0.js"></script>
+    <script nomodule id="vite-legacy-entry" data-src="/keichan/assets/test-legacy.90b90656.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
+</body>
+
+</html>
