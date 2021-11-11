@@ -24,6 +24,7 @@ export default defineConfig({
           input: {
             // need a better way to template
             main: resolve(__dirname, 'index.html'),
+            test: resolve(__dirname, 'test.html'),
           },
           // ファイル名にハッシュを付けない
           output: {
