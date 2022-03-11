@@ -27,3 +27,19 @@ function normalize_isbn(isbn) {
 }
 
 export default normalize_isbn;
+
+
+// ISBNを13桁に統一する
+// 不正なISBNの場合はfalseを返す
+export const normalize_isbn13 = (isbn) => {
+    isbn = unorm.nfkc(isbn).toUpperCase().replace(/[^0-9X]/g, '');
+    let i = isbn_utils.parse(isbn);
+    if (i) {
+        if (i.isIsbn10()) {
+            return i.asIsbn13();
+        } else if (i.isIsbn13()) {
+            return i.asIsbn13();
+        }
+    }
+    return false;
+}

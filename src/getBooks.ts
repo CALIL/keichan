@@ -1,6 +1,6 @@
 import isbn_utils from 'isbn-utils'
 import api from './api.js'
-import normalize_isbn from './normalize_isbn'
+import normalize_isbn, {normalize_isbn13} from './normalize_isbn'
 
 import sha1 from 'sha1'
 
@@ -40,7 +40,7 @@ function hankana2Zenkana(str) {
 export const getBook = async (isbn, region) => {
     return new Promise(async (resolve, reject) => {
         const apiInstance = new api({ isbn: isbn, region: region }, async (data) => {
-            // console.log(data)
+            console.log(data)
             if (data.count >= 1) {
                 apiInstance.kill()
                 const b = data.books[0]
@@ -50,15 +50,13 @@ export const getBook = async (isbn, region) => {
                     author: b.author,
                     publisher: b.publisher,
                     pubdate: b.pubdate,
-                    isbn: b.isbn,
+                    isbn: normalize_isbn13(isbn) || '',
                     tags: [],
                     price: '',
                     cCode: '',
                     source: 'unitrad'
                 }
                 book.bibHash = getBibHash(book)
-                let i = isbn_utils.parse(normalize_isbn(book.isbn))
-                if (i) book.isbn = i.asIsbn13()
                 const openBDBooks = await getOpenBD([book.isbn]) as any[]
                 if (openBDBooks.length > 0) {
                     openBDBooks[0].id = book.id
@@ -85,7 +83,7 @@ export const getBooks = async (targetBook, region) => {
         let apiInstance = new api({ author: author, publisher: publisher, year_start: pubdate, region: region }, async (data) => {
             if (apiInstance.killed) return
             if (data.count > 5) apiInstance.kill()
-            console.log(data)
+            // console.log(data)
             if (data.count >= 1) {
                 const books = []
                 data.books.forEach((book => {
