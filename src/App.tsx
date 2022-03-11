@@ -358,7 +358,7 @@ const App = () => {
                         row.pubdate = book.pubdate
                         row.cover = book.cover
                         row.isbn = book.isbn
-                        row.tags = book.tags
+                        row.tags = book.tags || []
                         row.bibHash = book.bibHash
                         row.price = book.price
                         row.cCode = book.cCode
