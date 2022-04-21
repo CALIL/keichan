@@ -1,5 +1,5 @@
 import {defineConfig} from 'vite'
-import reactRefresh from '@vitejs/plugin-react-refresh'
+import react from '@vitejs/plugin-react'
 import {flowPlugin, esbuildFlowPlugin} from '@bunchtogether/vite-plugin-flow'
 import legacy from '@vitejs/plugin-legacy'
 const { resolve } = require('path')
@@ -14,7 +14,7 @@ export default defineConfig({
             plugins: [esbuildFlowPlugin()]
         }
     },
-    plugins: [reactRefresh(), flowPlugin(), legacy({
+    plugins: [react(), flowPlugin(), legacy({
         targets: ['ie >= 11'],
         additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     })],
