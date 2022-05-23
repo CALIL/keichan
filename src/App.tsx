@@ -37,7 +37,7 @@ let errorAudio = new Howl({
     }
 })
 
-const REGION = 'recipe'
+const REGION = 'openbd-all'
 
 let keyBuffer = ''
 let keyTimer = null

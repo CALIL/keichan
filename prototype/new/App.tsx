@@ -7,7 +7,7 @@ import isbn_utils from 'isbn-utils'
 import api from '../../src/api'
 import normalize_isbn from '../../src/normalize_isbn.js'
 
-const REGION = 'recipe'
+const REGION = 'openbd-all'
 
 let keyBuffer = ''
 let keyTimer = null

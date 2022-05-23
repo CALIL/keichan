@@ -14,7 +14,7 @@ import Speech from '../Speech'
 import api from '../../src/api';
 
 
-const REGION = 'recipe'
+const REGION = 'openbd-all'
 
 interface App {
     textInput: HTMLInputElement | null

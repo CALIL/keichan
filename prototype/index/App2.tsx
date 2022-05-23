@@ -3,7 +3,7 @@ import normalize_isbn from '../../src/normalize_isbn.js'
 
 import Spreadsheet, {Matrix, CellBase} from 'react-spreadsheet'
 
-const REGION = 'recipe'
+const REGION = 'openbd-all'
 
 interface App {
     api: any
