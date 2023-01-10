@@ -6,6 +6,8 @@ https://calil.github.io/keichan/
 
 ## development
 
+Node 19.3.0
+
 ```
 npm install  
 npm start
