@@ -6,7 +6,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@blueprintjs/core": "^3.47.0",
+    "@blueprintjs/core": "^5.19.1",
     "@vitejs/plugin-react": "^4.7.0",
     "file-saver": "^2.0.5",
     "howler": "^2.2.3",
