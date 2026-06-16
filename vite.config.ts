@@ -20,6 +20,10 @@ export default defineConfig({
     })],
     base: '/keichan/',
     build: {
+        // vite 8 のデフォルトCSS minifier (lightningcss) は @blueprintjs/core@3 の
+        // 不正なセレクタ (`::after.bp3-active` 等) を拒否してビルドが失敗するため、
+        // 従来どおり esbuild を CSS minifier として使う。
+        cssMinify: 'esbuild',
         rollupOptions: {
           input: {
             // need a better way to template
