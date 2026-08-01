@@ -18,7 +18,11 @@ jobs:
           always-auth: true
           registry-url: https://registry.npmjs.org
       - name: Checkout 🛎️
-        uses: actions/checkout@v7.0.1 # zizmor: ignore[artipacked] 後続のDeployステップがこのcheckoutの資格情報でgh-pagesブランチへpushするため、persist-credentialsは無効化しない
+        uses: actions/checkout@v7.0.1
+        with:
+          # JamesIves の deploy action は自前で GITHUB_TOKEN を使うため、
+          # checkout 側に資格情報を残す必要がない（他リポジトリで動作確認済み）
+          persist-credentials: false
 
       - name: Install and Build 🔧
         run: |
