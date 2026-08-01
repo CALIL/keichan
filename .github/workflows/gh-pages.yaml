@@ -3,6 +3,10 @@ name: Build and Deploy
 on:
   push:
     branches: ["main"]
+
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: [self-hosted, Linux]
@@ -14,7 +18,7 @@ jobs:
           always-auth: true
           registry-url: https://registry.npmjs.org
       - name: Checkout 🛎️
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@v7.0.1 # zizmor: ignore[artipacked] 後続のDeployステップがこのcheckoutの資格情報でgh-pagesブランチへpushするため、persist-credentialsは無効化しない
 
       - name: Install and Build 🔧
         run: |
