@@ -1,8 +1,9 @@
 import isbn_utils from 'isbn-utils'
-import api from './api.js'
+import api from './api'
 import normalize_isbn, {normalize_isbn13} from './normalize_isbn'
 
-import sha1 from 'sha1'
+import { sha1 } from '@noble/hashes/legacy.js'
+import { bytesToHex } from '@noble/hashes/utils.js'
 
 // タグに半角カナが入るので変換用
 function hankana2Zenkana(str) {
@@ -215,5 +216,5 @@ export const getOpenBD = async (isbns) => {
 
 
 export const getBibHash = (book: any) => {
-    return sha1(book.id + book.title + book.author + book.publisher + book.isbn)
+    return bytesToHex(sha1(new TextEncoder().encode(book.id + book.title + book.author + book.publisher + book.isbn)))
 }

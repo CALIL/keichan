@@ -1,131 +1,114 @@
-import React, { Component } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import ISBN from 'isbnjs';
+import ISBN from 'isbn-utils';
 import api from './api';
 import {getOpenBD} from './getBooks';
 import SuggestBook from './SuggestBook';
 
-export default class Suggest extends Component {
-    constructor(props) {
-        super(props);
-        this.api = null;
-        this.prevQuery = '';
-        this.state = {
-            loading: false,
-            running: false,
-            books: [],
-            message: '',
-            hint: '',
-            updateCount: 0,
-        };
-    }
+const Suggest = ({ query, region, queryInput, open }) => {
+    const suggestRef = useRef(null);
+    const apiRef = useRef(null);
+    const prevQueryRef = useRef('');
 
-    kill() {
-        if (this.api) {
-            this.api.kill();
-            this.setState({
-                updateCount: 0,
-                running: false,
-            });
+    const [books, setBooks] = useState([]);
+    const [running, setRunning] = useState(false);
+    const [notFound, setNotFound] = useState(false);
+
+    const kill = () => {
+        if (apiRef.current) {
+            apiRef.current.kill();
+            setRunning(false);
         }
-    }
+    };
 
-    componentDidMount() {
-        // console.log(this.props.queryInput)
-        const suggestDiv = this.refs.suggest;
-        if (suggestDiv && this.props.queryInput) {
-            const queryInput = this.props.queryInput;
-            var rect = queryInput.getBoundingClientRect();
-            suggestDiv.style.width = `${rect.right - rect.left}px`
+    // queryInputの位置に合わせて表示幅を調整する（毎レンダー後に実行）
+    useEffect(() => {
+        const suggestDiv = suggestRef.current;
+        if (suggestDiv && queryInput) {
+            const rect = queryInput.getBoundingClientRect();
+            suggestDiv.style.width = `${rect.right - rect.left}px`;
         }
+    });
 
-        if (this.props.query === this.prevQuery) this.state.showResult = true
-        if (this.props.query != '' && this.props.query != this.prevQuery) {
-            this.kill();
-            this.prevQuery = this.props.query;
-            this.api = new api({ free: this.props.query, region: this.props.region }, async (data) => {
-                let newBooks = [];
-                data.books.slice(0, 30).map((book) => {
-                    if (book.isbn && book.isbn.length>=10) {
-                        book.isbn = book.isbn.replace(/-/g, '');
-                        let isbn = ISBN.parse(book.isbn);
-                        if (isbn) {
-                            book.isbn = isbn.asIsbn13();
-                        } else {
-                            isbn = ISBN.parse(book.id);
-                            if (isbn) book.isbn = isbn.asIsbn13();
-                        }
-                        newBooks.push(book);
+    // queryが変わったときだけ検索をやり直す（毎レンダー後にprevQueryRefと比較）
+    useEffect(() => {
+        if (query === '' || query === prevQueryRef.current) return;
+        kill();
+        prevQueryRef.current = query;
+        apiRef.current = new api({ free: query, region }, async (data) => {
+            let newBooks = [];
+            data.books.slice(0, 30).map((book) => {
+                if (book.isbn && book.isbn.length>=10) {
+                    book.isbn = book.isbn.replace(/-/g, '');
+                    let isbn = ISBN.parse(book.isbn);
+                    if (isbn) {
+                        book.isbn = isbn.asIsbn13();
                     } else {
-                        book.isbn = undefined
-                        newBooks.push(book)
+                        isbn = ISBN.parse(book.id);
+                        if (isbn) book.isbn = isbn.asIsbn13();
                     }
-                });
-                // 20件を超える場合は、完了にする
-                let running = data.running;
-                if (newBooks.length>20) {
-                    running = false;
-                    this.kill()
+                    newBooks.push(book);
+                } else {
+                    book.isbn = undefined
+                    newBooks.push(book)
                 }
-                const isbns = []
-                newBooks.forEach((book) => {
-                    isbns.push(book.isbn)
-                })
-                const openBDBooks = await getOpenBD(isbns)
-                // console.log(openBDBooks)
-                console.log(newBooks)
-                const books = newBooks.map((newBook) => {
-                    const openBDBook = openBDBooks.find((openBDBook) => openBDBook.isbn === newBook.isbn)
-                    if (openBDBook) {
-                        return openBDBook
-                    } else {
-                        return newBook
-                    }
-                })
-                this.setState({
-                    books: books,
-                    loading: running && newBooks.length<10,
-                    running: running,
-                    notFound: running===false && newBooks.length===0,
-                    updateCount: this.state.updateCount +  1,
-                    showResult: true
-                });
             });
-        }
-    }
-    componentDidUpdate() {
-        this.componentDidMount();
-    }
-    componentWillUnmount() {
-        this.kill();
-    }
+            // 20件を超える場合は、完了にする
+            let isRunning = data.running;
+            if (newBooks.length>20) {
+                isRunning = false;
+                kill()
+            }
+            const isbns = []
+            newBooks.forEach((book) => {
+                isbns.push(book.isbn)
+            })
+            const openBDBooks = await getOpenBD(isbns)
+            console.log(newBooks)
+            const resultBooks = newBooks.map((newBook) => {
+                const openBDBook = openBDBooks.find((openBDBook) => openBDBook.isbn === newBook.isbn)
+                if (openBDBook) {
+                    return openBDBook
+                } else {
+                    return newBook
+                }
+            })
+            setBooks(resultBooks);
+            setRunning(isRunning);
+            setNotFound(isRunning === false && newBooks.length === 0);
+        });
+    });
 
-    render() {
-        return (
-            <div className="suggest" ref="suggest">
-                {this.state.books.length > 0 ? (
-                    <div className="results">
-                        {this.state.books.map((book, index) => {
-                            return (
-                                <SuggestBook book={book} key={index}
-                                    open={(book) => {
-                                        this.props.open(book);
-                                    }}
-                                />
-                            );
-                        })}
-                    </div>
-                ) : (this.state.running ? (
-                        <div className="message">
-                            検索中...
-                        </div>
-                ) : null)}
-                {this.state.notFound ? (
+    useEffect(() => {
+        return () => kill();
+    }, []);
+
+    return (
+        <div className="suggest" ref={suggestRef}>
+            {books.length > 0 ? (
+                <div className="results">
+                    {books.map((book, index) => {
+                        return (
+                            <SuggestBook book={book} key={index}
+                                open={(book) => {
+                                    open(book);
+                                }}
+                            />
+                        );
+                    })}
+                </div>
+            ) : (running ? (
                     <div className="message">
-                        見つかりませんでした
+                        検索中...
                     </div>
-                ) : null}
-            </div>
-        );
-    }
-}
+            ) : null)}
+            {notFound ? (
+                <div className="message">
+                    見つかりませんでした
+                </div>
+            ) : null}
+        </div>
+    );
+};
+
+export default Suggest;

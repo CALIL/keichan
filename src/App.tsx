@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-import { Button, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay, Switch } from "@blueprintjs/core";
+import { Button, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay2, Switch } from "@blueprintjs/core";
 
 // @ts-ignore
 import { Howl } from 'howler'
@@ -106,14 +106,8 @@ const downloadXSLX = (rows, fileName): void => {
     })
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     wb.Sheets['蔵書データ'] = ws;
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-    function s2ab(s) {
-        const buf = new ArrayBuffer(s.length);
-        const view = new Uint8Array(buf);
-        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
-        return buf;
-    }
-    saveAs(new Blob([s2ab(wbout)], { type: 'application/octet-stream' }), fileName + '.xlsx');
+    const wbout: Uint8Array = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    saveAs(new Blob([wbout as BlobPart], { type: 'application/octet-stream' }), fileName + '.xlsx');
 }
 
 const downloadJSON = (data, fileName): void => {
@@ -631,15 +625,15 @@ const App = () => {
     return (
         <div id="index">
             {/* アラート */}
-            <Overlay isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
-                <div className="bp3-card bp3-elevation-4 bp3-overlay-content alert-message">
+            <Overlay2 isOpen={alertMessage.show} onClose={() => setAlertMessage({ show: false, message: '' })} hasBackdrop={false}>
+                <div className="bp6-card bp6-elevation-4 bp6-overlay-content alert-message">
                     <Icon icon="tick" size={25} color={'#000000'} />
                     {alertMessage.message}
                 </div>
-            </Overlay>
+            </Overlay2>
             {/* 設定 */}
-            <Overlay isOpen={showSettings} onClose={() => setShowSettings(false)} hasBackdrop={true}>
-                <div className="bp3-card bp3-elevation-4 bp3-overlay-content settings-overlay">
+            <Overlay2 isOpen={showSettings} onClose={() => setShowSettings(false)} hasBackdrop={true}>
+                <div className="bp6-card bp6-elevation-4 bp6-overlay-content settings-overlay">
                     <div className="settings">
                         <h3>設定</h3>
                         <label htmlFor="">モード:</label> 
@@ -672,7 +666,7 @@ const App = () => {
                         <Button icon="cross" onClick={() => setShowSettings(false)}>閉じる</Button>
                     </div>
                 </div>
-            </Overlay>
+            </Overlay2>
 
             <header>
                 <div></div>
@@ -736,7 +730,7 @@ const App = () => {
                                                         <InputGroup className="publisher" placeholder="出版社" value={formState.publisher} onChange={(e) => setFormState({...formState, publisher: e.target.value})} />
                                                         <InputGroup className="pubdate" placeholder="出版日(20211010)" value={formState.pubdate} onChange={(e) => setFormState({...formState, pubdate: e.target.value})} />
                                                         <InputGroup className="isbn" placeholder="ISBN" value={formState.isbn} onChange={(e) => setFormState({...formState, isbn: e.target.value})} />
-                                                        <Button className="bp3-intent-primary" icon="plus" large={true} onClick={() => addBook(formState, true)}>追加</Button>
+                                                        <Button intent="primary" icon="plus" size="large" onClick={() => addBook(formState, true)}>追加</Button>
                                                     </FormGroup>
                                                 </div>
                                             </div>
@@ -804,8 +798,8 @@ const App = () => {
                                                         <InputGroup className="pubdate" placeholder="出版日(20211010)" value={editState.pubdate} onChange={(e) => setEditState({...editState, pubdate: e.target.value})} />
                                                         <InputGroup className="isbn" placeholder="ISBN" value={editState.isbn} onChange={(e) => setEditState({...editState, isbn: e.target.value})} />
                                                         <div className="buttons">
-                                                            <Button className="bp3-intent-primary" large={true} icon="edit" onClick={() => editBook(editState)}>編集</Button>
-                                                            <Button large={true} onClick={clearFormState}>キャンセル</Button>
+                                                            <Button intent="primary" size="large" icon="edit" onClick={() => editBook(editState)}>編集</Button>
+                                                            <Button size="large" onClick={clearFormState}>キャンセル</Button>
                                                         </div>
                                                     </FormGroup>
                                                 )}
