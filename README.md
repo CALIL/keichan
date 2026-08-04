@@ -6,7 +6,7 @@ https://calil.github.io/keichan/
 
 ## development
 
-Node 19.3.0
+Node 22
 
 ```
 npm install  

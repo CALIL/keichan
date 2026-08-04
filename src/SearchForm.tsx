@@ -22,9 +22,9 @@ const SearchForm = ({REGION, selectBook}) => {
             e.preventDefault()
             setShowSuggest(true)
         }}>
-            <div className="bp3-input-group modifier">
-                <span className="bp3-icon bp3-icon-search"></span>
-                <input ref={queryInput} className="bp3-input" type="search" value={query} placeholder="キーワード or ISBNで探す" dir="auto"
+            <div className="bp6-input-group modifier">
+                <span className="bp6-icon bp6-icon-search"></span>
+                <input ref={queryInput} className="bp6-input" type="search" value={query} placeholder="キーワード or ISBNで探す" dir="auto"
                 onChange={() => {
                     setQuery(queryInput.current.value)
                     setShowSuggest(true)
