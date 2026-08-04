@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^6.18.0",
-    "@blueprintjs/icons": "^6.5.0",
+    "@blueprintjs/icons": "^6.13.0",
     "@noble/hashes": "^2.2.0",
     "@vitejs/plugin-react": "^6.0.5",
     "file-saver": "^2.0.5",
@@ -17,16 +17,16 @@
     "query-string": "^9.4.1",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-spreadsheet": "^0.5.2",
+    "react-spreadsheet": "^0.10.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@types/file-saver": "^2.0.2",
+    "@types/file-saver": "^2.0.7",
     "@types/node": "^26.1.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
-    "sass": "^1.35.1",
-    "terser": "^5.16.0",
+    "sass": "^1.102.0",
+    "terser": "^5.49.0",
     "typescript": "^7.0.2",
     "vite": "^8.2.0"
   }
