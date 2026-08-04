@@ -7,31 +7,31 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^3.47.0",
-    "@vitejs/plugin-react": "^6.0.2",
+    "@vitejs/plugin-react": "^6.0.4",
     "file-saver": "^2.0.5",
-    "howler": "^2.2.3",
+    "howler": "^2.2.4",
     "isbn-utils": "^1.1.0",
     "isbnjs": "^0.2.2",
-    "jsbarcode": "^3.11.5",
+    "jsbarcode": "^3.12.3",
     "query-string": "^9.4.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-spreadsheet": "^0.5.2",
+    "react-spreadsheet": "^0.10.1",
     "sha1": "^1.1.1",
     "superagent": "^10.3.0",
     "unorm": "^1.6.0",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@bunchtogether/vite-plugin-flow": "^1.0.0",
-    "@types/file-saver": "^2.0.2",
-    "@types/node": "^26.1.0",
+    "@bunchtogether/vite-plugin-flow": "^1.0.2",
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^26.1.2",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@vitejs/plugin-legacy": "^8.0.2",
-    "sass": "^1.35.1",
-    "terser": "^5.16.0",
+    "@vitejs/plugin-legacy": "^8.2.2",
+    "sass": "^1.102.0",
+    "terser": "^5.49.0",
     "typescript": "^4.3.2",
-    "vite": "^8.0.16"
+    "vite": "^8.1.5"
   }
 }
