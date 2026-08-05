@@ -1,29 +1,9 @@
-@font-face
-  font-family: 'Conv_OCRB'
-  src: url('/keichan/fonts/OCRB.eot')
-  src: url('/keichan/fonts/OCRB.woff') format("woff"), url('/keichan/fonts/OCRB.ttf') format("truetype"), url('/keichan/fonts/OCRB.svg') format("svg")
-  font-weight: normal
-  font-style: normal
-
-*
-    box-sizing: border-box
-    margin: 0
-    padding: 0
-
-html, body
-    width: 100%
-    height: 100%
-    font-family: "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "Noto Sans JP", "ＭＳ Ｐゴシック", "Helvetica Neue", "Helvetica", "Arial", sans-serif
-
-#app
-    height: 100%
-
- 
-@import "sass/index"
-@import "sass/_placeholder"
-@import "sass/suggest"
-// @import "sass/speech"
-// @import "sass/chat"
-// @import "sass/suggests"
-// @import "sass/new"
-// @import "sass/debug"
+@use 'sass/base'
+@use 'sass/index'
+@use 'sass/placeholder'
+@use 'sass/suggest'
+// @use 'sass/speech'
+// @use 'sass/chat'
+// @use 'sass/suggests'
+// @use 'sass/new'
+// @use 'sass/debug'
