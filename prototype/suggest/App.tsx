@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 
 import { Button, Intent, Spinner, Card, Elevation, Tag, Icon, InputGroup, FormGroup } from "@blueprintjs/core";
 
-import isbn_utils from 'isbn-utils'
+import ISBN from 'isbn3'
 
 import api from '../../src/api'
 import normalize_isbn from '../../src/normalize_isbn.js'
@@ -74,8 +74,8 @@ const App = (props) => {
                 if (data.count >= 1) {
                     apiInstance.kill()
                     const book = data.books[0]
-                    let i = isbn_utils.parse(normalize_isbn(book.isbn))
-                    book.isbn = i.asIsbn13()
+                    const i = ISBN.parse(normalize_isbn(book.isbn))
+                    book.isbn = i.isbn13
                     resolve(book)
                 } else if (data.running === false && data.count === 0) {
                     reject()
@@ -107,10 +107,10 @@ const App = (props) => {
                             pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
                         }
                     }
-                    let i = isbn_utils.parse(normalize_isbn(book.isbn))
+                    const i = ISBN.parse(normalize_isbn(book.isbn))
                     let isbn = null
                     try {
-                        isbn = i.asIsbn13()
+                        isbn = i.isbn13
                     } catch {
                     }
                     if (isbn) {

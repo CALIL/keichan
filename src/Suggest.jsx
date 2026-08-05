@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import ISBN from 'isbn-utils';
+import ISBN from 'isbn3';
 import api from './api';
 import {getOpenBD} from './getBooks';
 import SuggestBook from './SuggestBook';
@@ -42,10 +42,10 @@ const Suggest = ({ query, region, queryInput, open }) => {
                     book.isbn = book.isbn.replace(/-/g, '');
                     let isbn = ISBN.parse(book.isbn);
                     if (isbn) {
-                        book.isbn = isbn.asIsbn13();
+                        book.isbn = isbn.isbn13;
                     } else {
                         isbn = ISBN.parse(book.id);
-                        if (isbn) book.isbn = isbn.asIsbn13();
+                        if (isbn) book.isbn = isbn.isbn13;
                     }
                     newBooks.push(book);
                 } else {
