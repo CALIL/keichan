@@ -1,4 +1,4 @@
-import isbn_utils from 'isbn-utils'
+import ISBN from 'isbn3'
 import api from './api'
 import normalize_isbn, {normalize_isbn13} from './normalize_isbn'
 
@@ -97,9 +97,10 @@ export const getBooks = async (targetBook, region) => {
                             pubdate = Number(book.pubdate.split('/')[0].split('.')[0])
                         }
                     }
-                    let i = isbn_utils.parse(normalize_isbn(book.isbn))
+                    const normalizedIsbn = normalize_isbn(book.isbn)
+                    const i = normalizedIsbn ? ISBN.parse(normalizedIsbn) : null
                     let isbn = null
-                    if (i) isbn = i.asIsbn13()
+                    if (i) isbn = i.isbn13
                     if (isbn) {
                         books.push({
                             'title': book.title + ' ' + book.volume,

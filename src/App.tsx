@@ -15,7 +15,7 @@ import SearchForm from './SearchForm';
 import { getBook, getBooks, getBibHash } from './getBooks'
 
 import normalize_isbn from './normalize_isbn'
-import isbn_utils from 'isbn-utils'
+import ISBN from 'isbn3'
 
 let safetyUrlAudio = new Howl({
     src: ['./audio/safety.mp3'],
@@ -307,8 +307,8 @@ const App = () => {
             const lastRow = tempList[tempList.length - 1]
             // 最後の行にISBNが設定されているか？
             if (lastRow && !lastRow.isbn) {
-                let i = isbn_utils.parse(isbn10)
-                if (i) lastRow.isbn = i.asIsbn13()
+                const i = ISBN.parse(isbn10)
+                if (i) lastRow.isbn = i.isbn13
                 // console.log(tempList)
                 setRowList(tempList)
             } else {
@@ -511,7 +511,7 @@ const App = () => {
         }
         // ISBNのバリデーション
         if (book.isbn !== '') {
-            const isbn = isbn_utils.parse(book.isbn)
+            const isbn = ISBN.parse(book.isbn)
             if (isbn===null) {
                 alertAndLog('ISBNが不正です')
                 return errorAudio.play()
