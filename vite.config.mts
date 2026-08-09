@@ -1,6 +1,6 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
-const { resolve } = require('path')
+import {fileURLToPath} from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,8 +13,8 @@ export default defineConfig({
         rollupOptions: {
           input: {
             // need a better way to template
-            main: resolve(__dirname, 'index.html'),
-            test: resolve(__dirname, 'test.html'),
+            main: fileURLToPath(new URL('index.html', import.meta.url)),
+            test: fileURLToPath(new URL('test.html', import.meta.url)),
           },
           // ファイル名にハッシュを付けない
           output: {
