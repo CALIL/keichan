@@ -47,7 +47,6 @@ updates:
       # 先に上げてはいけない。上げると新しい Node.js で追加された API を
       # tsc が通してしまい、本番で初めて落ちる。
       # Node.js を上げるときに node-version と一緒に手で上げる。
-      # 現状は 26 系が入っていて実行環境と乖離している（是正は別途）。
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
     groups:
