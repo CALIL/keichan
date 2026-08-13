@@ -1,0 +1,69 @@
+name: CI
+
+# 依存を更新したときに壊れていないかを見るための最低限のチェック。
+# Dependabot の PR にもこれが走るので、更新して安全かどうかが分かる。
+#
+# 配布元: CALIL/workflows の templates/ci-npm.yml
+# 直すときは配布元を直してから各リポジトリへ反映してください。
+# （sync_checks.py が自動配布するのは actions-security-check.yml だけ。
+#   ci.yml はリポジトリごとに Test の有無などを調整しているため手動反映）
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions: {}
+
+# 同じブランチで新しい push があったら、古い実行は止める
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: ビルドとテスト
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          # .nvmrc / package.json の engines があればそれに従う。
+          # 無ければ LTS を使う。
+          node-version-file: ${{ hashFiles('.nvmrc') != '' && '.nvmrc' || 'package.json' }}
+          cache: npm
+
+      # package-lock.json どおりに入れる。lock がずれていればここで落ちる。
+      - name: Install
+        run: npm ci
+
+      # lint スクリプトを持つリポジトリだけで実行する（無ければ何もしない）
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      # ビルドが生成物を書き換えたら、コミット済みの版が古いということ。
+      # CI は生成器を走らせて上書きしてから使うので、この確認が無いと
+      # 古い生成物のままグリーンになり、あとで無関係な PR に差分が紛れ込む。
+      # 生成物を持たないリポジトリでは何もしない（pathspec が何にも当たらない）。
+      - name: 生成物が最新か確認
+        run: |
+          if ! git diff --quiet -- ':(top)*.gen.ts' ':(top)*.gen.tsx'; then
+            echo '::error::コミット済みの生成物がビルドの出力と食い違っています。手元でビルドし、生成されたファイルをコミットしてください。'
+            git diff -- ':(top)*.gen.ts' ':(top)*.gen.tsx'
+            exit 1
+          fi
