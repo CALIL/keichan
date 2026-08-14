@@ -6,7 +6,8 @@ import { Button, Card, Elevation, Tag, Icon, InputGroup, FormGroup, Overlay2, Sw
 import { Howl } from 'howler'
 
 import XLSX from 'xlsx'
-import { saveAs } from 'file-saver'
+
+import download from './download'
 
 import ProposalBook from './ProposalBook'
 
@@ -107,19 +108,13 @@ const downloadXSLX = (rows, fileName): void => {
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     wb.Sheets['蔵書データ'] = ws;
     const wbout: Uint8Array = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    saveAs(new Blob([wbout as BlobPart], { type: 'application/octet-stream' }), fileName + '.xlsx');
+    download(new Blob([wbout as BlobPart], { type: 'application/octet-stream' }), fileName + '.xlsx');
 }
 
 const downloadJSON = (data, fileName): void => {
     const dt = new Date();
     fileName += '_' + `${dt.getFullYear()}${dt.getMonth() + 1}${dt.getDate()}` + '.json'
-    const blob = new Blob([JSON.stringify(data, null, '  ')], { type: 'application\/json' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = fileName
-    link.click()
-    URL.revokeObjectURL(url)
+    download(new Blob([JSON.stringify(data, null, '  ')], { type: 'application\/json' }), fileName)
 }
 
 
