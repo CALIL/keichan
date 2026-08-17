@@ -43,10 +43,10 @@ updates:
       - dependency-name: "@types/react-dom"
         update-types: ["version-update:semver-major"]
       # @types/node のメジャーは Node.js 本体のメジャーに対応しているので、
-      # 実行環境（.github/workflows/gh-pages.yaml の node-version = 22）より
-      # 先に上げてはいけない。上げると新しい Node.js で追加された API を
-      # tsc が通してしまい、本番で初めて落ちる。
-      # Node.js を上げるときに node-version と一緒に手で上げる。
+      # ビルドに使う Node.js（.nvmrc = 24）より先に上げてはいけない。
+      # 上げると新しい Node.js で追加された API を tsc が通してしまい、
+      # 本番で初めて落ちる。
+      # Node.js を上げるときに .nvmrc と一緒に手で上げる。
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
     groups:
