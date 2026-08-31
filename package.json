@@ -10,7 +10,7 @@
     "@blueprintjs/core": "^6.18.0",
     "@blueprintjs/icons": "^6.13.0",
     "@noble/hashes": "^2.3.0",
-    "@vitejs/plugin-react": "^6.0.5",
+    "@vitejs/plugin-react": "^6.1.0",
     "howler": "^2.2.4",
     "isbn3": "^2.0.10",
     "jsbarcode": "^3.12.3",
@@ -21,11 +21,11 @@
   "devDependencies": {
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
+    "@types/react-dom": "^19.2.5",
     "jsdom": "^30.0.1",
-    "sass": "^1.102.0",
+    "sass": "^1.103.1",
     "typescript": "^7.0.2",
-    "vite": "^8.2.1",
-    "vitest": "^4.1.10"
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
   }
 }
